@@ -10,7 +10,7 @@ import { ECustomKey } from "../input_key_code";
 export namespace InputManager {
 	const input_broad_caster = new InputBroadCaster<(input_event: InputEvent) => Enum.ContextActionResult | void>();
 	export function Subscribe(...args: Parameters<typeof input_broad_caster.Subscribe>) {
-		input_broad_caster.Subscribe(...args);
+		return input_broad_caster.Subscribe(...args);
 	}
 
 	/**all inputable keycodes */
