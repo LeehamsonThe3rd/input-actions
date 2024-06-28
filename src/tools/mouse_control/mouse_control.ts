@@ -142,7 +142,10 @@ export namespace MouseControl {
 		enabled = value;
 	}
 
+	let initialized = false;
 	export function Initialize() {
+		if (initialized) return;
+		initialized = true;
 		RunService.RenderStepped.Connect(Update);
 	}
 }

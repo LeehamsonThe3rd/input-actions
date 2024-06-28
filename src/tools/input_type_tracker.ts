@@ -117,7 +117,10 @@ export namespace InputTypeTracker {
 		touch_enabled = UserInputService.TouchEnabled;
 	}
 
+	let initialized = false;
 	export async function Initialize() {
+		if (initialized) return;
+		initialized = true;
 		//to set the value
 		task.wait(2);
 		TryGetJumpButtonSize();

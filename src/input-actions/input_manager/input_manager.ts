@@ -164,7 +164,10 @@ export namespace InputManager {
 	}
 
 	//TODO add the scrolling wheel
+	let initialized = false;
 	export function Initialize() {
+		if (initialized) return;
+		initialized = true;
 		//reads keycodes. If will find the one that is used in actions, will set current action status false - released, true - down
 		ContextActionService.BindActionAtPriority("ActionsReader", OnInput, false, 99999, ...keycodes);
 		RunService.PostSimulation.Connect(Update);

@@ -98,7 +98,10 @@ export namespace InputSettings {
 		return default_input_maps;
 	}
 
+	let initialized = false;
 	export function Initialize() {
+		if (initialized) return;
+		initialized = true;
 		const input_map_list = default_input_maps as unknown as Map<string, IInputMap>;
 
 		input_map_list.forEach((map, action_name) => {

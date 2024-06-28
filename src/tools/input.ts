@@ -90,7 +90,10 @@ export namespace Input {
 		camera_input_module.resetInputForFrameEnd();
 	}
 
+	let initialized = false;
 	export function Initialize() {
+		if (initialized) return;
+		initialized = true;
 		const player_scripts = local_player.WaitForChild("PlayerScripts") as Folder;
 		const player_module_script = player_scripts.WaitForChild("PlayerModule") as ModuleScript;
 		const camera_module_script = player_module_script.WaitForChild("CameraModule") as ModuleScript;
@@ -101,7 +104,6 @@ export namespace Input {
 		//clone to not impact the PlayerModule
 		camera_input_module = require(camera_input_script.Clone()) as ICameraInputModule;
 		camera_input_module.setInputEnabled(true);
-
 		//starts update input cycle
 		RunService.BindToRenderStep("FetchInput", Enum.RenderPriority.Input.Value + 1, UpdateInput);
 	}
