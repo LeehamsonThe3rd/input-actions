@@ -1,6 +1,6 @@
 {
-  "name": "@rbxts/actions_input",
-  "version": "1.0.0",
+  "name": "@rbxts/input-actions",
+  "version": "0.1.0",
   "main": "out/init.lua",
   "scripts": {
     "build": "rbxtsc",
@@ -8,13 +8,13 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Catargo",
+  "license": "MIT",
   "types": "out/index.d.ts",
   "files": [
     "out",
-    "!**/*.tsbuildinfo"
+    "!**/*.tsbuildinfo",
+    "default.project.json"
   ],
   "publishConfig": {
     "access": "public"
@@ -31,5 +31,18 @@
     "prettier": "^3.3.2",
     "roblox-ts": "^2.3.0",
     "typescript": "^5.5.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Velover/input-actions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Velover/input-actions/issues"
+  },
+  "homepage": "https://github.com/Velover/input-actions#readme",
+  "dependencies": {
+    "@rbxts/services": "^1.5.4",
+    "@rbxts/tool_pack": "^1.2.0"
+  },
+  "description": ""
 }
