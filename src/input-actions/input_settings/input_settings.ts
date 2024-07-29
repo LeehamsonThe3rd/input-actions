@@ -1,10 +1,10 @@
 import { UserInputService } from "@rbxts/services";
-import { InputTypeTracker } from "../../tools/input_type_tracker";
-import { default_input_maps } from "./default_input_actions";
 import { FunctionTools } from "@rbxts/tool_pack";
-import { InputMap } from "../input_map";
-import { InputKeyCode } from "../input_key_code";
 import { KeysImages } from "../../tools/images/keys_images";
+import { InputTypeTracker } from "../../tools/input_type_tracker";
+import { InputKeyCode } from "../input_key_code";
+import { InputMap } from "../input_map";
+import { default_input_maps } from "./default_input_actions";
 
 export namespace InputSettings {
 	export interface IInputMap {
@@ -36,7 +36,10 @@ export namespace InputSettings {
 		//gets a key from the map
 		const key = FunctionTools.SwitchValueIfEquals(
 			current_input_type,
-			[InputTypeTracker.EInputType.gamepad, InputTypeTracker.EInputType.keyboard_and_mouse],
+			[
+				InputTypeTracker.EInputType.gamepad,
+				InputTypeTracker.EInputType.keyboard_and_mouse,
+			],
 			[input_map.gamepad, input_map.keyboard_and_mouse],
 			undefined,
 		);
@@ -77,7 +80,8 @@ export namespace InputSettings {
 		InputMap.AddAction(action_name);
 
 		//ads keyboard and mouse to the events
-		if (input_map.gamepad !== undefined) InputMap.ActionAddKeyCode(action_name, input_map.gamepad);
+		if (input_map.gamepad !== undefined)
+			InputMap.ActionAddKeyCode(action_name, input_map.gamepad);
 		if (input_map.keyboard_and_mouse !== undefined)
 			InputMap.ActionAddKeyCode(action_name, input_map.keyboard_and_mouse);
 	}
@@ -88,7 +92,8 @@ export namespace InputSettings {
 			return;
 		}
 		const input_map = saved_input_maps.get(action_name)!;
-		if (input_map.gamepad !== undefined) InputMap.ActionEraseKeyCode(action_name, input_map.gamepad);
+		if (input_map.gamepad !== undefined)
+			InputMap.ActionEraseKeyCode(action_name, input_map.gamepad);
 		if (input_map.keyboard_and_mouse !== undefined)
 			InputMap.ActionEraseKeyCode(action_name, input_map.keyboard_and_mouse);
 		InputMap.EraseAction(action_name);
@@ -102,7 +107,10 @@ export namespace InputSettings {
 	export function Initialize() {
 		if (initialized) return;
 		initialized = true;
-		const input_map_list = default_input_maps as unknown as Map<string, IInputMap>;
+		const input_map_list = default_input_maps as unknown as Map<
+			string,
+			IInputMap
+		>;
 
 		input_map_list.forEach((map, action_name) => {
 			AddInputMap(action_name, map);

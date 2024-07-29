@@ -20,7 +20,10 @@ export namespace ActionsController {
 		return action_table;
 	}
 
-	export function ExecuteWithActionTable(action_name: string, callback: (action_table: IAction) => void) {
+	export function ExecuteWithActionTable(
+		action_name: string,
+		callback: (action_table: IAction) => void,
+	) {
 		const action_table = GetActionTable(action_name);
 		if (action_table === undefined) return;
 		callback(action_table);

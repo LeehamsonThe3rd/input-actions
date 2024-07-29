@@ -1,4 +1,4 @@
-import { InputKeyCode, ECustomKey } from "../../input-actions/input_key_code";
+import { ECustomKey, InputKeyCode } from "../../input-actions/input_key_code";
 
 export namespace KeysImages {
 	const key_codes = new Map<InputKeyCode, string>([

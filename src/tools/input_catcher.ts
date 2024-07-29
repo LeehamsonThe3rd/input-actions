@@ -1,4 +1,4 @@
-import { HttpService, ContextActionService } from "@rbxts/services";
+import { ContextActionService, HttpService } from "@rbxts/services";
 
 /**all inputable keycodes */
 const keycodes = [
@@ -23,7 +23,13 @@ export default class InputCatcher {
 
 	/**binds the action that sinks all the keys */
 	GrabInput() {
-		ContextActionService.BindActionAtPriority(this.uuid_, SinkKey, false, this.priority_, ...keycodes);
+		ContextActionService.BindActionAtPriority(
+			this.uuid_,
+			SinkKey,
+			false,
+			this.priority_,
+			...keycodes,
+		);
 	}
 
 	/**unbinds action that sinks all the keys */

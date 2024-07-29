@@ -1,8 +1,8 @@
 //!native
 import { UserInputService } from "@rbxts/services";
 import { ActionsController } from "../actions_controller";
-import InputEventAction from "./input_event_action";
 import { InputKeyCode } from "../input_key_code";
+import InputEventAction from "./input_event_action";
 
 const actions = ActionsController.actions;
 const reverse_actions = ActionsController.reverse_actions;
@@ -85,7 +85,8 @@ export default class InputEvent {
 		//checks the combinations
 		if (modifier === Enum.ModifierKey.Alt) {
 			return (
-				UserInputService.IsKeyDown(Enum.KeyCode.LeftAlt) || UserInputService.IsKeyDown(Enum.KeyCode.RightAlt)
+				UserInputService.IsKeyDown(Enum.KeyCode.LeftAlt) ||
+				UserInputService.IsKeyDown(Enum.KeyCode.RightAlt)
 			);
 		} else if (modifier === Enum.ModifierKey.Ctrl) {
 			return (
@@ -99,7 +100,8 @@ export default class InputEvent {
 			);
 		} else if (modifier === Enum.ModifierKey.Meta) {
 			return (
-				UserInputService.IsKeyDown(Enum.KeyCode.LeftMeta) || UserInputService.IsKeyDown(Enum.KeyCode.RightMeta)
+				UserInputService.IsKeyDown(Enum.KeyCode.LeftMeta) ||
+				UserInputService.IsKeyDown(Enum.KeyCode.RightMeta)
 			);
 		}
 	}

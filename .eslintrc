@@ -13,15 +13,16 @@
 	"plugins": [
 		"@typescript-eslint",
 		"roblox-ts",
-		"prettier"
 	],
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
 		"plugin:roblox-ts/recommended",
-		"plugin:prettier/recommended"
 	],
 	"rules": {
-		"prettier/prettier": "warn"
+		"no-inner-declarations": "off",
+		"no-constant-condition": "off",
+		"roblox-ts/lua-truthiness": "off",
+		"roblox-ts/no-any": "off"
 	}
 }

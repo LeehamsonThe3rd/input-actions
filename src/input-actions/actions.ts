@@ -70,6 +70,10 @@ export namespace Actions {
 		initialized = true;
 		//starts the update
 		//update at the start of the frame cause deferred events are resumed after post simulation
-		RunService.BindToRenderStep("_ActionsUpdate_", Enum.RenderPriority.First.Value - 1, Update);
+		RunService.BindToRenderStep(
+			"_ActionsUpdate_",
+			Enum.RenderPriority.First.Value - 1,
+			Update,
+		);
 	}
 }

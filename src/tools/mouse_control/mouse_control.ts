@@ -1,6 +1,6 @@
-import { UserInputService, RunService, HttpService } from "@rbxts/services";
-import { Actions } from "../../input-actions/actions";
+import { HttpService, RunService, UserInputService } from "@rbxts/services";
 import { ArrayTools } from "@rbxts/tool_pack";
+import { Actions } from "../../input-actions/actions";
 import { EDefaultInputAction } from "../../input-actions/input_settings/default_input_actions";
 
 export namespace MouseControl {
@@ -74,7 +74,10 @@ export namespace MouseControl {
 		[EMouseLockAction.unlock_mouse]: true,
 	};
 
-	export function ActionStrictModeSet(action: EMouseLockAction, value: boolean) {
+	export function ActionStrictModeSet(
+		action: EMouseLockAction,
+		value: boolean,
+	) {
 		strict_mode[action] = value;
 	}
 
@@ -91,19 +94,22 @@ export namespace MouseControl {
 	}
 
 	function DetermineAction() {
-		if (Actions.IsActionPressed(EDefaultInputAction.mouse_debug_mode)) return EMouseLockAction.unlock_mouse;
+		if (Actions.IsActionPressed(EDefaultInputAction.mouse_debug_mode))
+			return EMouseLockAction.unlock_mouse;
 
 		//sets unlock mouse on top
 		const unlock_mouse_max_priority = unlocked_stack[0]?.priority ?? 0;
 		const locked_center_max_priority = locked_center_stack[0]?.priority ?? -1;
-		const locked_at_position_max_priority = locked_at_position_stack[0]?.priority ?? -1;
+		const locked_at_position_max_priority =
+			locked_at_position_stack[0]?.priority ?? -1;
 
 		if (
 			unlock_mouse_max_priority >= locked_at_position_max_priority &&
 			unlock_mouse_max_priority >= locked_center_max_priority
 		)
 			return EMouseLockAction.unlock_mouse;
-		if (locked_center_max_priority >= locked_at_position_max_priority) return EMouseLockAction.lock_mouse_center;
+		if (locked_center_max_priority >= locked_at_position_max_priority)
+			return EMouseLockAction.lock_mouse_center;
 		return EMouseLockAction.lock_mouse_at_position;
 	}
 

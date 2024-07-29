@@ -32,7 +32,9 @@ export namespace InputTypeTracker {
 		else if (touch_enabled) {
 			//checks whether the jump button has the tablet size(120x120);
 			//phone has button size(70x70);
-			return jump_button_has_tablet_size ? EDeviceType.tablet : EDeviceType.phone;
+			return jump_button_has_tablet_size
+				? EDeviceType.tablet
+				: EDeviceType.phone;
 		}
 		//console is 3rd
 		else if (gamepad_enabled) return EDeviceType.console;
@@ -40,10 +42,14 @@ export namespace InputTypeTracker {
 		return EDeviceType.pc;
 	}
 
-	const input_type_changed_event: BindableEvent<(input_type: EInputType) => void> = new Instance("BindableEvent");
+	const input_type_changed_event: BindableEvent<
+		(input_type: EInputType) => void
+	> = new Instance("BindableEvent");
 	export const on_input_type_changed = input_type_changed_event.Event;
 
-	const device_type_changed_event: BindableEvent<(device_type: EDeviceType) => void> = new Instance("BindableEvent");
+	const device_type_changed_event: BindableEvent<
+		(device_type: EDeviceType) => void
+	> = new Instance("BindableEvent");
 	export const on_device_type_changed = device_type_changed_event.Event;
 
 	/**fires the new input type */
@@ -54,7 +60,11 @@ export namespace InputTypeTracker {
 		device_type_changed_event.Fire(GetMainDeviceType());
 	}
 
-	function ExecuteOnChanged(new_value: boolean, previos_value: boolean, callback: () => void) {
+	function ExecuteOnChanged(
+		new_value: boolean,
+		previos_value: boolean,
+		callback: () => void,
+	) {
 		//calls the function if different
 		if (new_value === previos_value) return;
 		callback();
@@ -97,14 +107,51 @@ export namespace InputTypeTracker {
 	//compares the old to the new ones
 	function CheckValues() {
 		//if gets true means input type changed, will stop the function to execute only once
-		if (ExecuteOnChanged(jump_button_has_tablet_size, CheckJumpButtonHasTabletSize(), FireOnInputChangedEvent))
+		if (
+			ExecuteOnChanged(
+				jump_button_has_tablet_size,
+				CheckJumpButtonHasTabletSize(),
+				FireOnInputChangedEvent,
+			)
+		)
 			return;
-		if (ExecuteOnChanged(vr_enabled, VRService.VREnabled, FireOnInputChangedEvent)) return;
+		if (
+			ExecuteOnChanged(vr_enabled, VRService.VREnabled, FireOnInputChangedEvent)
+		)
+			return;
 
-		if (ExecuteOnChanged(mouse_enabled, UserInputService.MouseEnabled, FireOnInputChangedEvent)) return;
-		if (ExecuteOnChanged(keyboard_enabled, UserInputService.KeyboardEnabled, FireOnInputChangedEvent)) return;
-		if (ExecuteOnChanged(gamepad_enabled, UserInputService.GamepadEnabled, FireOnInputChangedEvent)) return;
-		if (ExecuteOnChanged(touch_enabled, UserInputService.TouchEnabled, FireOnInputChangedEvent)) return;
+		if (
+			ExecuteOnChanged(
+				mouse_enabled,
+				UserInputService.MouseEnabled,
+				FireOnInputChangedEvent,
+			)
+		)
+			return;
+		if (
+			ExecuteOnChanged(
+				keyboard_enabled,
+				UserInputService.KeyboardEnabled,
+				FireOnInputChangedEvent,
+			)
+		)
+			return;
+		if (
+			ExecuteOnChanged(
+				gamepad_enabled,
+				UserInputService.GamepadEnabled,
+				FireOnInputChangedEvent,
+			)
+		)
+			return;
+		if (
+			ExecuteOnChanged(
+				touch_enabled,
+				UserInputService.TouchEnabled,
+				FireOnInputChangedEvent,
+			)
+		)
+			return;
 	}
 
 	function AsignValues() {

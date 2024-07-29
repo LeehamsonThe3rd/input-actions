@@ -6,7 +6,10 @@ import { InputKeyCode } from "./input_key_code";
 const actions = ActionsController.actions;
 const reverse_actions = ActionsController.reverse_actions;
 export namespace InputMap {
-	export function ActionAddKeyCode(action_name: string, key_code: InputKeyCode) {
+	export function ActionAddKeyCode(
+		action_name: string,
+		key_code: InputKeyCode,
+	) {
 		ActionsController.ExecuteWithActionTable(action_name, (action_table) => {
 			if (action_table.keycodes.includes(key_code)) {
 				warn("Keycode already exist in action");
@@ -24,7 +27,10 @@ export namespace InputMap {
 		});
 	}
 
-	export function ActionEraseKeyCode(action_name: string, key_code: InputKeyCode) {
+	export function ActionEraseKeyCode(
+		action_name: string,
+		key_code: InputKeyCode,
+	) {
 		ActionsController.ExecuteWithActionTable(action_name, (action_table) => {
 			if (!action_table.keycodes.includes(key_code)) return;
 			//removes the keycode from the actions
@@ -53,7 +59,10 @@ export namespace InputMap {
 		return action_table !== undefined ? table.clone(action_table.keycodes) : [];
 	}
 
-	export function ActionHasKeyCode(action_name: string, key_code: InputKeyCode) {
+	export function ActionHasKeyCode(
+		action_name: string,
+		key_code: InputKeyCode,
+	) {
 		const action_table = ActionsController.GetActionTable(action_name);
 		//returns whether the action table includes the key_code
 		return action_table?.keycodes.includes(key_code) ?? false;

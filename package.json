@@ -1,48 +1,48 @@
 {
-  "name": "@rbxts/input-actions",
-  "version": "0.1.4",
-  "main": "out/init.lua",
-  "scripts": {
-    "build": "rbxtsc",
-    "watch": "rbxtsc -w",
-    "prepublishOnly": "npm run build"
-  },
-  "keywords": [],
-  "author": "Catargo",
-  "license": "MIT",
-  "types": "out/index.d.ts",
-  "files": [
-    "out",
-    "!**/*.tsbuildinfo",
-    "default.project.json"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "devDependencies": {
-    "@rbxts/compiler-types": "^2.3.0-types.1",
-    "@rbxts/types": "^1.0.787",
-    "@typescript-eslint/eslint-plugin": "^7.14.1",
-    "@typescript-eslint/parser": "^7.14.1",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.1.3",
-    "eslint-plugin-roblox-ts": "^0.0.36",
-    "prettier": "^3.3.2",
-    "roblox-ts": "^2.3.0",
-    "typescript": "^5.5.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Velover/input-actions.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Velover/input-actions/issues"
-  },
-  "homepage": "https://github.com/Velover/input-actions#readme",
-  "dependencies": {
-    "@rbxts/services": "^1.5.4",
-    "@rbxts/tool_pack": "^1.2.0"
-  },
-  "description": ""
+	"name": "@rbxts/input-actions",
+	"version": "0.1.4",
+	"main": "out/init.lua",
+	"scripts": {
+		"build": "rbxtsc",
+		"watch": "rbxtsc -w",
+		"prepublishOnly": "npm run build"
+	},
+	"keywords": [],
+	"author": "Catargo",
+	"license": "MIT",
+	"types": "out/index.d.ts",
+	"files": [
+		"out",
+		"!**/*.tsbuildinfo",
+		"default.project.json"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^2.3.0-types.1",
+		"@rbxts/types": "^1.0.791",
+		"@typescript-eslint/eslint-plugin": "^7.18.0",
+		"@typescript-eslint/parser": "^7.18.0",
+		"eslint": "^8.57.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"eslint-plugin-roblox-ts": "^0.0.36",
+		"prettier": "^3.3.3",
+		"roblox-ts": "^2.3.0",
+		"typescript": "^5.5.4"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Velover/input-actions.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Velover/input-actions/issues"
+	},
+	"homepage": "https://github.com/Velover/input-actions#readme",
+	"dependencies": {
+		"@rbxts/services": "^1.5.4",
+		"@rbxts/tool_pack": "^1.4.2"
+	},
+	"description": ""
 }

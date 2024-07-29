@@ -2,7 +2,10 @@
 import Subscription from "./subscription";
 
 //at the end returns whether to sink the input or no
-export default class InputBroadCaster<Callback extends (...args: any[]) => Enum.ContextActionResult | void> {
+export default class InputBroadCaster<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	Callback extends (...args: any[]) => Enum.ContextActionResult | void,
+> {
 	private callbacks_: [Callback, priority: number][] = [];
 	private subscriptions_: Subscription[] = [];
 

@@ -3,7 +3,7 @@ import { InputManager } from "../input-actions/input_manager/input_manager";
 import { InputSettings } from "../input-actions/input_settings/input_settings";
 import { InputTypeTracker } from "../tools/input_type_tracker";
 import { MouseControl } from "../tools/mouse_control/mouse_control";
-import { Input } from "../tools/input";
+import { Input } from "../tools/input/input";
 
 export namespace InputActionsInitializer {
 	export function ActivateAll() {

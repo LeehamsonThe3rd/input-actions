@@ -2,14 +2,18 @@
 import { ContextActionService, RunService } from "@rbxts/services";
 import { Vector3Tools } from "@rbxts/tool_pack";
 import { Actions } from "../actions";
+import { ECustomKey } from "../input_key_code";
+import InputBroadCaster from "./input_broad_caster/input_broad_caster";
 import InputEvent from "./input_event";
 import InputEventAction from "./input_event_action";
-import InputBroadCaster from "./input_broad_caster/input_broad_caster";
-import { ECustomKey } from "../input_key_code";
 
 export namespace InputManager {
-	const input_broad_caster = new InputBroadCaster<(input_event: InputEvent) => Enum.ContextActionResult | void>();
-	export function Subscribe(...args: Parameters<typeof input_broad_caster.Subscribe>) {
+	const input_broad_caster = new InputBroadCaster<
+		(input_event: InputEvent) => Enum.ContextActionResult | void
+	>();
+	export function Subscribe(
+		...args: Parameters<typeof input_broad_caster.Subscribe>
+	) {
 		return input_broad_caster.Subscribe(...args);
 	}
 
@@ -22,11 +26,16 @@ export namespace InputManager {
 
 	function GetKeyCode(input: InputObject) {
 		//will return user input type if keycode is unknown
-		return input.KeyCode === Enum.KeyCode.Unknown ? input.UserInputType : input.KeyCode;
+		return input.KeyCode === Enum.KeyCode.Unknown
+			? input.UserInputType
+			: input.KeyCode;
 	}
 
 	/**press or release the input from the input event */
-	function ActionsFromInputEventSetPressed(input_event: InputEvent, pressed: boolean) {
+	function ActionsFromInputEventSetPressed(
+		input_event: InputEvent,
+		pressed: boolean,
+	) {
 		const actions_refferences = input_event.GetActions();
 		if (actions_refferences === undefined) return;
 		//pressed or releases all actions
@@ -41,12 +50,18 @@ export namespace InputManager {
 		}
 	}
 
-	export function ParseInputEvent(input_event_action: InputEventAction, canceled: boolean = false) {
+	export function ParseInputEvent(
+		input_event_action: InputEventAction,
+		canceled: boolean = false,
+	) {
 		//sets if input state is canceled
 		const input_event = new InputEvent(input_event_action, canceled);
 
 		//presses all actions from the input event
-		ActionsFromInputEventSetPressed(input_event, input_event_action.IsPressed());
+		ActionsFromInputEventSetPressed(
+			input_event,
+			input_event_action.IsPressed(),
+		);
 
 		const callbacks = input_broad_caster.GetCallbacks();
 		for (const [callback, _] of callbacks) {
@@ -94,8 +109,16 @@ export namespace InputManager {
 		//rewrites the value;
 		is_custom_pressed.set(custom_key, current);
 
-		const isolated_position = Vector3Tools.Clamp(position.mul(isolator), clamp_min, clamp_max);
-		const isolated_delta = Vector3Tools.Clamp(delta.mul(isolator), clamp_min, clamp_max);
+		const isolated_position = Vector3Tools.Clamp(
+			position.mul(isolator),
+			clamp_min,
+			clamp_max,
+		);
+		const isolated_delta = Vector3Tools.Clamp(
+			delta.mul(isolator),
+			clamp_min,
+			clamp_max,
+		);
 
 		const input_event_action = new InputEventAction(custom_key);
 		input_event_action.SetDelta(isolated_delta);
@@ -108,9 +131,13 @@ export namespace InputManager {
 	}
 
 	//will check if the input is custom
-	function CheckAndParseInputIfCustom(state: Enum.UserInputState, input: InputObject) {
+	function CheckAndParseInputIfCustom(
+		state: Enum.UserInputState,
+		input: InputObject,
+	) {
 		const is_custom_input =
-			input.KeyCode === Enum.KeyCode.Thumbstick1 || input.KeyCode === Enum.KeyCode.Thumbstick2;
+			input.KeyCode === Enum.KeyCode.Thumbstick1 ||
+			input.KeyCode === Enum.KeyCode.Thumbstick2;
 		if (!is_custom_input) return;
 
 		const position = input.Position;
@@ -138,14 +165,50 @@ export namespace InputManager {
 			index_down = ECustomKey.thumbstick2_down;
 		}
 
-		CompareCustomAndSendInputEvent(is_right_pressed, index_right, position, delta, Vector3.xAxis, 0, 1);
-		CompareCustomAndSendInputEvent(is_left_pressed, index_left, position, delta, Vector3.xAxis, -1, 0);
+		CompareCustomAndSendInputEvent(
+			is_right_pressed,
+			index_right,
+			position,
+			delta,
+			Vector3.xAxis,
+			0,
+			1,
+		);
+		CompareCustomAndSendInputEvent(
+			is_left_pressed,
+			index_left,
+			position,
+			delta,
+			Vector3.xAxis,
+			-1,
+			0,
+		);
 
-		CompareCustomAndSendInputEvent(is_up_pressed, index_up, position, delta, Vector3.yAxis, 0, 1);
-		CompareCustomAndSendInputEvent(is_down_pressed, index_down, position, delta, Vector3.yAxis, -1, 0);
+		CompareCustomAndSendInputEvent(
+			is_up_pressed,
+			index_up,
+			position,
+			delta,
+			Vector3.yAxis,
+			0,
+			1,
+		);
+		CompareCustomAndSendInputEvent(
+			is_down_pressed,
+			index_down,
+			position,
+			delta,
+			Vector3.yAxis,
+			-1,
+			0,
+		);
 	}
 
-	function OnInput(action_name: string, state: Enum.UserInputState, input: InputObject) {
+	function OnInput(
+		action_name: string,
+		state: Enum.UserInputState,
+		input: InputObject,
+	) {
 		const pressed = state === Enum.UserInputState.Begin;
 		const key_code = GetKeyCode(input);
 		const input_event_action = new InputEventAction(key_code);
@@ -156,7 +219,10 @@ export namespace InputManager {
 
 		//checks for the custom input like thumbstick1_right;
 		CheckAndParseInputIfCustom(state, input);
-		return ParseInputEvent(input_event_action, state === Enum.UserInputState.Cancel);
+		return ParseInputEvent(
+			input_event_action,
+			state === Enum.UserInputState.Cancel,
+		);
 	}
 
 	function Update() {
@@ -169,7 +235,13 @@ export namespace InputManager {
 		if (initialized) return;
 		initialized = true;
 		//reads keycodes. If will find the one that is used in actions, will set current action status false - released, true - down
-		ContextActionService.BindActionAtPriority("ActionsReader", OnInput, false, 99999, ...keycodes);
+		ContextActionService.BindActionAtPriority(
+			"ActionsReader",
+			OnInput,
+			false,
+			99999,
+			...keycodes,
+		);
 		RunService.PostSimulation.Connect(Update);
 	}
 }
