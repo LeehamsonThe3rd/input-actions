@@ -86,10 +86,10 @@ export namespace Input {
 		return rotation_cframe.PointToWorldSpace(input_vector);
 	}
 
-	function UpdateInput() {
+	function UpdateInput(delta_time: number) {
 		//--fetching the delta from input
 		last_zoom_delta = CameraInput.getZoomDelta();
-		last_rotation = CameraInput.getRotation();
+		last_rotation = CameraInput.getRotation(delta_time);
 		CameraInput.resetInputForFrameEnd();
 	}
 

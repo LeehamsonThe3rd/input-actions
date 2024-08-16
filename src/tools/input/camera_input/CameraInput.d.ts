@@ -1,6 +1,6 @@
 interface ICameraInput {
 	setInputEnabled: (enabled: boolean) => void;
-	getRotation: () => Vector2;
+	getRotation: (dt: number, disable_keyboard_rotation?: boolean) => Vector2;
 	getZoomDelta: () => number;
 	resetInputForFrameEnd: () => void;
 }
