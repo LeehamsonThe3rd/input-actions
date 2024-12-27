@@ -1,6 +1,6 @@
 import { UserInputService } from "@rbxts/services";
 import { FunctionTools } from "@rbxts/tool_pack";
-import { KeysImages } from "../../tools/images/keys_images";
+import { KeysImages } from "../../tools/images/KeysImages";
 import { InputTypeTracker } from "../../tools/input_type_tracker";
 import { InputKeyCode } from "../input_key_code";
 import { InputMap } from "../input_map";
