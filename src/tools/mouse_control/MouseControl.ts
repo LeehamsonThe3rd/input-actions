@@ -5,8 +5,8 @@ import { EDefaultInputAction } from "../../input-actions/input_settings/default_
 
 export namespace MouseControl {
 	interface IStackElement {
-		priority: number;
-		uuid: string;
+		Priority: number;
+		UUID: string;
 	}
 
 	//the stacks should be sorted by priority all the time
@@ -15,14 +15,14 @@ export namespace MouseControl {
 	const locked_at_position_stack = new Array<IStackElement>();
 
 	const priority_refference = {
-		[EMouseLockAction.unlock_mouse]: EPriority.unlock_mouse,
-		[EMouseLockAction.lock_mouse_center]: EPriority.lock_mouse_center,
-		[EMouseLockAction.lock_mouse_at_position]: EPriority.lock_mouse_at_position,
+		[EMouseLockAction.UnlockMouse]: EPriority.unlock_mouse,
+		[EMouseLockAction.LockMouseCenter]: EPriority.lock_mouse_center,
+		[EMouseLockAction.LockMouseAtPosition]: EPriority.lock_mouse_at_position,
 	};
 	const stack_refference = {
-		[EMouseLockAction.unlock_mouse]: unlocked_stack,
-		[EMouseLockAction.lock_mouse_center]: locked_center_stack,
-		[EMouseLockAction.lock_mouse_at_position]: locked_at_position_stack,
+		[EMouseLockAction.UnlockMouse]: unlocked_stack,
+		[EMouseLockAction.LockMouseCenter]: locked_center_stack,
+		[EMouseLockAction.LockMouseAtPosition]: locked_at_position_stack,
 	};
 
 	function GetDefaultPriorityForAction(action: EMouseLockAction) {
@@ -42,8 +42,8 @@ export namespace MouseControl {
 			this.action_ = action;
 			//creates the stack element
 			this.stack_element_ = {
-				priority: priority ?? GetDefaultPriorityForAction(action),
-				uuid: this.uuid_,
+				Priority: priority ?? GetDefaultPriorityForAction(action),
+				UUID: this.uuid_,
 			};
 		}
 
@@ -56,7 +56,7 @@ export namespace MouseControl {
 				//inserts stack element at the start of the elements with the same or smaller priority
 				//e.g   if has priority 14  [15, [insert here], 14, 14, 13 ...];
 				ArrayTools.SortedInsert(stack, this.stack_element_, (a, b) => {
-					return a.priority >= b.priority;
+					return a.Priority >= b.Priority;
 				});
 				return;
 			}
@@ -69,9 +69,9 @@ export namespace MouseControl {
 	 * without it, mouse behaviour and visibility can be changed during the process and action like unlock the mouse will be applied only at change
 	 */
 	const strict_mode = {
-		[EMouseLockAction.lock_mouse_at_position]: true,
-		[EMouseLockAction.lock_mouse_center]: true,
-		[EMouseLockAction.unlock_mouse]: true,
+		[EMouseLockAction.LockMouseAtPosition]: false,
+		[EMouseLockAction.LockMouseCenter]: false,
+		[EMouseLockAction.UnlockMouse]: false,
 	};
 
 	export function ActionStrictModeSet(
@@ -82,9 +82,9 @@ export namespace MouseControl {
 	}
 
 	export const enum EMouseLockAction {
-		lock_mouse_at_position,
-		lock_mouse_center,
-		unlock_mouse,
+		LockMouseAtPosition,
+		LockMouseCenter,
+		UnlockMouse,
 	}
 
 	export const enum EPriority {
@@ -95,34 +95,34 @@ export namespace MouseControl {
 
 	function DetermineAction() {
 		if (Actions.IsActionPressed(EDefaultInputAction.mouse_debug_mode))
-			return EMouseLockAction.unlock_mouse;
+			return EMouseLockAction.UnlockMouse;
 
 		//sets unlock mouse on top
-		const unlock_mouse_max_priority = unlocked_stack[0]?.priority ?? 0;
-		const locked_center_max_priority = locked_center_stack[0]?.priority ?? -1;
+		const unlock_mouse_max_priority = unlocked_stack[0]?.Priority ?? 0;
+		const locked_center_max_priority = locked_center_stack[0]?.Priority ?? -1;
 		const locked_at_position_max_priority =
-			locked_at_position_stack[0]?.priority ?? -1;
+			locked_at_position_stack[0]?.Priority ?? -1;
 
 		if (
 			unlock_mouse_max_priority >= locked_at_position_max_priority &&
 			unlock_mouse_max_priority >= locked_center_max_priority
 		)
-			return EMouseLockAction.unlock_mouse;
+			return EMouseLockAction.UnlockMouse;
 		if (locked_center_max_priority >= locked_at_position_max_priority)
-			return EMouseLockAction.lock_mouse_center;
-		return EMouseLockAction.lock_mouse_at_position;
+			return EMouseLockAction.LockMouseCenter;
+		return EMouseLockAction.LockMouseAtPosition;
 	}
 
 	function ApplyAction(action: EMouseLockAction) {
-		if (action === EMouseLockAction.unlock_mouse) {
+		if (action === EMouseLockAction.UnlockMouse) {
 			UserInputService.MouseBehavior = Enum.MouseBehavior.Default;
 			UserInputService.MouseIconEnabled = true;
 			// print("SetUnlocked");
-		} else if (action === EMouseLockAction.lock_mouse_center) {
+		} else if (action === EMouseLockAction.LockMouseCenter) {
 			UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter;
 			UserInputService.MouseIconEnabled = false;
 			// print("SetLockedCenter");
-		} else if (action === EMouseLockAction.lock_mouse_at_position) {
+		} else if (action === EMouseLockAction.LockMouseAtPosition) {
 			UserInputService.MouseBehavior = Enum.MouseBehavior.LockCurrentPosition;
 			UserInputService.MouseIconEnabled = true;
 			// print("SetLockedAtPosition");

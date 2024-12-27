@@ -1,3 +1,3 @@
-export * from "./initialization/input_actions_initializer";
+export * from "./initialization/InputActionsInitializer";
 export * from "./input-actions";
 export * from "./tools";
