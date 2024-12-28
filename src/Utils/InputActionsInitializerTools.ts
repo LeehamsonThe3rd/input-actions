@@ -11,7 +11,7 @@ export namespace InputActionsInitializerTools {
 		InitMouseController();
 		InitInputTypeController();
 
-		InitActionsController();
+		InitActionsAndInputManager();
 		InitInputController();
 	}
 
@@ -27,7 +27,7 @@ export namespace InputActionsInitializerTools {
 		InputMapController.Initialize(initialize_default_input_maps);
 	}
 
-	export function InitActionsController() {
+	export function InitActionsAndInputManager() {
 		InputManagerController.Initialize();
 		ActionsController.Initialize();
 	}
