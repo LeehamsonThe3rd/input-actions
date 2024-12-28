@@ -6,7 +6,7 @@ local RunService = game:GetService("RunService")
 local UserGameSettings = UserSettings():GetService("UserGameSettings")
 local VRService = game:GetService("VRService")
 
-local FlagUtil = require(script.Parent:WaitForChild("FlagUtil"))
+local FlagUtil = require(script:WaitForChild("FlagUtil"))
 local FFlagUserCameraInputDt = FlagUtil.getUserFlag("UserCameraInputDt")
 
 local player = Players.LocalPlayer
