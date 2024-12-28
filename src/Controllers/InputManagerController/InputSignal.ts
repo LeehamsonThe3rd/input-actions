@@ -40,7 +40,7 @@ export default class InputSignal {
 			callback: InputCallback,
 			subscribtion_type: EInputEventSubscribtionType,
 			priority: number,
-		] = [callback, priority, subscribtion_type];
+		] = [callback, subscribtion_type, priority];
 		ArrayTools.SortedInsert(this.subscriptions_, value, (current_value, b) => {
 			//current_priority > b_priority
 			return current_value[2] > b[2];
