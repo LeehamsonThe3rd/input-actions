@@ -13,7 +13,7 @@ export namespace InputManagerController {
 	const input_signal = new InputSignal();
 	interface ISubscribtionConfig {
 		Priority?: number;
-		SubscriptionType: EInputEventSubscribtionType;
+		SubscriptionType?: EInputEventSubscribtionType;
 	}
 
 	export function Subscribe(callback: InputCallback, config?: ISubscribtionConfig) {
