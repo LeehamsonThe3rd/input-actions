@@ -27,7 +27,7 @@ export namespace MouseController {
 
 		constructor(
 			private readonly action_: EMouseLockAction,
-			private readonly priority_: number = default_mouse_lock_action_priorities[this.action_],
+			private readonly priority_: number = default_mouse_lock_action_priorities[action_],
 		) {}
 
 		SetActive(active: boolean) {
