@@ -54,6 +54,7 @@ export namespace InputManagerController {
 			: math.abs(math.clamp(value, min, max));
 	}
 
+	type CustomKeyStrategy = (input: InputObject) => void;
 	const custom_key_strategies = {
 		[Enum.KeyCode.Thumbstick1 as never]: (input: InputObject) => {
 			const left_strength = ExtractThumbstickPressStrength(input.Position.X, -1, 0);
@@ -91,8 +92,10 @@ export namespace InputManagerController {
 	function CheckAndParseIfCustomInputKeyCode(input: InputObject) {
 		if (input.UserInputState !== Enum.UserInputState.Change) return;
 		const input_key_code = GetInputKeyCode(input);
-		const strategy = custom_key_strategies[input_key_code as never];
-		strategy(input);
+		const strategy = custom_key_strategies[input_key_code as never] as
+			| CustomKeyStrategy
+			| undefined;
+		strategy?.(input);
 	}
 
 	function OnInput(_: string, state: Enum.UserInputState, input: InputObject) {

@@ -60,6 +60,6 @@ export default class InputSignal {
 			if (result === Enum.ContextActionResult.Sink) return result;
 		}
 
-		return Enum.ContextActionResult.Sink;
+		return Enum.ContextActionResult.Pass;
 	}
 }
