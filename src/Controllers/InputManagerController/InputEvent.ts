@@ -28,7 +28,7 @@ export default class InputEvent {
 		const action = input_event_action.Action;
 		if (action !== ActionResources.NONE_ACTION) {
 			this.Actions = [action];
-		} else this.Actions = ActionsController.GetActionsFromKeyCode(this.InputKeyCode);
+		} else this.Actions = table.clone(ActionsController.GetActionsFromKeyCode(this.InputKeyCode));
 
 		table.freeze(this.Actions);
 		return table.freeze(this);
