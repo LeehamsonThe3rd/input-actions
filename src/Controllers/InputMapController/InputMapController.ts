@@ -96,12 +96,7 @@ export namespace InputMapController {
 		return DefaultInputMaps;
 	}
 
-	let initialized = false;
-	export function Initialize(initialize_default_input_maps: boolean = true) {
-		if (initialized) return;
-		initialized = true;
-		if (!initialize_default_input_maps) return;
-
+	export function AddDefaultInputMaps() {
 		const input_map_list = DefaultInputMaps as unknown as Map<string, IInputMap>;
 		input_map_list.forEach((map, action_name) => {
 			Add(action_name, map);
