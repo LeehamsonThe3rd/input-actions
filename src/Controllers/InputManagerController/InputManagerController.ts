@@ -106,6 +106,7 @@ export namespace InputManagerController {
 		const input_key_code = GetInputKeyCode(input);
 		const input_event_action = InputEventData.FromInputKeyCode(input_key_code, input.UserInputType);
 		input_event_action.Position = input.Position;
+		input_event_action.Changed = state === Enum.UserInputState.Change;
 		input_event_action.Delta = input.Delta;
 		input_event_action.PressStrength = press_strength;
 
