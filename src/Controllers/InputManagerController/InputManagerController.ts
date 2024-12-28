@@ -6,12 +6,17 @@ import { ActionsController } from "../ActionsController";
 import InputEvent from "./InputEvent";
 import InputEventData from "./InputEventData";
 import InputSignal, { InputCallback } from "./InputSignal";
+import { EInputEventSubscribtionType } from "../../Models";
 
 export namespace InputManagerController {
 	const input_signal = new InputSignal();
 
-	export function Subscribe(callback: InputCallback, priority?: number) {
-		return input_signal.Subscribe(callback, priority);
+	export function Subscribe(
+		callback: InputCallback,
+		priority?: number,
+		subscription_type: EInputEventSubscribtionType = EInputEventSubscribtionType.KeysOnly,
+	) {
+		return input_signal.Subscribe(callback, priority, subscription_type);
 	}
 
 	function GetInputKeyCode(input: InputObject) {
