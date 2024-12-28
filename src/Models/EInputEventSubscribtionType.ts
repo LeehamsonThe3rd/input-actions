@@ -3,8 +3,8 @@ export const enum EInputEventSubscribtionType {
 	AllWithNoCustomKeys,
 
 	KeysOnly,
-	OnlyChanged,
-	OnlyCustomKeys,
+	ChangedOnly,
+	CustomKeysOnly,
 
-	KeysOnlyWithCustomKeys,
+	KeysWithCustomKeysOnly,
 }

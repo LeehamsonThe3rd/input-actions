@@ -18,10 +18,10 @@ const not_skip_strategies = identity<
 	[EInputEventSubscribtionType.AllWithNoCustomKeys]: (input_event) =>
 		typeOf(input_event.InputKeyCode) !== "string",
 	[EInputEventSubscribtionType.KeysOnly]: (input_event) => !input_event.Changed,
-	[EInputEventSubscribtionType.OnlyChanged]: (input_event: InputEvent) => input_event.Changed,
-	[EInputEventSubscribtionType.OnlyCustomKeys]: (input_event: InputEvent) =>
+	[EInputEventSubscribtionType.ChangedOnly]: (input_event: InputEvent) => input_event.Changed,
+	[EInputEventSubscribtionType.CustomKeysOnly]: (input_event: InputEvent) =>
 		typeOf(input_event.InputKeyCode) === "string",
-	[EInputEventSubscribtionType.KeysOnlyWithCustomKeys]: (input_event: InputEvent) =>
+	[EInputEventSubscribtionType.KeysWithCustomKeysOnly]: (input_event: InputEvent) =>
 		!input_event.Changed || typeOf(input_event.InputKeyCode) === "string",
 });
 
