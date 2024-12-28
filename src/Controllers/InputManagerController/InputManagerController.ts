@@ -11,13 +11,13 @@ import InputSignal, { InputCallback } from "./InputSignal";
 
 export namespace InputManagerController {
 	const input_signal = new InputSignal();
+	interface ISubscribtionConfig {
+		Priority?: number;
+		SubscriptionType: EInputEventSubscribtionType;
+	}
 
-	export function Subscribe(
-		callback: InputCallback,
-		priority?: number,
-		subscription_type: EInputEventSubscribtionType = EInputEventSubscribtionType.KeysOnly,
-	) {
-		return input_signal.Subscribe(callback, priority, subscription_type);
+	export function Subscribe(callback: InputCallback, config?: ISubscribtionConfig) {
+		return input_signal.Subscribe(callback, config?.Priority, config?.SubscriptionType);
 	}
 
 	function GetInputKeyCode(input: InputObject) {
