@@ -1,12 +1,13 @@
 //!native
+//!optimize 2
 import { ContextActionService } from "@rbxts/services";
+import { EInputEventSubscribtionType } from "../../Models";
 import { ECustomKey } from "../../Models/ECustomKey";
 import { ActionResources } from "../../Resources/ActionResources";
 import { ActionsController } from "../ActionsController";
 import InputEvent from "./InputEvent";
 import InputEventData from "./InputEventData";
 import InputSignal, { InputCallback } from "./InputSignal";
-import { EInputEventSubscribtionType } from "../../Models";
 
 export namespace InputManagerController {
 	const input_signal = new InputSignal();
@@ -35,7 +36,14 @@ export namespace InputManagerController {
 		return input_signal.Fire(input_event);
 	}
 
-	function SetCustomKeyStrength(input: InputObject, custom_key: ECustomKey, strength: number) {
+	function SetCustomKeyStrength(
+		input: InputObject,
+		custom_key: ECustomKey,
+		strength: number,
+		force: boolean = false,
+	) {
+		if (!force && saved_custom_key_press_strengths[custom_key] === strength) return;
+
 		const input_event_data = InputEventData.FromInputKeyCode(custom_key, input.UserInputType);
 		input_event_data.Position = input.Position;
 		input_event_data.Delta = input.Delta;
@@ -54,6 +62,27 @@ export namespace InputManagerController {
 			: math.abs(math.clamp(value, min, max));
 	}
 
+	const saved_custom_key_press_strengths = identity<Record<ECustomKey, number>>({
+		[ECustomKey.Thumbstick1Left]: 0,
+		[ECustomKey.Thumbstick1Right]: 0,
+		[ECustomKey.Thumbstick1Up]: 0,
+		[ECustomKey.Thumbstick1Down]: 0,
+
+		[ECustomKey.Thumbstick2Left]: 0,
+		[ECustomKey.Thumbstick2Right]: 0,
+		[ECustomKey.Thumbstick2Up]: 0,
+		[ECustomKey.Thumbstick2Down]: 0,
+
+		[ECustomKey.MouseWheelUp]: 0,
+		[ECustomKey.MouseWheelDown]: 0,
+
+		[ECustomKey.MouseLeft]: 0,
+		[ECustomKey.MouseRight]: 0,
+		[ECustomKey.MouseDown]: 0,
+		[ECustomKey.MouseUp]: 0,
+	});
+
+	let saved_mouse_position = Vector3.zero;
 	type CustomKeyStrategy = (input: InputObject) => void;
 	const custom_key_strategies = {
 		[Enum.KeyCode.Thumbstick1 as never]: (input: InputObject) => {
@@ -81,11 +110,27 @@ export namespace InputManagerController {
 		[Enum.UserInputType.MouseWheel as never]: (input: InputObject) => {
 			const down_strength = ExtractPressStrength(input.Position.Z, -1, 0);
 			const up_strength = ExtractPressStrength(input.Position.Z, 0, 1);
-			SetCustomKeyStrength(input, ECustomKey.MouseWheelDown, down_strength);
-			SetCustomKeyStrength(input, ECustomKey.MouseWheelUp, up_strength);
+			if (down_strength !== 0)
+				SetCustomKeyStrength(input, ECustomKey.MouseWheelDown, down_strength, true);
+
+			if (up_strength !== 0)
+				SetCustomKeyStrength(input, ECustomKey.MouseWheelUp, up_strength, true);
 		},
 		[Enum.UserInputType.MouseMovement as never]: (input: InputObject) => {
-			//TODO
+			const position_delta = input.Position.sub(saved_mouse_position);
+			saved_mouse_position = input.Position;
+
+			const total_delta = position_delta.add(input.Delta);
+
+			const left_strength = math.abs(math.min(total_delta.X, 0));
+			const right_strength = math.abs(math.max(total_delta.X, 0));
+			const up_strength = math.abs(math.min(total_delta.Y, 0));
+			const down_strength = math.abs(math.max(total_delta.Y, 0));
+
+			SetCustomKeyStrength(input, ECustomKey.MouseLeft, left_strength);
+			SetCustomKeyStrength(input, ECustomKey.MouseRight, right_strength);
+			SetCustomKeyStrength(input, ECustomKey.MouseDown, down_strength);
+			SetCustomKeyStrength(input, ECustomKey.MouseUp, up_strength);
 		},
 	};
 

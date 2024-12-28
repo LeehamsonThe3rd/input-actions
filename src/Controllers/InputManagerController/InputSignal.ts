@@ -1,4 +1,5 @@
 //!native
+//!optimize 2
 
 import { ArrayTools } from "@rbxts/tool_pack";
 import { EInputEventSubscribtionType } from "../../Models/EInputEventSubscribtionType";

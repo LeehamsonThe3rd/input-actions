@@ -1,4 +1,5 @@
 //!native
+//!optimize 2
 import { UserInputService } from "@rbxts/services";
 import { InputKeyCode } from "../../Models/InputKeyCode";
 import { ActionResources } from "../../Resources/ActionResources";
