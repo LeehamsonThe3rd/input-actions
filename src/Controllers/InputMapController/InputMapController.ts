@@ -89,7 +89,7 @@ export namespace InputMapController {
 			ActionsController.EraseKeyCode(action_name, input_map.Gamepad);
 		if (input_map.KeyboardAndMouse !== undefined)
 			ActionsController.EraseKeyCode(action_name, input_map.KeyboardAndMouse);
-		ActionsController.Erase(action_name);
+		if (erase_action) ActionsController.Erase(action_name);
 	}
 
 	export function GetDefaultInputMaps() {
