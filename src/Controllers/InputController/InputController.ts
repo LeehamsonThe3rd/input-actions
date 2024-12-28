@@ -95,6 +95,4 @@ export namespace InputController {
 		//starts update input cycle
 		RunService.BindToRenderStep("FetchInput", Enum.RenderPriority.Input.Value + 1, UpdateInput);
 	}
-
-	FunctionTools.ExecuteIfClient(Initialize);
 }
