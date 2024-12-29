@@ -1,3 +1,13 @@
+# WARNING!
+
+THE DOCUMENTATION IS STILL IN PROGRESS AND NOT ALL FEATURES HAVE BEEN DESCRIBED
+Missing:
+
+- InputController
+- MouseController
+- InputTypeController
+- InputMapController
+
 # What is input-actions?
 
 Input-actions is an input handling package based on Godot's actions system
