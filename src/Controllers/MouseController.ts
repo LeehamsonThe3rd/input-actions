@@ -59,7 +59,10 @@ export namespace MouseController {
 	}
 
 	function GetCurrentMouseLockAction() {
-		if (ActionsController.IsPressed(EDefaultInputAction.MouseDebugMode))
+		if (
+			ActionsController.IsExisting(EDefaultInputAction.MouseDebugMode) &&
+			ActionsController.IsPressed(EDefaultInputAction.MouseDebugMode)
+		)
 			return EMouseLockAction.UnlockMouse;
 
 		//sets unlock mouse on top
