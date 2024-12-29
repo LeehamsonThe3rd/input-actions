@@ -62,16 +62,16 @@ export default class InputEvent {
 		return ActionsController.IsJustReleasedThisFrame(action_name);
 	}
 
-	IsActionType(): boolean {
+	ContainsActions(): boolean {
 		return this.Actions.isEmpty();
 	}
 
-	IsPressed(min_press_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH): boolean {
-		return this.PressStrength >= min_press_strength;
+	IsPressed(activation_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH): boolean {
+		return this.PressStrength >= activation_strength;
 	}
 
-	IsReleased(min_press_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH) {
-		return this.PressStrength < min_press_strength;
+	IsReleased(activation_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH) {
+		return this.PressStrength < activation_strength;
 	}
 
 	IsKeyModifierPressed(modifier: Enum.ModifierKey) {

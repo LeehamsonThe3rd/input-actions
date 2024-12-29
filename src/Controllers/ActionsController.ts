@@ -66,14 +66,14 @@ export namespace ActionsController {
 		return action_data.KeyBuffer[1] >= action_data.ActivationStrength;
 	}
 
-	/**Low level of checking if the action is pressed in this frame */
+	/**NOT RECOMMENDED TO USE (InternalOnly) Low level of checking if the action is pressed in this frame */
 	export function IsPressedThisFrame(action_name: string) {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
 		return action_data.KeyBuffer[0] >= action_data.ActivationStrength;
 	}
 
-	/**Low level of checking if the action is just pressed in this frame */
+	/**NOT RECOMMENDED TO USE (InternalOnly) Low level of checking if the action is just pressed in this frame */
 	export function IsJustPressedThisFrame(action_name: string) {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
@@ -205,10 +205,7 @@ export namespace ActionsController {
 	}
 
 	export function GetKeyCodes(action_name: string): readonly InputKeyCode[] {
-		const key_codes = actions_map.get(action_name)?.Keycodes;
-		if (key_codes === undefined) return [];
-
-		return key_codes;
+		return GetActionData(action_name)?.Keycodes ?? [];
 	}
 
 	export function HasKeyCode(action_name: string, key_code: InputKeyCode) {
@@ -232,5 +229,9 @@ export namespace ActionsController {
 	export function Erase(action_name: string) {
 		EraseAllKeyCodes(action_name);
 		actions_map.delete(action_name);
+	}
+
+	export function GetActions(): string[] {
+		return TableTools.GetKeys(actions_map);
 	}
 }
