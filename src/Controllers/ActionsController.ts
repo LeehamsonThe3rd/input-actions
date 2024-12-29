@@ -6,6 +6,7 @@ import { IActionData } from "../Models/IActionData";
 import { InputKeyCode } from "../Models/InputKeyCode";
 
 export namespace ActionsController {
+	//TODO get input vector 2d and 1d
 	const actions_map = new Map<string, IActionData>();
 	const key_code_to_actions_refferences = new Map<InputKeyCode, string[]>();
 
