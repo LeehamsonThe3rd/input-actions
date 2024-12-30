@@ -28,7 +28,7 @@ You're able to assign keys to activate the action and even fake those inputs wit
 ### What are Actions?
 
 Actions are small values that hold the input state with the PressStrength
-`you're not able to detect the press strength of the KeyCode, it's eather 0 or 1, for everyting else the value can be any number depending on the Input`
+`you're not able to detect the press strength of the KeyCode, it's either 0 or 1, for everyting else the value can be any number depending on the Input`
 
 # Quick start
 
