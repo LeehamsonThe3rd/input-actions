@@ -2,7 +2,7 @@ import { Players, UserInputService, VRService } from "@rbxts/services";
 import { EDeviceType } from "../Models/EDeviceType";
 import { EInputType } from "../Models/EInputType";
 
-export namespace InputTypeController {
+export namespace DeviceController {
 	const TOUCH_GUI_WAIT_TIMEOUT = 20; // seconds
 	const INITIAL_WAIT_TIME = 1; // seconds
 	const INPUT_POLL_INTERVAL = 0.1; // seconds
