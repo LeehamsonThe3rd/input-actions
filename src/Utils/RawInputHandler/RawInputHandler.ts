@@ -1,7 +1,7 @@
 import { Players, RunService, Workspace } from "@rbxts/services";
 import { ICameraInputModule } from "./CameraInput/ICameraInputModule";
 
-export namespace InputController {
+export namespace RawInputHandler {
 	let cameraInput: ICameraInputModule | undefined;
 	function GetCameraInput(): ICameraInputModule {
 		if (cameraInput !== undefined) return cameraInput;

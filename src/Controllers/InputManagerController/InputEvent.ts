@@ -3,7 +3,7 @@
 import { UserInputService } from "@rbxts/services";
 import { InputKeyCode } from "../../Models/InputKeyCode";
 import { ActionResources } from "../../Resources/ActionResources";
-import GetInputKeyCodeName from "../../Utils/GetInputKeyCodeName";
+import { InputKeyCodeHelper } from "../../Utils/InputKeyCodeHelper";
 import { ActionsController } from "../ActionsController";
 import InputEventData from "./InputEventData";
 
@@ -52,7 +52,7 @@ export default class InputEvent {
 	 * Get the textual representation of the input
 	 */
 	AsText(): string {
-		return GetInputKeyCodeName(this.InputKeyCode);
+		return InputKeyCodeHelper.GetInputKeyCodeName(this.InputKeyCode);
 	}
 
 	/**

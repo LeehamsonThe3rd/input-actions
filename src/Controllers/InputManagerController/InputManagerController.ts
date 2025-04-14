@@ -5,7 +5,7 @@ import { EInputEventSubscriptionType } from "../../Models";
 import { ECustomKey } from "../../Models/ECustomKey";
 import { ActionResources } from "../../Resources/ActionResources";
 import { ContextActionResources } from "../../Resources/ContextActionResources";
-import { ThumbstickHelper } from "../../Utils/ThumbstickHelper";
+import { ThumbstickHelper } from "../../InternalUtils/ThumbstickHelper";
 import { ActionsController } from "../ActionsController";
 import { InputConfigController } from "../InputConfigController";
 import InputEvent from "./InputEvent";

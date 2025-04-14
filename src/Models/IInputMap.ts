@@ -1,6 +1,6 @@
 import { InputKeyCode } from "./InputKeyCode";
 
-export type InputDeviceType = "KeyboardAndMouse" | "Gamepad";
+export type EInputDeviceType = "KeyboardAndMouse" | "Gamepad";
 
 export default interface IInputMap {
 	readonly Gamepad?: InputKeyCode;

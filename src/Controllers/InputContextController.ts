@@ -1,27 +1,26 @@
-import { ActionsController } from "./ActionsController";
-import IInputMap, { InputDeviceType } from "../Models/IInputMap";
-import { InputKeyCode } from "../Models/InputKeyCode";
 import { TableTools } from "@rbxts/tool_pack";
+import { ECustomKey, EDefaultInputAction, EInputType, IInputMap, InputKeyCode } from "../Models";
+import { EInputDeviceType } from "../Models/IInputMap";
+import { InputKeyCodeHelper } from "../Utils/InputKeyCodeHelper";
+import { ActionsController } from "./ActionsController";
 import { InputTypeController } from "./InputTypeController";
-import { EInputType } from "../Models/EInputType";
-import { GetVisualInputKeyCodeData, IVisualInputKeyCodeData } from "../Utils/InputVisualization";
 
 /**
  * A collection of input maps that can be assigned/unassigned as a group
  */
 export class InputContext {
-	private maps = new Map<string, IInputMap>();
-	private assigned = false;
+	private _maps = new Map<string, IInputMap>();
+	private _assigned = false;
 
-	constructor(private readonly name?: string) {}
+	constructor(private readonly _name?: string) {}
 
 	/**
 	 * Add an input map to this context
 	 */
 	public Add(actionName: string, map: IInputMap): this {
-		this.maps.set(actionName, map);
+		this._maps.set(actionName, map);
 
-		if (this.assigned) {
+		if (this._assigned) {
 			this.AssignSingleMap(actionName, map);
 		}
 
@@ -34,15 +33,15 @@ export class InputContext {
 	 * @param inputType The input type (KeyboardAndMouse or Gamepad)
 	 * @param keyCode The new key code to bind
 	 */
-	public UpdateKey(actionName: string, inputType: InputDeviceType, keyCode: InputKeyCode): this {
-		const map = this.maps.get(actionName);
+	public UpdateKey(actionName: string, inputType: EInputDeviceType, keyCode: InputKeyCode): this {
+		const map = this._maps.get(actionName);
 		if (!map) {
 			warn(`Cannot update key for non-existent map: ${actionName}`);
 			return this;
 		}
 
 		// If the action is currently assigned, remove the old key
-		if (this.assigned) {
+		if (this._assigned) {
 			const oldKey = map[inputType];
 			if (oldKey !== undefined) {
 				ActionsController.EraseKeyCode(actionName, oldKey);
@@ -55,10 +54,10 @@ export class InputContext {
 			[inputType]: keyCode,
 		};
 
-		this.maps.set(actionName, newMap);
+		this._maps.set(actionName, newMap);
 
 		// If assigned, bind the new key
-		if (this.assigned && keyCode !== undefined) {
+		if (this._assigned && keyCode !== undefined) {
 			ActionsController.AddKeyCode(actionName, keyCode);
 		}
 
@@ -89,15 +88,18 @@ export class InputContext {
 	public GetVisualData(
 		actionName: string,
 		useCustomImages: boolean = true,
-	): IVisualInputKeyCodeData {
-		return GetVisualInputKeyCodeData(this.GetInputKeyForCurrentDevice(actionName), useCustomImages);
+	): InputKeyCodeHelper.IVisualInputKeyCodeData {
+		return InputKeyCodeHelper.GetVisualInputKeyCodeData(
+			this.GetInputKeyForCurrentDevice(actionName),
+			useCustomImages,
+		);
 	}
 
 	/**
 	 * Checks if this context has a mapping for the specified action
 	 */
 	public HasAction(actionName: string): boolean {
-		return this.maps.has(actionName);
+		return this._maps.has(actionName);
 	}
 
 	/**
@@ -105,20 +107,20 @@ export class InputContext {
 	 * @returns The new assigned state
 	 */
 	public ToggleAssignment(): boolean {
-		if (this.assigned) {
+		if (this._assigned) {
 			this.Unassign();
 		} else {
 			this.Assign();
 		}
-		return this.assigned;
+		return this._assigned;
 	}
 
 	/**
 	 * Check if any action assigned to this context is currently pressed
 	 * @param deviceType Optional device type to check, or current device if not specified
 	 */
-	public IsAnyActionPressed(deviceType?: InputDeviceType): boolean {
-		for (const [actionName] of this.maps) {
+	public IsAnyActionPressed(deviceType?: EInputDeviceType): boolean {
+		for (const [actionName] of this._maps) {
 			if (ActionsController.IsPressed(actionName)) {
 				return true;
 			}
@@ -131,7 +133,7 @@ export class InputContext {
 	 * @param actionName The action to get the key for
 	 * @param deviceType The device type (KeyboardAndMouse or Gamepad)
 	 */
-	public GetDeviceKey(actionName: string, deviceType: InputDeviceType): InputKeyCode | undefined {
+	public GetDeviceKey(actionName: string, deviceType: EInputDeviceType): InputKeyCode | undefined {
 		const map = this.GetMap(actionName);
 		if (!map) return undefined;
 		return map[deviceType];
@@ -141,11 +143,11 @@ export class InputContext {
 	 * Remove a specific mapping from this context
 	 */
 	public Remove(actionName: string): this {
-		if (this.assigned && this.maps.has(actionName)) {
+		if (this._assigned && this._maps.has(actionName)) {
 			this.UnassignSingleMap(actionName);
 		}
 
-		this.maps.delete(actionName);
+		this._maps.delete(actionName);
 		return this;
 	}
 
@@ -153,13 +155,13 @@ export class InputContext {
 	 * Assign all mappings in this context
 	 */
 	public Assign(): this {
-		if (this.assigned) return this;
+		if (this._assigned) return this;
 
-		for (const [actionName, map] of this.maps) {
+		for (const [actionName, map] of this._maps) {
 			this.AssignSingleMap(actionName, map);
 		}
 
-		this.assigned = true;
+		this._assigned = true;
 		return this;
 	}
 
@@ -167,13 +169,13 @@ export class InputContext {
 	 * Unassign all mappings in this context
 	 */
 	public Unassign(): this {
-		if (!this.assigned) return this;
+		if (!this._assigned) return this;
 
-		for (const [actionName] of this.maps) {
+		for (const [actionName] of this._maps) {
 			this.UnassignSingleMap(actionName);
 		}
 
-		this.assigned = false;
+		this._assigned = false;
 		return this;
 	}
 
@@ -181,35 +183,35 @@ export class InputContext {
 	 * Check if this context is currently assigned
 	 */
 	public IsAssigned(): boolean {
-		return this.assigned;
+		return this._assigned;
 	}
 
 	/**
 	 * Get all maps in this context
 	 */
 	public GetMaps(): ReadonlyMap<string, IInputMap> {
-		return this.maps;
+		return this._maps;
 	}
 
 	/**
 	 * Get the input map for a specific action
 	 */
 	public GetMap(actionName: string): IInputMap | undefined {
-		return this.maps.get(actionName);
+		return this._maps.get(actionName);
 	}
 
 	/**
 	 * Get the name of this context
 	 */
 	public GetName(): string | undefined {
-		return this.name;
+		return this._name;
 	}
 
 	/**
 	 * Get a list of all action names mapped in this context
 	 */
 	public GetAllMappedActions(): string[] {
-		return TableTools.GetKeys(this.maps);
+		return TableTools.GetKeys(this._maps);
 	}
 
 	private AssignSingleMap(actionName: string, map: IInputMap): void {
@@ -227,7 +229,7 @@ export class InputContext {
 	}
 
 	private UnassignSingleMap(actionName: string): void {
-		const map = this.maps.get(actionName);
+		const map = this._maps.get(actionName);
 		if (!map) return;
 
 		if (map.KeyboardAndMouse !== undefined) {
@@ -245,7 +247,76 @@ export class InputContext {
  */
 export namespace InputContextController {
 	const contexts = new Map<string, InputContext>();
-	const globalContext = new InputContext("Global");
+
+	export const GlobalContext = new InputContext("Global");
+
+	// Combined UI context instead of separate contexts
+	export const UIControlContext = new InputContext("UIControls");
+
+	// Setup navigation controls
+	UIControlContext.Add(EDefaultInputAction.UiGoUp, {
+		Gamepad: Enum.KeyCode.DPadUp,
+		KeyboardAndMouse: Enum.KeyCode.Up,
+	});
+
+	UIControlContext.Add(EDefaultInputAction.UiGoDown, {
+		Gamepad: Enum.KeyCode.DPadDown,
+		KeyboardAndMouse: Enum.KeyCode.Down,
+	});
+
+	UIControlContext.Add(EDefaultInputAction.UiGoLeft, {
+		Gamepad: Enum.KeyCode.DPadLeft,
+		KeyboardAndMouse: Enum.KeyCode.Left,
+	});
+
+	UIControlContext.Add(EDefaultInputAction.UiGoRight, {
+		Gamepad: Enum.KeyCode.DPadRight,
+		KeyboardAndMouse: Enum.KeyCode.Right,
+	});
+
+	// Setup action controls
+	UIControlContext.Add(EDefaultInputAction.UiAccept, {
+		Gamepad: Enum.KeyCode.ButtonA,
+		KeyboardAndMouse: Enum.KeyCode.Return,
+	});
+
+	UIControlContext.Add(EDefaultInputAction.UiCancel, {
+		Gamepad: Enum.KeyCode.ButtonB,
+		KeyboardAndMouse: Enum.KeyCode.B,
+	});
+
+	// Setup scrolling controls
+	UIControlContext.Add(EDefaultInputAction.UiScrollUp, {
+		Gamepad: ECustomKey.Thumbstick2Up,
+		KeyboardAndMouse: Enum.KeyCode.W,
+	});
+
+	UIControlContext.Add(EDefaultInputAction.UiScrollDown, {
+		Gamepad: ECustomKey.Thumbstick2Down,
+		KeyboardAndMouse: Enum.KeyCode.S,
+	});
+
+	UIControlContext.Add(EDefaultInputAction.UiNextPage, {
+		Gamepad: Enum.KeyCode.ButtonR1,
+		KeyboardAndMouse: Enum.KeyCode.E,
+	});
+
+	UIControlContext.Add(EDefaultInputAction.UiPreviousPage, {
+		Gamepad: Enum.KeyCode.ButtonL1,
+		KeyboardAndMouse: Enum.KeyCode.Q,
+	});
+
+	// Setup debug controls
+	UIControlContext.Add(EDefaultInputAction.MouseDebugMode, {
+		KeyboardAndMouse: Enum.KeyCode.LeftAlt,
+	});
+
+	/**
+	 * Apply the default UI control mappings
+	 */
+	export function ApplyDefaultInputMaps(): void {
+		UIControlContext.Assign();
+	}
 
 	/**
 	 * Create a new named input context
@@ -272,7 +343,7 @@ export namespace InputContextController {
 	 * Get the global input context
 	 */
 	export function GetGlobalContext(): InputContext {
-		return globalContext;
+		return GlobalContext;
 	}
 
 	/**
