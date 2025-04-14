@@ -48,7 +48,7 @@ import { EVibrationPreset, EInputType, ECustomKey } from "@rbxts/input-actions";
 HapticFeedbackController.VibratePreset(EVibrationPreset.Success);
 
 // Check input type with proper enums
-if (InputTypeController.GetMainInputType() === EInputType.Gamepad) {
+if (DeviceTypeHandler.GetMainInputType() === EInputType.Gamepad) {
 	// Show gamepad controls
 }
 ```

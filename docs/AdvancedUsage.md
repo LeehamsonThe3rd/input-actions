@@ -234,10 +234,10 @@ mouseLock.SetActive(false);
 You can respond to changes in the player's input device:
 
 ```ts
-import { InputTypeController, EInputType, EDeviceType } from "@rbxts/input-actions";
+import { DeviceTypeHandler, EInputType, EDeviceType } from "@rbxts/input-actions";
 
 // Listen for input type changes
-InputTypeController.OnInputTypeChanged.Connect((inputType: EInputType) => {
+DeviceTypeHandler.OnInputTypeChanged.Connect((inputType: EInputType) => {
 	switch (inputType) {
 		case EInputType.KeyboardAndMouse:
 			ShowKeyboardControls();
@@ -252,10 +252,10 @@ InputTypeController.OnInputTypeChanged.Connect((inputType: EInputType) => {
 });
 
 // Check the current input type
-const currentInputType = InputTypeController.GetMainInputType();
+const currentInputType = DeviceTypeHandler.GetMainInputType();
 
 // Get the device type (PC, Phone, Tablet, Console, VR)
-const deviceType = InputTypeController.GetMainDeviceType();
+const deviceType = DeviceTypeHandler.GetMainDeviceType();
 ```
 
 ## Creating Custom Visual Indicators
