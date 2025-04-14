@@ -7,9 +7,9 @@ import {
 	IInputMap,
 	InputKeyCode,
 } from "../Models";
+import { DeviceTypeHandler } from "../Utils/DeviceTypeHandler";
 import { InputKeyCodeHelper } from "../Utils/InputKeyCodeHelper";
 import { ActionsController } from "./ActionsController";
-import { DeviceController } from "./DeviceController";
 
 /**
  * A collection of input maps that can be assigned/unassigned as a group
@@ -79,7 +79,7 @@ export class InputContext {
 		const map = this.GetMap(actionName);
 		if (map === undefined) return undefined;
 
-		const currentInputType = DeviceController.GetMainInputType();
+		const currentInputType = DeviceTypeHandler.GetMainInputType();
 		if (currentInputType === EInputType.Gamepad) return map.Gamepad;
 		if (currentInputType === EInputType.KeyboardAndMouse) return map.KeyboardAndMouse;
 		return undefined;

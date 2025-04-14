@@ -1,6 +1,6 @@
 export * from "./ActionsController";
 export * from "./InputManagerController";
-export * from "./DeviceController";
+export * from "../Utils/DeviceTypeHandler";
 export * from "./InputContextController";
 export * from "./MouseController";
 export * from "./InputEchoController";
