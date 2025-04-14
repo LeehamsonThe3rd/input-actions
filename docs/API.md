@@ -108,12 +108,12 @@ Parse and process an input event.
 type InputCallback = (input_event: InputEvent) => Enum.ContextActionResult | void | undefined;
 ```
 
-#### `ISubscribtionConfig`
+#### `ISubscriptionConfig`
 
 ```typescript
-interface ISubscribtionConfig {
+interface ISubscriptionConfig {
 	Priority?: number;
-	SubscriptionType?: EInputEventSubscribtionType;
+	SubscriptionType?: EInputEventSubscriptionType;
 }
 ```
 
@@ -253,6 +253,108 @@ Sets whether the mouse lock action should be applied strictly.
 #### `SetEnabled(value: boolean)`
 
 Enables or disables the mouse controller.
+
+## InputContextController
+
+Controls different input contexts or action sets for different game states.
+
+### Methods
+
+#### `Initialize()`
+
+Initializes the context controller.
+
+#### `CreateContext(contextName: string)`
+
+Creates a new input context with the given name.
+
+#### `AddActionToContext(contextName: string, actionName: string, keyCode: InputKeyCode)`
+
+Adds an action mapping to a specific context.
+
+#### `SetActiveContext(contextName: string)`
+
+Activates a specific input context, deactivating the previous one.
+
+#### `GetActiveContext(): string`
+
+Gets the currently active context name.
+
+## InputEchoController
+
+Provides functionality to trigger repeated input events when keys are held down.
+
+### Methods
+
+#### `Initialize()`
+
+Initializes the echo controller.
+
+#### `ConfigureActionEcho(actionName: string, initialDelay: number = 0.5, repeatInterval: number = 0.1)`
+
+Configures echo behavior for an action.
+
+#### `DisableActionEcho(actionName: string)`
+
+Disables echo for an action.
+
+## KeyCombinationController
+
+Handles detection and processing of key combinations (keyboard shortcuts).
+
+### Methods
+
+#### `Initialize()`
+
+Initializes the key combination controller.
+
+#### `RegisterCombination(actionName: string, mainKey: InputKeyCode, modifiers: Enum.KeyCode[] = [])`
+
+Registers a new key combination.
+
+## HapticFeedbackController
+
+Provides a simple API for triggering controller vibration.
+
+### Methods
+
+#### `Vibrate(largeMotor: number = 0.5, smallMotor: number = 0.5, duration: number = 0.2)`
+
+Triggers vibration with custom parameters.
+
+#### `VibratePreset(presetName: string)`
+
+Triggers vibration using a named preset.
+
+#### `RegisterPreset(name: string, largeMotor: number, smallMotor: number, duration: number)`
+
+Registers a custom vibration preset.
+
+#### `StopAll()`
+
+Stops all vibration immediately.
+
+## InputConfigController
+
+Controls configuration settings for inputs and actions.
+
+### Methods
+
+#### `SetActionActivationThreshold(actionName: string, threshold: number)`
+
+Sets the activation threshold for a specific action.
+
+#### `GetActionActivationThreshold(actionName: string): number`
+
+Gets the activation threshold for a specific action.
+
+#### `SetInputDeadzone(inputKey: InputKeyCode, deadzone: number)`
+
+Sets the deadzone for an analog input.
+
+#### `GetInputDeadzone(inputKey: InputKeyCode): number`
+
+Gets the deadzone for a specific input.
 
 ## Enums
 

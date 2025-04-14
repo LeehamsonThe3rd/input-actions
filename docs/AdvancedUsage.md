@@ -22,7 +22,7 @@ Available custom keys include:
 You can set priority for input subscriptions to control which handlers process input first:
 
 ```ts
-import { InputManagerController, EInputEventSubscribtionType } from "@rbxts/input-actions";
+import { InputManagerController, EInputEventSubscriptionType } from "@rbxts/input-actions";
 
 // High priority input handler (100) that only processes key presses (not changes)
 const cleanup = InputManagerController.Subscribe(
@@ -32,7 +32,7 @@ const cleanup = InputManagerController.Subscribe(
 	},
 	{
 		Priority: 100,
-		SubscriptionType: EInputEventSubscribtionType.KeysOnly,
+		SubscriptionType: EInputEventSubscriptionType.KeysOnly,
 	},
 );
 ```
