@@ -5,7 +5,7 @@
 The package supports custom input keys for complex inputs like thumbstick directions:
 
 ```ts
-import { ECustomKey } from "@rbxts/input-actions";
+import { ECustomKey, ActionsController } from "@rbxts/input-actions";
 
 // Bind thumbstick up movement to an action
 ActionsController.AddKeyCode("MoveForward", ECustomKey.Thumbstick1Up);
@@ -13,9 +13,27 @@ ActionsController.AddKeyCode("MoveForward", ECustomKey.Thumbstick1Up);
 
 Available custom keys include:
 
-- Thumbstick directions (Up, Down, Left, Right for both thumbsticks)
-- Mouse wheel movements
-- Mouse directional movement
+### Thumbstick Directions
+
+- `ECustomKey.Thumbstick1Up` - First thumbstick pushed upward
+- `ECustomKey.Thumbstick1Down` - First thumbstick pushed downward
+- `ECustomKey.Thumbstick1Left` - First thumbstick pushed left
+- `ECustomKey.Thumbstick1Right` - First thumbstick pushed right
+- `ECustomKey.Thumbstick2Up` - Second thumbstick pushed upward
+- `ECustomKey.Thumbstick2Down` - Second thumbstick pushed downward
+- `ECustomKey.Thumbstick2Left` - Second thumbstick pushed left
+- `ECustomKey.Thumbstick2Right` - Second thumbstick pushed right
+
+### Mouse Movement
+
+- `ECustomKey.MouseWheelUp` - Mouse wheel scrolled upward
+- `ECustomKey.MouseWheelDown` - Mouse wheel scrolled downward
+- `ECustomKey.MouseLeft` - Mouse moved left
+- `ECustomKey.MouseRight` - Mouse moved right
+- `ECustomKey.MouseUp` - Mouse moved up
+- `ECustomKey.MouseDown` - Mouse moved down
+
+These custom keys are especially useful for creating more intuitive controls for different input devices.
 
 ## Input Priority
 

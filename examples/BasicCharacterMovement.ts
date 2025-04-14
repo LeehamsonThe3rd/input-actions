@@ -1,8 +1,8 @@
 import {
 	ActionsController,
 	ECustomKey,
-	InputActionsInitializerTools,
-	InputController,
+	InputActionsInitializationHelper,
+	RawInputHandler,
 } from "@rbxts/input-actions";
 import { RunService } from "@rbxts/services";
 
@@ -10,7 +10,7 @@ import { RunService } from "@rbxts/services";
 // to create a character controller with WASD/Gamepad movement
 
 // Step 1: Initialize required controllers
-InputActionsInitializerTools.InitAll();
+InputActionsInitializationHelper.InitAll();
 
 // Step 2: Define our movement actions
 ActionsController.Add("MoveForward");
@@ -64,7 +64,7 @@ RunService.RenderStepped.Connect((deltaTime) => {
 	humanoid.WalkSpeed = ActionsController.IsPressed("Sprint") ? SPRINT_SPEED : WALK_SPEED;
 
 	// Get the combined move vector relative to the camera
-	const moveVec = InputController.GetMoveVector(true, true);
+	const moveVec = RawInputHandler.GetMoveVector(true, true);
 
 	// Apply the movement
 	humanoid.Move(moveVec);

@@ -14,6 +14,8 @@ This document provides detailed guides for each major component of the Input Act
 - [HapticFeedbackController](#hapticfeedbackcontroller)
 - [InputConfigController](#inputconfigcontroller)
 - [RawInputHandler](#rawinputhandler)
+- [InputKeyCodeHelper](#inputkeycodehelper)
+- [Mouse Lock Action Priorities](#mouse-lock-action-priorities)
 
 ## ActionsController
 
@@ -338,10 +340,56 @@ RunService.RenderStepped.Connect((deltaTime) => {
 
 // Temporarily disable input when needed
 function ShowCutscene() {
-	RawInputHandler.ControlsEnabled = false;
+	RawInputHandler.ControlSetEnabled(false);
+	RawInputHandler.MouseInputSetEnabled(false);
 }
 
 function EndCutscene() {
-	RawInputHandler.ControlsEnabled = true;
+	RawInputHandler.ControlSetEnabled(true);
+	RawInputHandler.MouseInputSetEnabled(true);
 }
+```
+
+## InputKeyCodeHelper
+
+The InputKeyCodeHelper provides utilities for working with input key codes, including getting visual representations and checking key types.
+
+```ts
+import { InputKeyCodeHelper, ECustomKey } from "@rbxts/input-actions";
+
+// Check if a key is a custom key
+const isCustom = InputKeyCodeHelper.IsCustomKey(ECustomKey.Thumbstick1Up); // true
+const isCustom2 = InputKeyCodeHelper.IsCustomKey(Enum.KeyCode.Space); // false
+
+// Get a user-friendly name for a key
+const keyName = InputKeyCodeHelper.GetInputKeyCodeName(Enum.KeyCode.LeftShift); // "LeftShift"
+
+// Get visual data for displaying a key in UI
+const visualData = InputKeyCodeHelper.GetVisualInputKeyCodeData(Enum.KeyCode.Space);
+print(`Key: ${visualData.Name}, Image: ${visualData.ImageId}`);
+
+// Get image for a specific key
+const imageId = InputKeyCodeHelper.GetImageForKey(Enum.KeyCode.W);
+```
+
+## Mouse Lock Action Priorities
+
+The MouseController uses a priority system to determine which mouse lock action takes precedence:
+
+```ts
+import { MouseController, EMouseLockAction, EMouseLockActionPriority } from "@rbxts/input-actions";
+
+// Default priorities are defined in EMouseLockActionPriority:
+// - UnlockMouse: 100 (highest priority by default)
+// - LockMouseCenter: 50 (medium priority)
+// - LockMouseAtPosition: 25 (lowest priority)
+
+// You can create mouse lock actions with custom priorities:
+const highPriorityLock = new MouseController.MouseLockAction(
+	EMouseLockAction.LockMouseCenter,
+	200, // Higher priority than default unlock
+);
+
+// This will override even the unlock action due to higher priority
+highPriorityLock.SetActive(true);
 ```
