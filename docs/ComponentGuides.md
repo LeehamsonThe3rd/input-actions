@@ -16,6 +16,8 @@ This document provides detailed guides for each major component of the Input Act
 - [RawInputHandler](#rawinputhandler)
 - [InputKeyCodeHelper](#inputkeycodehelper)
 - [Mouse Lock Action Priorities](#mouse-lock-action-priorities)
+- [InputCatcher](#inputcatcher)
+- [InputActionsInitializationHelper](#inputactionsinitializationhelper)
 
 ## ActionsController
 
@@ -59,6 +61,15 @@ const actionsForSpaceKey = ActionsController.GetActionsFromKeyCode(Enum.KeyCode.
 
 // Get all keys mapped to a specific action
 const keysForJumpAction = ActionsController.GetKeyCodes("Jump");
+
+// Remove a key from an action
+ActionsController.EraseKeyCode("Jump", Enum.KeyCode.Space);
+
+// Remove all keys from an action
+ActionsController.EraseAllKeyCodes("Jump");
+
+// Delete an action completely
+ActionsController.Erase("Jump");
 ```
 
 ## InputManagerController
@@ -392,4 +403,48 @@ const highPriorityLock = new MouseController.MouseLockAction(
 
 // This will override even the unlock action due to higher priority
 highPriorityLock.SetActive(true);
+```
+
+## InputCatcher
+
+The InputCatcher allows temporarily blocking all user input, useful for cutscenes, loading screens, or modal dialogs.
+
+```ts
+import { InputCatcher } from "@rbxts/input-actions";
+
+// Create an input catcher with high priority
+const blockingInputCatcher = new InputCatcher(1000);
+
+// Block all input
+blockingInputCatcher.GrabInput();
+
+// Check if the catcher is active
+if (blockingInputCatcher.IsActive()) {
+	// Input is currently being blocked
+}
+
+// Restore normal input handling
+blockingInputCatcher.ReleaseInput();
+```
+
+## InputActionsInitializationHelper
+
+The InputActionsInitializationHelper provides a convenient way to initialize multiple controllers at once.
+
+```ts
+import { InputActionsInitializationHelper } from "@rbxts/input-actions";
+
+// Initialize all controllers
+InputActionsInitializationHelper.InitAll();
+
+// Or initialize specific controllers
+InputActionsInitializationHelper.InitMouseController();
+InputActionsInitializationHelper.InitDeviceTypeHandler();
+InputActionsInitializationHelper.InitActionsAndInputManager();
+
+// Apply default UI input mappings
+InputActionsInitializationHelper.ApplyDefaultInputMaps();
+
+// Trigger haptic feedback with a preset
+InputActionsInitializationHelper.TriggerHapticFeedback(EVibrationPreset.Success);
 ```

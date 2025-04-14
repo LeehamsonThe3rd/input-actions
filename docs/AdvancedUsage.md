@@ -1,5 +1,65 @@
 # Advanced Usage
 
+This guide covers advanced topics and integration patterns that build upon the basic component usage.
+
+## Integrated Input System Architecture
+
+Here's how to build a complete input system using multiple components together:
+
+```ts
+import {
+	ActionsController,
+	InputContextController,
+	KeyCombinationController,
+	InputEchoController,
+	DeviceTypeHandler,
+	InputActionsInitializationHelper,
+	EInputType,
+} from "@rbxts/input-actions";
+
+// 1. Initialize all components
+InputActionsInitializationHelper.InitAll();
+
+// 2. Set up contextual input mappings
+const gameplayContext = InputContextController.CreateContext("gameplay");
+const menuContext = InputContextController.CreateContext("menu");
+const globalContext = InputContextController.GetGlobalContext();
+
+// 3. Configure input contexts with device-aware mappings
+gameplayContext.Add("Fire", {
+	KeyboardAndMouse: Enum.UserInputType.MouseButton1,
+	Gamepad: Enum.KeyCode.ButtonR2,
+});
+
+// 4. Register special key combinations
+KeyCombinationController.RegisterCombination("QuickSave", Enum.KeyCode.S, [
+	Enum.KeyCode.LeftControl,
+]);
+
+// 5. Configure menu navigation to repeat when held
+InputEchoController.ConfigureActionEcho("MenuUp", 0.4, 0.15);
+
+// 6. Set up adaptive controls based on input device
+DeviceTypeHandler.OnInputTypeChanged.Connect((inputType) => {
+	if (inputType === EInputType.Gamepad) {
+		// Show gamepad control hints
+	} else {
+		// Show keyboard/mouse control hints
+	}
+});
+
+// 7. Switch contexts based on game state
+function EnterGameplay() {
+	menuContext.Unassign();
+	gameplayContext.Assign();
+}
+
+function EnterMenu() {
+	gameplayContext.Unassign();
+	menuContext.Assign();
+}
+```
+
 ## Custom Input Keys
 
 The package supports custom input keys for complex inputs like thumbstick directions:
@@ -377,3 +437,121 @@ When working with touch input:
 2. Custom touch buttons can trigger actions by calling `ActionsController.Press("YourAction")`
 3. Mobile devices automatically use the appropriate button images when using `GetVisualData()`
 4. Consider using `InputContextController` to maintain separate bindings for touch devices
+
+## Optimizing Performance
+
+For performance-critical applications, consider these best practices:
+
+```ts
+// Use context switching instead of constantly checking conditions
+// AVOID:
+RunService.Heartbeat.Connect(() => {
+	if (isInMenu) {
+		// Check menu inputs
+	} else if (isInVehicle) {
+		// Check vehicle inputs
+	} else {
+		// Check gameplay inputs
+	}
+});
+
+// BETTER:
+function EnterMenu() {
+	gameplayContext.Unassign();
+	vehicleContext.Unassign();
+	menuContext.Assign();
+}
+
+// Minimize IsJustPressed/IsJustReleased checks in frequently called functions
+// For input that doesn't need to be checked every frame, use event-based approaches
+const menuOpenAction = "OpenMenu";
+ActionsController.Add(menuOpenAction);
+ActionsController.AddKeyCode(menuOpenAction, Enum.KeyCode.Tab);
+
+RunService.Heartbeat.Connect(() => {
+	// Only check once per frame
+	if (ActionsController.IsJustPressed(menuOpenAction)) {
+		ToggleMenu();
+	}
+});
+
+// For advanced scenarios, consider subscribing directly to input events
+const cleanup = InputManagerController.Subscribe((inputEvent) => {
+	if (inputEvent.IsAction("QuickAction") && inputEvent.IsJustPressed()) {
+		// Handle one-time input response here
+		return Enum.ContextActionResult.Sink;
+	}
+});
+```
+
+## Creating Custom Input Controllers
+
+You can extend the system with your own specialized controllers:
+
+```ts
+// Create a vehicle controller that uses the input system
+class VehicleController {
+	private vehicle: Model;
+	private inputContext = InputContextController.CreateContext("vehicle");
+	private engineOn = false;
+
+	constructor(vehicle: Model) {
+		this.vehicle = vehicle;
+
+		// Set up vehicle controls
+		this.inputContext.Add("Accelerate", {
+			KeyboardAndMouse: Enum.KeyCode.W,
+			Gamepad: Enum.KeyCode.ButtonR2,
+		});
+
+		this.inputContext.Add("Brake", {
+			KeyboardAndMouse: Enum.KeyCode.S,
+			Gamepad: Enum.KeyCode.ButtonL2,
+		});
+
+		this.inputContext.Add("ToggleEngine", {
+			KeyboardAndMouse: Enum.KeyCode.E,
+			Gamepad: Enum.KeyCode.ButtonY,
+		});
+	}
+
+	public Mount(): void {
+		this.inputContext.Assign();
+		this.StartControlLoop();
+	}
+
+	public Dismount(): void {
+		this.inputContext.Unassign();
+		this.StopControlLoop();
+	}
+
+	private StartControlLoop(): void {
+		// Example control loop
+		this.heartbeatConnection = RunService.Heartbeat.Connect((dt) => {
+			if (ActionsController.IsJustPressed("ToggleEngine")) {
+				this.engineOn = !this.engineOn;
+				// Provide feedback when engine changes state
+				if (this.engineOn) {
+					HapticFeedbackController.VibratePreset(EVibrationPreset.Medium);
+				}
+			}
+
+			if (this.engineOn) {
+				const accel = ActionsController.GetPressStrength("Accelerate");
+				const brake = ActionsController.GetPressStrength("Brake");
+				this.ApplyVehiclePhysics(accel, brake, dt);
+			}
+		});
+	}
+
+	private StopControlLoop(): void {
+		if (this.heartbeatConnection) {
+			this.heartbeatConnection.Disconnect();
+		}
+	}
+
+	private ApplyVehiclePhysics(accel: number, brake: number, dt: number): void {
+		// Apply forces to vehicle based on input strength
+	}
+}
+```
