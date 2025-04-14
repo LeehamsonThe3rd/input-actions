@@ -3,7 +3,7 @@ import { HapticFeedbackController } from "../Controllers/HapticFeedbackControlle
 import { InputContextController } from "../Controllers/InputContextController";
 import { InputEchoController } from "../Controllers/InputEchoController";
 import { InputManagerController } from "../Controllers/InputManagerController/InputManagerController";
-import { InputTypeController } from "../Controllers/InputTypeController";
+import { DeviceController } from "../Controllers/DeviceController";
 import { KeyCombinationController } from "../Controllers/KeyCombinationController";
 import { MouseController } from "../Controllers/MouseController";
 import { EVibrationPreset } from "../Models/EVibrationPreset";
@@ -24,7 +24,7 @@ export namespace InputActionsInitializationHelper {
 	}
 
 	export function InitInputTypeController() {
-		InputTypeController.Initialize();
+		DeviceController.Initialize();
 	}
 
 	export function InitActionsAndInputManager() {
