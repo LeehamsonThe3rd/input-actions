@@ -57,7 +57,7 @@ The MouseController uses a priority stack system to determine the current mouse 
 
 ## Device Detection
 
-The InputTypeController detects the player's input device using:
+The DeviceTypeHandler detects the player's input device using:
 
 - UserInputService properties (MouseEnabled, TouchEnabled, etc.)
 - Analysis of UI element sizes (to differentiate phones vs. tablets)

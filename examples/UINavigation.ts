@@ -3,7 +3,7 @@ import {
 	EInputType,
 	InputActionsInitializationHelper,
 	InputManagerController,
-	InputTypeController,
+	DeviceTypeHandler,
 } from "@rbxts/input-actions";
 
 // UI Navigation example that shows how to use the input system
@@ -11,7 +11,7 @@ import {
 
 // Step 1: Initialize required controllers
 InputActionsInitializationHelper.InitActionsAndInputManager();
-InputActionsInitializationHelper.InitInputTypeController();
+InputActionsInitializationHelper.InitDeviceTypeHandler();
 
 // Step 2: Define our UI navigation system
 class UINavigationSystem {
@@ -24,7 +24,7 @@ class UINavigationSystem {
 		this.SetupInputHandling();
 
 		// Listen for input type changes to show/hide selection indicator
-		InputTypeController.OnInputTypeChanged.Connect((inputType) => {
+		DeviceTypeHandler.OnInputTypeChanged.Connect((inputType) => {
 			this.UpdateSelectionVisibility(inputType);
 		});
 	}
@@ -129,7 +129,7 @@ class UINavigationSystem {
 			selectionBox.Parent = this.selectedElement;
 		}
 
-		selectionBox.Visible = InputTypeController.GetMainInputType() !== EInputType.KeyboardAndMouse;
+		selectionBox.Visible = DeviceTypeHandler.GetMainInputType() !== EInputType.KeyboardAndMouse;
 	}
 
 	private ActivateSelected() {

@@ -3,7 +3,7 @@ import {
 	ECustomKey,
 	EVibrationPreset,
 	HapticFeedbackController,
-	InputActionsInitializerTools,
+	InputActionsInitializationHelper,
 	InputConfigController,
 	InputContextController,
 	InputEchoController,
@@ -12,7 +12,7 @@ import {
 import { RunService } from "@rbxts/services";
 
 // Initialize all controllers
-InputActionsInitializerTools.InitAll();
+InputActionsInitializationHelper.InitAll();
 
 // Step 1: Set up different input contexts for different game states
 // Create the "gameplay" context
@@ -71,7 +71,7 @@ const ToggleMenu = () => {
 };
 
 // Subscribe to input for quicksave/quickload
-InputActionsInitializerTools.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitActionsAndInputManager();
 ActionsController.Add("OpenMenu", 0.5, [Enum.KeyCode.Tab]);
 
 RunService.Heartbeat.Connect(() => {
