@@ -9,6 +9,7 @@ import { InputTypeController } from "../Controllers/InputTypeController";
 import { KeyCombinationController } from "../Controllers/KeyCombinationController";
 import { MouseController } from "../Controllers/MouseController";
 import { EVibrationPreset } from "../Models/EVibrationPreset";
+import { InputContextController } from "../Controllers/InputContextController";
 
 export namespace InputActionsInitializerTools {
 	export function InitAll() {
@@ -40,7 +41,7 @@ export namespace InputActionsInitializerTools {
 	export function InitAdvancedControllers() {
 		InputEchoController.Initialize();
 		KeyCombinationController.Initialize();
-		InputMapController.GetContextController();
+		InputContextController.Initialize();
 	}
 
 	export function InitConfigController() {

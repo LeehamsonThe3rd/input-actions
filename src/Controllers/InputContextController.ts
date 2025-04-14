@@ -1,6 +1,7 @@
 import { ActionsController } from "./ActionsController";
 import IInputMap from "../Models/IInputMap";
 import { InputKeyCode } from "../Models/InputKeyCode";
+import { TableTools } from "@rbxts/tool_pack";
 
 /**
  * A collection of input maps that can be assigned/unassigned as a group
@@ -19,6 +20,47 @@ export class InputContext {
 
 		if (this.assigned) {
 			this.AssignSingleMap(actionName, map);
+		}
+
+		return this;
+	}
+
+	/**
+	 * Update an existing mapping for an action
+	 * @param actionName The action to update
+	 * @param inputType The input type (KeyboardAndMouse or Gamepad)
+	 * @param keyCode The new key code to bind
+	 */
+	public UpdateKey(
+		actionName: string,
+		inputType: "KeyboardAndMouse" | "Gamepad",
+		keyCode: InputKeyCode,
+	): this {
+		const map = this.maps.get(actionName);
+		if (!map) {
+			warn(`Cannot update key for non-existent map: ${actionName}`);
+			return this;
+		}
+
+		// If the action is currently assigned, remove the old key
+		if (this.assigned) {
+			const oldKey = map[inputType];
+			if (oldKey !== undefined) {
+				ActionsController.EraseKeyCode(actionName, oldKey);
+			}
+		}
+
+		// Create a new map with the updated key
+		const newMap = {
+			...map,
+			[inputType]: keyCode,
+		};
+
+		this.maps.set(actionName, newMap);
+
+		// If assigned, bind the new key
+		if (this.assigned && keyCode !== undefined) {
+			ActionsController.AddKeyCode(actionName, keyCode);
 		}
 
 		return this;
@@ -97,6 +139,10 @@ export class InputContext {
 			ActionsController.EraseKeyCode(actionName, map.Gamepad);
 		}
 	}
+
+	public GetAllMappedActions(): string[] {
+		return TableTools.GetKeys(this.maps);
+	}
 }
 
 /**
@@ -150,4 +196,6 @@ export namespace InputContextController {
 		context.Unassign();
 		return true;
 	}
+
+	export function Initialize() {}
 }
