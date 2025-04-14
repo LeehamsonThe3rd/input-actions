@@ -1,4 +1,4 @@
-export const enum EInputEventSubscribtionType {
+export const enum EInputEventSubscriptionType {
 	All,
 	AllWithNoCustomKeys,
 

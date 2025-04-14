@@ -2,7 +2,7 @@
 //!optimize 2
 
 import { ArrayTools } from "@rbxts/tool_pack";
-import { EInputEventSubscribtionType } from "../../Models/EInputEventSubscribtionType";
+import { EInputEventSubscriptionType } from "../../Models/EInputEventSubscribtionType";
 import { CleanUp } from "../../UtilityTypes/CleanUp";
 import InputEvent from "./InputEvent";
 
@@ -17,34 +17,34 @@ export type InputCallback = (
 ) => Enum.ContextActionResult | void | undefined;
 
 const not_skip_strategies = identity<
-	Record<EInputEventSubscribtionType, (input_event: InputEvent) => boolean>
+	Record<EInputEventSubscriptionType, (input_event: InputEvent) => boolean>
 >({
-	[EInputEventSubscribtionType.All]: () => true,
-	[EInputEventSubscribtionType.AllWithNoCustomKeys]: (input_event) =>
+	[EInputEventSubscriptionType.All]: () => true,
+	[EInputEventSubscriptionType.AllWithNoCustomKeys]: (input_event) =>
 		typeOf(input_event.InputKeyCode) !== "string",
-	[EInputEventSubscribtionType.KeysOnly]: (input_event) => !input_event.Changed,
-	[EInputEventSubscribtionType.ChangedOnly]: (input_event: InputEvent) => input_event.Changed,
-	[EInputEventSubscribtionType.CustomKeysOnly]: (input_event: InputEvent) =>
+	[EInputEventSubscriptionType.KeysOnly]: (input_event) => !input_event.Changed,
+	[EInputEventSubscriptionType.ChangedOnly]: (input_event: InputEvent) => input_event.Changed,
+	[EInputEventSubscriptionType.CustomKeysOnly]: (input_event: InputEvent) =>
 		typeOf(input_event.InputKeyCode) === "string",
-	[EInputEventSubscribtionType.KeysWithCustomKeysOnly]: (input_event: InputEvent) =>
+	[EInputEventSubscriptionType.KeysWithCustomKeysOnly]: (input_event: InputEvent) =>
 		!input_event.Changed || typeOf(input_event.InputKeyCode) === "string",
 });
 
 export default class InputSignal {
 	private subscriptions_: [
 		callback: InputCallback,
-		subscribtion_type: EInputEventSubscribtionType,
+		subscribtion_type: EInputEventSubscriptionType,
 		priority: number,
 	][] = [];
 
 	Subscribe(
 		callback: InputCallback,
 		priority: number = DEFAULT_SUBSCRIPTION_PRIORITY,
-		subscribtion_type: EInputEventSubscribtionType = EInputEventSubscribtionType.KeysOnly,
+		subscribtion_type: EInputEventSubscriptionType = EInputEventSubscriptionType.KeysOnly,
 	): CleanUp {
 		const value: [
 			callback: InputCallback,
-			subscribtion_type: EInputEventSubscribtionType,
+			subscribtion_type: EInputEventSubscriptionType,
 			priority: number,
 		] = [callback, subscribtion_type, priority];
 		ArrayTools.SortedInsert(this.subscriptions_, value, (current_value, b) => {

@@ -1,7 +1,7 @@
 //!native
 //!optimize 2
 import { ContextActionService } from "@rbxts/services";
-import { EInputEventSubscribtionType } from "../../Models";
+import { EInputEventSubscriptionType } from "../../Models";
 import { ECustomKey } from "../../Models/ECustomKey";
 import { ActionResources } from "../../Resources/ActionResources";
 import { ActionsController } from "../ActionsController";
@@ -25,7 +25,7 @@ export namespace InputManagerController {
 		/** Priority of the subscription (higher values are processed first) */
 		Priority?: number;
 		/** Type of events to subscribe to */
-		SubscriptionType?: EInputEventSubscribtionType;
+		SubscriptionType?: EInputEventSubscriptionType;
 	}
 
 	/**
