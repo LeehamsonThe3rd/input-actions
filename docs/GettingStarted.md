@@ -2,7 +2,7 @@
 
 ## Installation
 
-```
+```bash
 npm install @rbxts/input-actions
 ```
 
@@ -22,7 +22,9 @@ Input maps connect physical inputs (keyboard, mouse, gamepad) to actions. This a
 
 When a player presses a key or moves the mouse, the system creates input events that are processed and can trigger actions.
 
-## Initialization
+## Quick Start Guide
+
+### Initialization
 
 Before using any functionality, you need to initialize the controllers:
 
@@ -37,150 +39,121 @@ InputActionsInitializationHelper.InitActionsAndInputManager();
 InputActionsInitializationHelper.InitAdvancedControllers(); // For key combinations, contexts, etc.
 ```
 
-## Type Safety
-
-The package is designed with TypeScript best practices in mind, providing enums and constants for improved type safety and code organization:
-
-```ts
-import { EVibrationPreset, EInputType, ECustomKey } from "@rbxts/input-actions";
-
-// Use enum values for type-safe code
-HapticFeedbackController.VibratePreset(EVibrationPreset.Success);
-
-// Check input type with proper enums
-if (DeviceTypeHandler.GetMainInputType() === EInputType.Gamepad) {
-	// Show gamepad controls
-}
-```
-
-## Creating and Using Actions
-
-### Creating a simple action
+### Creating and Using Actions
 
 ```ts
 import { ActionsController } from "@rbxts/input-actions";
 
-// Create an action named "Jump"
+// Create a new action and bind keys to it
 ActionsController.Add("Jump");
+ActionsController.AddKeyCode("Jump", Enum.KeyCode.Space); // For keyboard
+ActionsController.AddKeyCode("Jump", Enum.KeyCode.ButtonA); // For gamepad
 
-// Bind the space key to the Jump action
-ActionsController.AddKeyCode("Jump", Enum.KeyCode.Space);
-```
-
-### Checking action state
-
-```ts
-// Check if the Jump action is currently pressed
-if (ActionsController.IsPressed("Jump")) {
-	// Make the character jump
-}
-
-// Check if the Jump action was just pressed this frame
-if (ActionsController.IsJustPressed("Jump")) {
-	// Play jump sound
-}
-
-// Check if the Jump action was just released
-if (ActionsController.IsJustReleased("Jump")) {
-	// Do something when player releases jump
-}
-```
-
-### Using press strength
-
-Some inputs, like gamepad triggers, can have variable press strength. You can access this:
-
-```ts
-// Get the strength of the "Accelerate" action (0 to 1)
-const accelerationAmount = ActionsController.GetPressStrength("Accelerate");
-
-// Apply acceleration based on input strength
-vehicle.ApplyAcceleration(accelerationAmount * maxAcceleration);
-```
-
-## Handling Input Events
-
-You can subscribe to input events to get more control:
-
-```ts
-import { InputManagerController } from "@rbxts/input-actions";
-
-// Subscribe to input events
-const cleanup = InputManagerController.Subscribe((inputEvent) => {
-	// Check if this event is for our action
-	if (inputEvent.IsAction("Shoot")) {
-		if (inputEvent.IsPressed()) {
-			StartShooting();
-		} else {
-			StopShooting();
-		}
+// Check if the action is currently pressed
+function Update() {
+	if (ActionsController.IsPressed("Jump")) {
+		// Handle jump action
 	}
 
-	// Return Enum.ContextActionResult.Sink to prevent other handlers from processing this input
-	return Enum.ContextActionResult.Pass;
-});
+	// Check for just pressed (first frame of press)
+	if (ActionsController.IsJustPressed("Jump")) {
+		// Handle jump start
+	}
 
-// Later, clean up the subscription
-cleanup();
+	// Check for just released
+	if (ActionsController.IsJustReleased("Jump")) {
+		// Handle jump end
+	}
+}
 ```
 
-## Supporting Multiple Input Devices
+### Using Input Contexts
+
+Input contexts help you organize inputs for different game states:
 
 ```ts
 import { InputContextController } from "@rbxts/input-actions";
 
-// Define an input map for an action with both keyboard and gamepad controls
-InputContextController.GetGlobalContext().Add("Jump", {
-	KeyboardAndMouse: Enum.KeyCode.Space,
-	Gamepad: Enum.KeyCode.ButtonA,
-});
-
-// Or with only keyboard controls
-InputContextController.GetGlobalContext().Add("Screenshot", {
-	KeyboardAndMouse: Enum.KeyCode.F12,
-});
-
-// Or with only gamepad controls
-InputContextController.GetGlobalContext().Add("Vibrate", {
-	Gamepad: Enum.KeyCode.ButtonY,
-});
-```
-
-## Working with Input Contexts
-
-Input contexts allow you to group related actions and switch between them easily:
-
-```ts
-import { InputContextController } from "@rbxts/input-actions";
-
-// Create two different input contexts
+// Create contexts for different game states
 const gameplayContext = InputContextController.CreateContext("gameplay");
-const menuContext = InputContextController.CreateContext("menu");
 
-// Add actions to the gameplay context
+// Add input mappings
 gameplayContext.Add("Jump", {
 	KeyboardAndMouse: Enum.KeyCode.Space,
 	Gamepad: Enum.KeyCode.ButtonA,
 });
 
-// Add actions to the menu context
-menuContext.Add("Select", {
-	KeyboardAndMouse: Enum.KeyCode.Return,
-	Gamepad: Enum.KeyCode.ButtonA,
+gameplayContext.Add("Fire", {
+	KeyboardAndMouse: Enum.UserInputType.MouseButton1,
+	Gamepad: Enum.KeyCode.ButtonR2,
 });
 
-// Switch between contexts when the game state changes
-function OpenMenu() {
-	gameplayContext.Unassign(); // Disable gameplay controls
-	menuContext.Assign(); // Enable menu controls
-}
-
-function CloseMenu() {
-	menuContext.Unassign(); // Disable menu controls
-	gameplayContext.Assign(); // Enable gameplay controls
-}
+// Activate the context
+gameplayContext.Assign();
 ```
 
-## Advanced Usage
+### Handling Different Input Devices
 
-For more complex scenarios, refer to the [advanced documentation](./AdvancedUsage.md).
+```ts
+import { DeviceTypeHandler, EInputType } from "@rbxts/input-actions";
+
+// Set up device change detection
+DeviceTypeHandler.OnInputTypeChanged.Connect((inputType) => {
+	switch (inputType) {
+		case EInputType.KeyboardAndMouse:
+			print("Player is using keyboard/mouse");
+			break;
+		case EInputType.Gamepad:
+			print("Player is using gamepad");
+			break;
+		case EInputType.Touch:
+			print("Player is using touch controls");
+			break;
+	}
+});
+```
+
+## Troubleshooting Common Issues
+
+### Actions Not Registering
+
+If your actions aren't responding to input:
+
+1. Ensure you've initialized the system with `InputActionsInitializationHelper.InitAll()`
+2. Check that your action names match exactly (case-sensitive)
+3. Verify the action has key bindings with `ActionsController.GetKeyCodes("YourAction")`
+4. Make sure the appropriate context is assigned when checking for the action
+
+### Multiple Contexts Conflict
+
+If you have issues with multiple contexts:
+
+1. Only one context should handle a particular input responsibility
+2. Use `context.Unassign()` before assigning a new context that uses the same keys
+3. Check which context is active with `context.IsAssigned()`
+
+### Device Not Detected Correctly
+
+If the wrong input device is being detected:
+
+1. Make sure `DeviceTypeHandler.Initialize()` has been called
+2. Listen to device changes with `DeviceTypeHandler.OnInputTypeChanged`
+3. Your context should include mappings for both keyboard/mouse and gamepad
+
+### Performance Considerations
+
+For optimal performance:
+
+1. Avoid creating/destroying actions frequently - reuse them when possible
+2. Use `ActionsController.IsJustPressed()` for one-time actions instead of tracking state yourself
+3. Keep the number of active contexts to a minimum
+4. For complex games, consider cleaning up unused actions when switching game states
+
+## Next Steps
+
+Once you're comfortable with the basics, explore more advanced features:
+
+- [Component Guides](./ComponentGuides.md) - Detailed guides for each component
+- [Advanced Usage](./AdvancedUsage.md) - Advanced techniques and patterns
+- [API Reference](./API.md) - Complete API documentation
+- [Examples](./Examples.md) - Practical examples for different game systems

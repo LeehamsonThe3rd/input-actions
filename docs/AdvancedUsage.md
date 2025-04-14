@@ -330,3 +330,50 @@ inputCatcher.GrabInput();
 // Later, release inputs back to normal handling
 inputCatcher.ReleaseInput();
 ```
+
+## Mobile and Touch Support
+
+The Input Actions system automatically detects touch input and can be configured to work well on mobile devices:
+
+```ts
+import { DeviceTypeHandler, EDeviceType } from "@rbxts/input-actions";
+
+// Check if the player is on a mobile device
+const isMobile = () => {
+	const deviceType = DeviceTypeHandler.GetMainDeviceType();
+	return deviceType === EDeviceType.Phone || deviceType === EDeviceType.Tablet;
+};
+
+// Adjust input sensitivity for mobile
+if (isMobile()) {
+	InputConfigController.SetActionActivationThreshold("Aim", 0.3); // Lower threshold for touch
+	InputConfigController.SetInputDeadzone(Enum.KeyCode.Thumbstick1, 0.3); // Higher deadzone for virtual thumbsticks
+}
+
+// Create mobile-specific button mappings
+const mobileContext = InputContextController.CreateContext("mobile");
+mobileContext.Add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space }); // Will apply to touch buttons too
+
+// Enable for mobile devices
+if (isMobile()) {
+	mobileContext.Assign();
+}
+
+// You can also detect screen size and orientation changes
+DeviceTypeHandler.OnDeviceTypeChanged.Connect((deviceType) => {
+	if (deviceType === EDeviceType.Phone) {
+		ConfigureForPhoneLayout();
+	} else if (deviceType === EDeviceType.Tablet) {
+		ConfigureForTabletLayout();
+	}
+});
+```
+
+### Touch-Specific Considerations
+
+When working with touch input:
+
+1. The touch GUI provided by Roblox still operates independently - this system complements it
+2. Custom touch buttons can trigger actions by calling `ActionsController.Press("YourAction")`
+3. Mobile devices automatically use the appropriate button images when using `GetVisualData()`
+4. Consider using `InputContextController` to maintain separate bindings for touch devices

@@ -48,6 +48,7 @@ KeyCombinationController.RegisterCombination("QuickLoad", Enum.KeyCode.L, [
 InputConfigController.SetInputDeadzone(Enum.KeyCode.Thumbstick1, 0.15);
 InputConfigController.SetInputDeadzone(Enum.KeyCode.Thumbstick2, 0.2);
 InputConfigController.SetInputDeadzone(ECustomKey.Thumbstick1Up, 0.15);
+InputConfigController.SetInputDeadzone(ECustomKey.Thumbstick1Down, 0.12);
 
 // Step 5: Configure action sensitivity
 // Make the "Aim" action require a stronger press on triggers
@@ -74,6 +75,17 @@ const ToggleMenu = () => {
 InputActionsInitializationHelper.InitActionsAndInputManager();
 ActionsController.Add("OpenMenu", 0.5, [Enum.KeyCode.Tab]);
 
+// ADVANCED FEATURE 3: Multi-key combinations with modifiers
+KeyCombinationController.RegisterCombination("Screenshot", Enum.KeyCode.F12);
+KeyCombinationController.RegisterCombination("DevConsole", Enum.KeyCode.F9, [
+	Enum.KeyCode.LeftShift,
+	Enum.KeyCode.LeftControl,
+]);
+
+// ADVANCED FEATURE 4: Custom haptic feedback presets
+HapticFeedbackController.RegisterPreset("WeaponJam", 0.9, 0.3, 0.4);
+HapticFeedbackController.RegisterPreset("LowHealth", 0.5, 0.1, 0.8);
+
 RunService.Heartbeat.Connect(() => {
 	// Check for our quick actions
 	if (ActionsController.IsJustPressed("QuickSave")) {
@@ -90,5 +102,21 @@ RunService.Heartbeat.Connect(() => {
 
 	if (ActionsController.IsJustPressed("OpenMenu")) {
 		ToggleMenu();
+	}
+
+	// Demonstrate activation threshold
+	if (ActionsController.IsJustPressed("Aim")) {
+		print("Precision aiming activated (required 70% press strength)");
+	}
+
+	// Demonstrate combinations
+	if (ActionsController.IsJustPressed("DevConsole")) {
+		print("Developer console activated with Ctrl+Shift+F9!");
+	}
+
+	// Demonstrate custom haptic feedback
+	if (ActionsController.IsJustPressed("Screenshot")) {
+		print("Screenshot taken!");
+		HapticFeedbackController.VibratePreset("WeaponJam");
 	}
 });

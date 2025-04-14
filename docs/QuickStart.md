@@ -1,139 +1,37 @@
 # Quick Start Guide
 
-This guide will help you quickly get up and running with the Input Actions package.
+This document has been merged into GettingStarted.md for a more streamlined documentation experience.
 
-## Installation
+Please refer to [Getting Started](./GettingStarted.md) for quick start information and basic concepts.
 
-```bash
-npm install @rbxts/input-actions
-```
+## Comparison with Roblox's Native Input System
 
-## Basic Setup
+The Input Actions package extends Roblox's native input system with several advantages:
 
-First, you need to initialize the input system. The easiest way is to use the `InputActionsInitializationHelper`:
+| Feature               | Roblox Native                            | Input Actions Package                                          |
+| --------------------- | ---------------------------------------- | -------------------------------------------------------------- |
+| Input Abstraction     | Directly tied to physical inputs         | Abstract actions that can be triggered by multiple inputs      |
+| Device Support        | Separate handling for different devices  | Unified system that automatically adapts to the current device |
+| Context Switching     | Requires manual connection/disconnection | Built-in context system for easy switching between game states |
+| Analog Input          | Basic support                            | Enhanced with deadzones, thresholds, and strength values       |
+| Input Combinations    | Manual implementation                    | Built-in support for key combinations                          |
+| Haptic Feedback       | Basic                                    | Enhanced with presets and custom patterns                      |
+| Mouse Control         | Basic                                    | Advanced control with locking options and priority system      |
+| Visual Representation | Limited                                  | Built-in system for displaying inputs with proper icons        |
 
-```ts
-import { InputActionsInitializationHelper } from "@rbxts/input-actions";
+### When to Use Native Roblox Input
 
-// Initialize all components of the system
-InputActionsInitializationHelper.InitAll();
+While this package provides many advantages, there are still cases where you might want to use Roblox's native input directly:
 
-// Alternatively, initialize only what you need:
-// InputActionsInitializationHelper.InitMouseController();
-// InputActionsInitializationHelper.InitDeviceTypeHandler();
-// InputActionsInitializationHelper.InitActionsAndInputManager();
-// InputActionsInitializationHelper.InitRawInputHandler();
-// InputActionsInitializationHelper.InitAdvancedControllers();
-```
+- For extremely simple games with minimal input requirements
+- When you need direct access to raw input events for specialized use cases
+- If you're working with Roblox's built-in character controller exclusively
+- For compatibility with other Roblox systems that expect direct input connections
 
-## Creating and Using Actions
+### Using Both Systems Together
 
-Actions are named input events that can be triggered by one or more input methods:
+The Input Actions package works alongside Roblox's native input system, so you can:
 
-```ts
-import { ActionsController } from "@rbxts/input-actions";
-
-// Create a new action and bind keys to it
-ActionsController.Add("Jump");
-ActionsController.AddKeyCode("Jump", Enum.KeyCode.Space); // For keyboard
-ActionsController.AddKeyCode("Jump", Enum.KeyCode.ButtonA); // For gamepad
-
-// Check if the action is currently pressed
-function Update() {
-	if (ActionsController.IsPressed("Jump")) {
-		// Handle jump action
-	}
-
-	// Check for just pressed (first frame of press)
-	if (ActionsController.IsJustPressed("Jump")) {
-		// Handle jump start
-	}
-
-	// Check for just released
-	if (ActionsController.IsJustReleased("Jump")) {
-		// Handle jump end
-	}
-}
-```
-
-## Using Input Contexts
-
-Input contexts help you organize inputs for different game states:
-
-```ts
-import { InputContextController } from "@rbxts/input-actions";
-
-// Create contexts for different game states
-const gameplayContext = InputContextController.CreateContext("gameplay");
-
-// Add input mappings
-gameplayContext.Add("Jump", {
-	KeyboardAndMouse: Enum.KeyCode.Space,
-	Gamepad: Enum.KeyCode.ButtonA,
-});
-
-gameplayContext.Add("Fire", {
-	KeyboardAndMouse: Enum.UserInputType.MouseButton1,
-	Gamepad: Enum.KeyCode.ButtonR2,
-});
-
-// Activate the context
-gameplayContext.Assign();
-
-// Check actions like normal
-function Update() {
-	if (ActionsController.IsPressed("Jump")) {
-		// Handle jump
-	}
-}
-```
-
-## Handling Different Input Devices
-
-The system automatically handles different input devices:
-
-```ts
-import { DeviceTypeHandler, EInputType } from "@rbxts/input-actions";
-
-// Set up device change detection
-DeviceTypeHandler.OnInputTypeChanged.Connect((inputType) => {
-	switch (inputType) {
-		case EInputType.KeyboardAndMouse:
-			print("Player is using keyboard/mouse");
-			break;
-		case EInputType.Gamepad:
-			print("Player is using gamepad");
-			break;
-		case EInputType.Touch:
-			print("Player is using touch controls");
-			break;
-	}
-});
-```
-
-## Raw Input for Movement
-
-For character movement, use the RawInputHandler:
-
-```ts
-import { RawInputHandler } from "@rbxts/input-actions";
-import { RunService } from "@rbxts/services";
-
-// Set up movement processing
-RunService.RenderStepped.Connect((deltaTime) => {
-	// Get move vector relative to camera (true parameter)
-	const moveVector = RawInputHandler.GetMoveVector(true);
-
-	// Apply to character
-	if (character && character.Humanoid) {
-		character.Humanoid.Move(moveVector);
-	}
-});
-```
-
-## Next Steps
-
-Once you're comfortable with the basics, explore more advanced features:
-
-- [Component Guides](./ComponentGuides.md) - Detailed guides for each component
-- [Advanced Usage](./AdvancedUsage.md) - Advanced techniques and patterns
+1. Use Input Actions for most game controls
+2. Connect directly to UserInputService for specialized cases
+3. Mix and match as needed for your specific game requirements

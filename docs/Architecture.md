@@ -48,6 +48,65 @@ Additional components that provide specialized functionality:
 - **InputCatcher**: Utility for intercepting and blocking all user input
 - **InputKeyCodeHelper**: Utilities for working with input key codes
 
-## Initialization Flow
+## Implementation Details
 
-The system uses a helper to manage initialization of the various components in the correct order:
+### Action State Management
+
+Actions are tracked using a three-value buffer system:
+
+## Best Practices
+
+To get the most out of the Input Actions system, follow these recommended practices:
+
+### Context Organization
+
+Organize contexts by game state or feature:
+
+- Create a separate context for each distinct game mode (Menu, Gameplay, Vehicle, etc.)
+- Use the global context only for actions that should always be available
+- Consider creating a hierarchy of contexts (Base, Combat, Movement)
+
+### Performance Optimization
+
+Optimize input handling for smooth gameplay:
+
+- Minimize the number of active contexts and subscriptions
+- Use `IsJustPressed` and `IsJustReleased` instead of tracking state changes manually
+- Clean up unused contexts, actions, and subscriptions when they're no longer needed
+- For very performance-sensitive games, consider using `ActionsController` directly for critical actions
+
+### Code Organization
+
+Structure your input-related code for maintainability:
+
+- Create a dedicated input manager class to encapsulate your game's input setup
+- Define context setups in separate functions or modules
+- Keep input binding code separate from game logic
+- Use enums for action names to ensure type safety
+
+### Debugging Tools
+
+Consider implementing debug utilities for input troubleshooting:
+
+- A debug overlay showing currently pressed actions
+- Action history for diagnosing timing issues
+- Visualization of active contexts
+- Input strength meters for analog inputs
+
+### Input Rebinding
+
+Support player customization:
+
+- Store action-to-key mappings rather than hardcoded keys
+- Use `InputContext.UpdateKey()` to change bindings at runtime
+- Implement a rebinding UI that displays proper key visuals using `GetVisualData()`
+- Save and load bindings using Roblox's data stores
+
+### Cross-Platform Design
+
+Design your input system to work well across platforms:
+
+- Always provide both keyboard/mouse and gamepad bindings
+- Use `DeviceTypeHandler` to adapt UI based on input device
+- Test with all supported input devices
+- Consider device-specific behaviors (e.g., haptic feedback for gamepad)

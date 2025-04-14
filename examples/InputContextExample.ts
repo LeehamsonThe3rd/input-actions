@@ -21,32 +21,12 @@ vehicleContext.Add("Brake", {
 	KeyboardAndMouse: Enum.KeyCode.S,
 });
 
-vehicleContext.Add("SteerLeft", {
-	Gamepad: Enum.KeyCode.Thumbstick1,
-	KeyboardAndMouse: Enum.KeyCode.A,
-});
-
-vehicleContext.Add("SteerRight", {
-	Gamepad: Enum.KeyCode.Thumbstick1,
-	KeyboardAndMouse: Enum.KeyCode.D,
-});
-
-vehicleContext.Add("Horn", {
-	Gamepad: Enum.KeyCode.ButtonX,
-	KeyboardAndMouse: Enum.KeyCode.H,
-});
-
 // Example: Create a weapon controls context
 const weaponContext = InputContextController.CreateContext("Weapon");
 
 weaponContext.Add("Fire", {
 	Gamepad: Enum.KeyCode.ButtonR2,
-	KeyboardAndMouse: Enum.KeyCode.MouseButton1,
-});
-
-weaponContext.Add("Aim", {
-	Gamepad: Enum.KeyCode.ButtonL2,
-	KeyboardAndMouse: Enum.KeyCode.MouseButton2,
+	KeyboardAndMouse: Enum.UserInputType.MouseButton1,
 });
 
 weaponContext.Add("Reload", {
@@ -54,72 +34,35 @@ weaponContext.Add("Reload", {
 	KeyboardAndMouse: Enum.KeyCode.R,
 });
 
-// Example: Get the global context and add a custom action
+// Example: Get the global context for always-available actions
 const globalContext = InputContextController.GetGlobalContext();
 globalContext.Add("ToggleInventory", {
 	Gamepad: Enum.KeyCode.ButtonY,
 	KeyboardAndMouse: Enum.KeyCode.Tab,
 });
 
-// Example usage: Player enters a vehicle
+// Demonstrating context switching
 function EnterVehicle() {
 	// Unassign weapon controls if they were active
 	weaponContext.Unassign();
-
 	// Assign vehicle controls
 	vehicleContext.Assign();
-
 	print("Vehicle controls activated");
 }
 
-// Example usage: Player exits a vehicle
 function ExitVehicle() {
-	// Unassign vehicle controls
 	vehicleContext.Unassign();
-
 	print("Vehicle controls deactivated");
-}
-
-// Example usage: Player equips a weapon
-function EquipWeapon() {
-	// Make sure vehicle controls are not active
-	if (vehicleContext.IsAssigned()) {
-		print("Cannot equip weapon while in vehicle");
-		return;
-	}
-
-	// Assign weapon controls
-	weaponContext.Assign();
-
-	print("Weapon controls activated");
-}
-
-// Example usage: Player holsters a weapon
-function HolsterWeapon() {
-	// Unassign weapon controls
-	weaponContext.Unassign();
-
-	print("Weapon controls deactivated");
 }
 
 // Example of checking if actions are pressed
 game.GetService("RunService").Heartbeat.Connect(() => {
-	if (vehicleContext.IsAssigned()) {
-		if (ActionsController.IsPressed("Accelerate")) {
-			print("Accelerating...");
-		}
-
-		if (ActionsController.IsPressed("Brake")) {
-			print("Braking...");
-		}
+	// Only check vehicle actions when in vehicle context
+	if (vehicleContext.IsAssigned() && ActionsController.IsPressed("Accelerate")) {
+		print("Accelerating...");
 	}
 
-	if (weaponContext.IsAssigned()) {
-		if (ActionsController.IsJustPressed("Fire")) {
-			print("Bang!");
-		}
-	}
-
+	// Global context actions are always available
 	if (ActionsController.IsJustPressed("ToggleInventory")) {
 		print("Toggling inventory...");
 	}
@@ -127,7 +70,3 @@ game.GetService("RunService").Heartbeat.Connect(() => {
 
 // For testing
 EnterVehicle();
-task.wait(3);
-ExitVehicle();
-task.wait(1);
-EquipWeapon();
