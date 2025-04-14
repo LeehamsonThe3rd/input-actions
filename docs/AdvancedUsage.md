@@ -101,7 +101,7 @@ const menuContext = InputContextController.CreateContext("menu");
 
 // Global controls (always active)
 globalContext.Add("Pause", {
-	KeyboardAndMouse: Enum.KeyCode.Escape,
+	KeyboardAndMouse: Enum.KeyCode.Tab,
 	Gamepad: Enum.KeyCode.ButtonStart,
 });
 
