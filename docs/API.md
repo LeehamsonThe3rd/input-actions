@@ -117,9 +117,9 @@ interface ISubscriptionConfig {
 }
 ```
 
-## InputMapController
+## InputContextController
 
-Manages input mappings for different devices.
+Controls different input contexts or action sets for different game states.
 
 ### Methods
 
@@ -265,6 +265,13 @@ Controls different input contexts or action sets for different game states.
 class InputContext {
 	constructor(name?: string);
 	Add(actionName: string, map: IInputMap): this;
+	UpdateKey(actionName: string, inputType: EInputDeviceType, keyCode: InputKeyCode): this;
+	GetInputKeyForCurrentDevice(actionName: string): InputKeyCode | undefined;
+	GetVisualData(actionName: string, useCustomImages?: boolean): IVisualInputKeyCodeData;
+	HasAction(actionName: string): boolean;
+	ToggleAssignment(): boolean;
+	IsAnyActionPressed(deviceType?: EInputDeviceType): boolean;
+	GetDeviceKey(actionName: string, deviceType: EInputDeviceType): InputKeyCode | undefined;
 	Remove(actionName: string): this;
 	Assign(): this;
 	Unassign(): this;
@@ -272,6 +279,7 @@ class InputContext {
 	GetMaps(): ReadonlyMap<string, IInputMap>;
 	GetMap(actionName: string): IInputMap | undefined;
 	GetName(): string | undefined;
+	GetAllMappedActions(): string[];
 }
 ```
 
@@ -300,6 +308,20 @@ Assigns a context by name.
 #### `UnassignContext(name: string): boolean`
 
 Unassigns a context by name.
+
+#### `ApplyDefaultInputMaps(): void`
+
+Applies the default UI control mappings.
+
+### Properties
+
+#### `UIControlContext: InputContext`
+
+A pre-defined context for UI controls with standard actions mapped.
+
+#### `GlobalContext: InputContext`
+
+The global context that is always available.
 
 ## InputEchoController
 
@@ -475,3 +497,4 @@ Constants for context action names.
 - `ACTIONS_READER_NAME` - Name for the main input actions reader
 - `INPUT_ECHO_HANDLER_NAME` - Name for the input echo handler
 - `MOUSE_CONTROLLER_UPDATE` - Name for the mouse controller update
+- `INPUT_CONTROLLER_UPDATE` - Name for the input controller update

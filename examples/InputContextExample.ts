@@ -1,14 +1,14 @@
 import {
 	ActionsController,
-	InputActionsInitializerTools,
-	InputMapController,
+	InputActionsInitializationHelper,
+	InputContextController,
 } from "@rbxts/input-actions";
 
 // Initialize the input system
-InputActionsInitializerTools.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitActionsAndInputManager();
 
 // Example: Create a vehicle controls context
-const vehicleContext = InputMapController.CreateContext("Vehicle");
+const vehicleContext = InputContextController.CreateContext("Vehicle");
 
 // Add controls to the vehicle context using direct object literals
 vehicleContext.Add("Accelerate", {
@@ -37,7 +37,7 @@ vehicleContext.Add("Horn", {
 });
 
 // Example: Create a weapon controls context
-const weaponContext = InputMapController.CreateContext("Weapon");
+const weaponContext = InputContextController.CreateContext("Weapon");
 
 weaponContext.Add("Fire", {
 	Gamepad: Enum.KeyCode.ButtonR2,
@@ -55,7 +55,7 @@ weaponContext.Add("Reload", {
 });
 
 // Example: Get the global context and add a custom action
-const globalContext = InputMapController.GetGlobalContext();
+const globalContext = InputContextController.GetGlobalContext();
 globalContext.Add("ToggleInventory", {
 	Gamepad: Enum.KeyCode.ButtonY,
 	KeyboardAndMouse: Enum.KeyCode.Tab,
@@ -104,7 +104,7 @@ function HolsterWeapon() {
 
 // Example of checking if actions are pressed
 game.GetService("RunService").Heartbeat.Connect(() => {
-	if (vehicleContext.isAssigned()) {
+	if (vehicleContext.IsAssigned()) {
 		if (ActionsController.IsPressed("Accelerate")) {
 			print("Accelerating...");
 		}
@@ -114,7 +114,7 @@ game.GetService("RunService").Heartbeat.Connect(() => {
 		}
 	}
 
-	if (weaponContext.isAssigned()) {
+	if (weaponContext.IsAssigned()) {
 		if (ActionsController.IsJustPressed("Fire")) {
 			print("Bang!");
 		}

@@ -1,7 +1,7 @@
 import {
 	EDefaultInputAction,
 	EInputType,
-	InputActionsInitializerTools,
+	InputActionsInitializationHelper,
 	InputManagerController,
 	InputTypeController,
 } from "@rbxts/input-actions";
@@ -10,8 +10,8 @@ import {
 // to navigate a UI with gamepad/keyboard
 
 // Step 1: Initialize required controllers
-InputActionsInitializerTools.InitActionsAndInputManager();
-InputActionsInitializerTools.InitInputTypeController();
+InputActionsInitializationHelper.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitInputTypeController();
 
 // Step 2: Define our UI navigation system
 class UINavigationSystem {

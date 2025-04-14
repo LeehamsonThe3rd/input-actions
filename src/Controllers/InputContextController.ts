@@ -1,6 +1,12 @@
 import { TableTools } from "@rbxts/tool_pack";
-import { ECustomKey, EDefaultInputAction, EInputType, IInputMap, InputKeyCode } from "../Models";
-import { EInputDeviceType } from "../Models/IInputMap";
+import {
+	ECustomKey,
+	EDefaultInputAction,
+	EInputDeviceType,
+	EInputType,
+	IInputMap,
+	InputKeyCode,
+} from "../Models";
 import { InputKeyCodeHelper } from "../Utils/InputKeyCodeHelper";
 import { ActionsController } from "./ActionsController";
 import { InputTypeController } from "./InputTypeController";

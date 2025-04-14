@@ -47,7 +47,7 @@ import { InputContextController } from "@rbxts/input-actions";
 // Create different contexts
 const gameplayContext = InputContextController.CreateContext("gameplay");
 gameplayContext.Add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
-gameplayContext.Add("Shoot", { KeyboardAndMouse: Enum.KeyCode.MouseButton1 });
+gameplayContext.Add("Shoot", { KeyboardAndMouse: Enum.UserInputType.MouseButton1 });
 
 const menuContext = InputContextController.CreateContext("menu");
 menuContext.Add("Accept", { KeyboardAndMouse: Enum.KeyCode.Return });
@@ -94,10 +94,10 @@ You can organize your game's input handling into multiple contexts that are acti
 
 ```ts
 // Create contexts for different game states
-const globalContext = InputMapController.GetGlobalContext();
-const combatContext = InputMapController.CreateContext("combat");
-const vehicleContext = InputMapController.CreateContext("vehicle");
-const menuContext = InputMapController.CreateContext("menu");
+const globalContext = InputContextController.GetGlobalContext();
+const combatContext = InputContextController.CreateContext("combat");
+const vehicleContext = InputContextController.CreateContext("vehicle");
+const menuContext = InputContextController.CreateContext("menu");
 
 // Global controls (always active)
 globalContext.Add("Pause", {
@@ -107,11 +107,11 @@ globalContext.Add("Pause", {
 
 // Combat controls
 combatContext.Add("Attack", {
-	KeyboardAndMouse: Enum.KeyCode.MouseButton1,
+	KeyboardAndMouse: Enum.UserInputType.MouseButton1,
 	Gamepad: Enum.KeyCode.ButtonR2,
 });
 combatContext.Add("Block", {
-	KeyboardAndMouse: Enum.KeyCode.MouseButton2,
+	KeyboardAndMouse: Enum.UserInputType.MouseButton2,
 	Gamepad: Enum.KeyCode.ButtonL2,
 });
 
@@ -174,14 +174,14 @@ HapticFeedbackController.Vibrate(
 	0.3, // Duration in seconds
 );
 
-// Using the convenience helper from InputActionsInitializerTools
-import { InputActionsInitializerTools } from "@rbxts/input-actions";
+// Using the convenience helper from InputActionsInitializationHelper
+import { InputActionsInitializationHelper } from "@rbxts/input-actions";
 
 // Pass a preset enum
-InputActionsInitializerTools.TriggerHapticFeedback(EVibrationPreset.Medium);
+InputActionsInitializationHelper.TriggerHapticFeedback(EVibrationPreset.Medium);
 
 // Or pass a custom preset object
-InputActionsInitializerTools.TriggerHapticFeedback({
+InputActionsInitializationHelper.TriggerHapticFeedback({
 	LargeMotor: 0.6,
 	SmallMotor: 0.3,
 	Duration: 0.25,
@@ -263,10 +263,13 @@ const deviceType = InputTypeController.GetMainDeviceType();
 You can display key bindings to players with proper icons:
 
 ```ts
-import { InputMapController } from "@rbxts/input-actions";
+import { InputContextController, InputKeyCodeHelper } from "@rbxts/input-actions";
+
+// Get the context containing the action
+const gameplayContext = InputContextController.GetContext("gameplay")!;
 
 // Get visual data for displaying the "Jump" action input
-const jumpVisualData = InputMapController.GetVisualData("Jump");
+const jumpVisualData = gameplayContext.GetVisualData("Jump");
 
 // Create a UI element to show the key/button
 const keyImage = new Instance("ImageLabel");
@@ -284,14 +287,13 @@ keyText.Parent = playerGui;
 The package comes with default actions for UI navigation:
 
 ```ts
-import { InputMapController, EDefaultInputAction } from "@rbxts/input-actions";
+import { InputContextController, EDefaultInputAction } from "@rbxts/input-actions";
 
-// Change the UI navigation actions
-InputMapController.Remove(EDefaultInputAction.UiGoUp);
-InputMapController.Add(EDefaultInputAction.UiGoUp, {
-	KeyboardAndMouse: Enum.KeyCode.W,
-	Gamepad: Enum.KeyCode.DPadUp,
-});
+// Access the UI control context
+const uiContext = InputContextController.UIControlContext;
+
+// Update a UI navigation action
+uiContext.UpdateKey(EDefaultInputAction.UiGoUp, "KeyboardAndMouse", Enum.KeyCode.W);
 ```
 
 ## Creating a Custom Input Catcher

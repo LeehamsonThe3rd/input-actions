@@ -1,6 +1,7 @@
 export * from "./ECustomKey";
 export * from "./EDefaultInputAction";
 export * from "./EDeviceType";
+export * from "./EInputDeviceType";
 export * from "./EInputEventSubscriptionType";
 export * from "./EInputType";
 export * from "./EMouseLockAction";

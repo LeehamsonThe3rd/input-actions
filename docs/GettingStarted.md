@@ -27,14 +27,14 @@ When a player presses a key or moves the mouse, the system creates input events 
 Before using any functionality, you need to initialize the controllers:
 
 ```ts
-import { InputActionsInitializerTools } from "@rbxts/input-actions";
+import { InputActionsInitializationHelper } from "@rbxts/input-actions";
 
 // Initialize all controllers (including advanced controllers)
-InputActionsInitializerTools.InitAll();
+InputActionsInitializationHelper.InitAll();
 
 // Or initialize specific controllers
-InputActionsInitializerTools.InitActionsAndInputManager();
-InputActionsInitializerTools.InitAdvancedControllers(); // For key combinations, contexts, etc.
+InputActionsInitializationHelper.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitAdvancedControllers(); // For key combinations, contexts, etc.
 ```
 
 ## Type Safety
@@ -127,21 +127,21 @@ cleanup();
 ## Supporting Multiple Input Devices
 
 ```ts
-import { InputMapController } from "@rbxts/input-actions";
+import { InputContextController } from "@rbxts/input-actions";
 
 // Define an input map for an action with both keyboard and gamepad controls
-InputMapController.Add("Jump", {
+InputContextController.GetGlobalContext().Add("Jump", {
 	KeyboardAndMouse: Enum.KeyCode.Space,
 	Gamepad: Enum.KeyCode.ButtonA,
 });
 
 // Or with only keyboard controls
-InputMapController.Add("Screenshot", {
+InputContextController.GetGlobalContext().Add("Screenshot", {
 	KeyboardAndMouse: Enum.KeyCode.F12,
 });
 
 // Or with only gamepad controls
-InputMapController.Add("Vibrate", {
+InputContextController.GetGlobalContext().Add("Vibrate", {
 	Gamepad: Enum.KeyCode.ButtonY,
 });
 ```
@@ -151,11 +151,11 @@ InputMapController.Add("Vibrate", {
 Input contexts allow you to group related actions and switch between them easily:
 
 ```ts
-import { InputMapController } from "@rbxts/input-actions";
+import { InputContextController } from "@rbxts/input-actions";
 
 // Create two different input contexts
-const gameplayContext = InputMapController.CreateContext("gameplay");
-const menuContext = InputMapController.CreateContext("menu");
+const gameplayContext = InputContextController.CreateContext("gameplay");
+const menuContext = InputContextController.CreateContext("menu");
 
 // Add actions to the gameplay context
 gameplayContext.Add("Jump", {

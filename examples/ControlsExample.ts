@@ -5,7 +5,7 @@ import {
 	ActionsController,
 	EVibrationPreset,
 	HapticFeedbackController,
-	InputActionsInitializerTools,
+	InputActionsInitializationHelper,
 	InputConfigController,
 	InputContextController,
 	InputEchoController,
@@ -14,7 +14,7 @@ import {
 import { RunService } from "@rbxts/services";
 
 // Initialize all controllers
-InputActionsInitializerTools.InitAll();
+InputActionsInitializationHelper.InitAll();
 
 // Set up contexts for different game states
 function SetupInputContexts() {
