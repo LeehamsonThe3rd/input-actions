@@ -5,5 +5,6 @@ export * from "./EInputEventSubscriptionType";
 export * from "./EInputType";
 export * from "./EMouseLockAction";
 export * from "./EMouseLockActionPriority";
+export * from "./EVibrationPreset";
 export { default as IInputMap } from "./IInputMap";
 export * from "./InputKeyCode";

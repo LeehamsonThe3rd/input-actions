@@ -16,4 +16,9 @@ export namespace ContextActionResources {
 	 * Name for the mouse controller update
 	 */
 	export const MOUSE_CONTROLLER_UPDATE = "MouseControllerUpdate";
+
+	/**
+	 * Name for the input controller update
+	 */
+	export const INPUT_CONTROLLER_UPDATE = "FetchInput";
 }

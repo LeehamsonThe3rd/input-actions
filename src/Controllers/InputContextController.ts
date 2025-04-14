@@ -1,20 +1,17 @@
 import { ActionsController } from "./ActionsController";
 import { InputKeyCode } from "../Models/InputKeyCode";
+import { InputContextSystem } from "./InputContextController/InputContextSystem";
 
 /**
  * Controller for managing different input contexts/action sets
  *
- * Allows switching between different input mappings for different
- * game states (e.g., gameplay, menu, vehicle)
+ * @deprecated Use InputContextSystem from InputMapController.getContextSystem() instead
  */
 export namespace InputContextController {
-	const contexts = new Map<string, Map<string, InputKeyCode[]>>();
-	let currentContext = "";
 	let initialized = false;
 
 	/**
 	 * Initialize the context controller
-	 * Currently just marks the controller as initialized
 	 */
 	export function Initialize() {
 		if (initialized) return;
@@ -23,72 +20,92 @@ export namespace InputContextController {
 
 	/**
 	 * Creates a new input context
+	 * @deprecated Use InputMapController.createContext() instead
 	 */
 	export function CreateContext(contextName: string) {
-		if (contexts.has(contextName)) return;
-		contexts.set(contextName, new Map<string, InputKeyCode[]>());
+		return InputContextSystem.createContext(contextName);
 	}
 
 	/**
 	 * Adds an action mapping to a specific context
+	 * @deprecated Use context.addMap() or InputContextSystem directly
 	 */
 	export function AddActionToContext(
 		contextName: string,
 		actionName: string,
 		keyCode: InputKeyCode,
 	) {
-		if (!contexts.has(contextName)) {
-			CreateContext(contextName);
-		}
+		const context =
+			InputContextSystem.getContext(contextName) ?? InputContextSystem.createContext(contextName);
 
-		const contextMap = contexts.get(contextName)!;
-		if (!contextMap.has(actionName)) {
-			contextMap.set(actionName, []);
-		}
+		// Determine if it's a gamepad or keyboard key
+		const isGamepad =
+			keyCode.EnumType === Enum.KeyCode &&
+			[
+				Enum.KeyCode.ButtonA,
+				Enum.KeyCode.ButtonB,
+				Enum.KeyCode.ButtonX,
+				Enum.KeyCode.ButtonY,
+				Enum.KeyCode.ButtonR1,
+				Enum.KeyCode.ButtonL1,
+				Enum.KeyCode.ButtonR2,
+				Enum.KeyCode.ButtonL2,
+				Enum.KeyCode.ButtonR3,
+				Enum.KeyCode.ButtonL3,
+				Enum.KeyCode.DPadLeft,
+				Enum.KeyCode.DPadRight,
+				Enum.KeyCode.DPadUp,
+				Enum.KeyCode.DPadDown,
+				Enum.KeyCode.Thumbstick1,
+				Enum.KeyCode.Thumbstick2,
+			].includes(keyCode as Enum.KeyCode);
 
-		const keyCodes = contextMap.get(actionName)!;
-		if (!keyCodes.includes(keyCode)) {
-			keyCodes.push(keyCode);
+		// Get existing map or create a new one
+		const currentMap = context.getMap(actionName) ?? {
+			Gamepad: undefined,
+			KeyboardAndMouse: undefined,
+		};
+
+		// Add the key to appropriate slot
+		if (isGamepad) {
+			context.add(actionName, {
+				...currentMap,
+				Gamepad: keyCode,
+			});
+		} else {
+			context.add(actionName, {
+				...currentMap,
+				KeyboardAndMouse: keyCode,
+			});
 		}
 	}
 
 	/**
 	 * Activates a specific input context, deactivating the previous one
+	 * @deprecated Use context.assign() and context.unassign() instead
 	 */
 	export function SetActiveContext(contextName: string) {
-		if (contextName === currentContext) return;
-		if (!contexts.has(contextName)) {
-			warn(`Context "${contextName}" does not exist`);
-			return;
-		}
-
-		// Deactivate current context
-		if (currentContext !== "" && contexts.has(currentContext)) {
-			const prevContextMap = contexts.get(currentContext)!;
-			for (const [actionName, _] of prevContextMap) {
-				ActionsController.EraseAllKeyCodes(actionName);
+		// Unassign all contexts first
+		for (const [name, context] of InputContextSystem.getAllContexts()) {
+			if (context.isAssigned()) {
+				context.unassign();
 			}
 		}
 
-		// Activate new context
-		const newContextMap = contexts.get(contextName)!;
-		for (const [actionName, keyCodes] of newContextMap) {
-			if (!ActionsController.IsExisting(actionName)) {
-				ActionsController.Add(actionName);
-			}
-
-			for (const keyCode of keyCodes) {
-				ActionsController.AddKeyCode(actionName, keyCode);
-			}
-		}
-
-		currentContext = contextName;
+		// Assign the new context
+		InputContextSystem.assignContext(contextName);
 	}
 
 	/**
 	 * Gets the currently active context name
+	 * @deprecated Use InputContextSystem directly
 	 */
 	export function GetActiveContext(): string {
-		return currentContext;
+		for (const [name, context] of InputContextSystem.getAllContexts()) {
+			if (context.isAssigned()) {
+				return name;
+			}
+		}
+		return "";
 	}
 }

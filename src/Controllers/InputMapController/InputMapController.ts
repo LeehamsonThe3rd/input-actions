@@ -8,6 +8,8 @@ import IsCustomKey from "../../Utils/IsCustomKey";
 import { ActionsController } from "../ActionsController";
 import { InputTypeController } from "../InputTypeController";
 import { DefaultInputMaps } from "./DefaultInputActions";
+import { InputMapBuilder } from "./InputMapBuilder";
+import { InputContextSystem } from "../InputContextController/InputContextSystem";
 
 export namespace InputMapController {
 	export interface IVisualInputKeyCodeData {
@@ -15,47 +17,48 @@ export namespace InputMapController {
 		readonly ImageId: string;
 	}
 
-	export const EmptyInputMap = {};
-	const registered_input_maps = new Map<string, IInputMap>();
-	export function Get(name: string) {
-		return registered_input_maps.get(name);
+	// Remove EmptyInputMap and use consistent camelCase naming
+	const registeredInputMaps = new Map<string, IInputMap>();
+
+	export function get(name: string) {
+		return registeredInputMaps.get(name);
 	}
 
-	function GetInputKeyCodeByCurrentInputType(input_map_name: string): InputKeyCode | undefined {
-		const input_map = registered_input_maps.get(input_map_name);
-		if (input_map === undefined) return undefined;
-		const current_input_type = InputTypeController.GetMainInputType();
-		if (current_input_type === EInputType.Gamepad) return input_map.Gamepad;
-		if (current_input_type === EInputType.KeyboardAndMouse) return input_map.KeyboardAndMouse;
+	function getInputKeyCodeByCurrentInputType(inputMapName: string): InputKeyCode | undefined {
+		const inputMap = registeredInputMaps.get(inputMapName);
+		if (inputMap === undefined) return undefined;
+		const currentInputType = InputTypeController.GetMainInputType();
+		if (currentInputType === EInputType.Gamepad) return inputMap.Gamepad;
+		if (currentInputType === EInputType.KeyboardAndMouse) return inputMap.KeyboardAndMouse;
 	}
 
-	export function GetVisualData(
-		input_map_name: string,
-		use_custom_images: boolean = true,
+	export function getVisualData(
+		inputMapName: string,
+		useCustomImages: boolean = true,
 	): IVisualInputKeyCodeData {
-		return GetVisualInputKeyCodeData(
-			GetInputKeyCodeByCurrentInputType(input_map_name),
-			use_custom_images,
+		return getVisualInputKeyCodeData(
+			getInputKeyCodeByCurrentInputType(inputMapName),
+			useCustomImages,
 		);
 	}
 
-	export function GetVisualInputKeyCodeData(
-		input_key_code?: InputKeyCode,
-		use_custom_images: boolean = true,
+	export function getVisualInputKeyCodeData(
+		inputKeyCode?: InputKeyCode,
+		useCustomImages: boolean = true,
 	): IVisualInputKeyCodeData {
-		if (input_key_code === undefined)
+		if (inputKeyCode === undefined)
 			return identity<IVisualInputKeyCodeData>({
 				Name: "",
 				ImageId: "",
 			});
 
 		let image = "";
-		const name = GetInputKeyCodeName(input_key_code);
+		const name = GetInputKeyCodeName(inputKeyCode);
 
-		if (use_custom_images) {
-			image = InputKeyCodeImages.GetImageForKey(input_key_code);
-		} else if (!IsCustomKey(input_key_code) && input_key_code.EnumType !== Enum.UserInputType) {
-			image = UserInputService.GetImageForKeyCode(input_key_code as Enum.KeyCode);
+		if (useCustomImages) {
+			image = InputKeyCodeImages.GetImageForKey(inputKeyCode);
+		} else if (!IsCustomKey(inputKeyCode) && inputKeyCode.EnumType !== Enum.UserInputType) {
+			image = UserInputService.GetImageForKeyCode(inputKeyCode as Enum.KeyCode);
 		}
 
 		return identity<IVisualInputKeyCodeData>({
@@ -64,42 +67,69 @@ export namespace InputMapController {
 		});
 	}
 
-	export function Add(action_name: string, input_map: IInputMap) {
-		if (registered_input_maps.has(action_name)) {
-			warn(`${action_name} already exists`);
+	export function add(actionName: string, inputMap: IInputMap) {
+		if (registeredInputMaps.has(actionName)) {
+			warn(`${actionName} already exists`);
 			return;
 		}
-		if (!ActionsController.IsExisting(action_name)) ActionsController.Add(action_name);
-		registered_input_maps.set(action_name, input_map);
+		if (!ActionsController.IsExisting(actionName)) ActionsController.Add(actionName);
+		registeredInputMaps.set(actionName, inputMap);
 
-		if (input_map.Gamepad !== undefined)
-			ActionsController.AddKeyCode(action_name, input_map.Gamepad);
-		if (input_map.KeyboardAndMouse !== undefined)
-			ActionsController.AddKeyCode(action_name, input_map.KeyboardAndMouse);
+		if (inputMap.Gamepad !== undefined) ActionsController.AddKeyCode(actionName, inputMap.Gamepad);
+		if (inputMap.KeyboardAndMouse !== undefined)
+			ActionsController.AddKeyCode(actionName, inputMap.KeyboardAndMouse);
 	}
 
-	export function Delete(action_name: string, erase_action: boolean = false) {
-		const input_map = registered_input_maps.get(action_name)!;
-		if (input_map === undefined) {
-			warn(`${action_name} doesnt exist`);
+	export function remove(actionName: string, eraseAction: boolean = false) {
+		const inputMap = registeredInputMaps.get(actionName)!;
+		if (inputMap === undefined) {
+			warn(`${actionName} doesn't exist`);
 			return;
 		}
 
-		if (input_map.Gamepad !== undefined)
-			ActionsController.EraseKeyCode(action_name, input_map.Gamepad);
-		if (input_map.KeyboardAndMouse !== undefined)
-			ActionsController.EraseKeyCode(action_name, input_map.KeyboardAndMouse);
-		if (erase_action) ActionsController.Erase(action_name);
+		if (inputMap.Gamepad !== undefined)
+			ActionsController.EraseKeyCode(actionName, inputMap.Gamepad);
+		if (inputMap.KeyboardAndMouse !== undefined)
+			ActionsController.EraseKeyCode(actionName, inputMap.KeyboardAndMouse);
+		if (eraseAction) ActionsController.Erase(actionName);
+
+		registeredInputMaps.delete(actionName);
 	}
 
-	export function GetDefaultInputMaps() {
+	// Update to use new DefaultInputMaps
+	export function getDefaultInputMaps() {
 		return DefaultInputMaps;
 	}
 
-	export function AddDefaultInputMaps() {
-		const input_map_list = DefaultInputMaps as unknown as Map<string, IInputMap>;
-		input_map_list.forEach((map, action_name) => {
-			Add(action_name, map);
-		});
+	export function addDefaultInputMaps() {
+		DefaultInputMaps.applyDefaultMaps();
+	}
+
+	/**
+	 * Create a new input map builder for easy map creation
+	 */
+	export function createMap(): InputMapBuilder {
+		return InputMapBuilder.create();
+	}
+
+	/**
+	 * Get the InputContextSystem for advanced input context management
+	 */
+	export function getContextSystem() {
+		return InputContextSystem;
+	}
+
+	/**
+	 * Create a new context for grouping related input maps
+	 */
+	export function createContext(name: string) {
+		return InputContextSystem.createContext(name);
+	}
+
+	/**
+	 * Get the global input context
+	 */
+	export function getGlobalContext() {
+		return InputContextSystem.getGlobalContext();
 	}
 }

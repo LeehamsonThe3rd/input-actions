@@ -4,10 +4,12 @@ import { InputConfigController } from "../Controllers/InputConfigController";
 import { InputContextController } from "../Controllers/InputContextController";
 import { InputController } from "../Controllers/InputController/InputController";
 import { InputEchoController } from "../Controllers/InputEchoController";
+import { InputMapController } from "../Controllers/InputMapController/InputMapController";
 import { InputManagerController } from "../Controllers/InputManagerController/InputManagerController";
 import { InputTypeController } from "../Controllers/InputTypeController";
 import { KeyCombinationController } from "../Controllers/KeyCombinationController";
 import { MouseController } from "../Controllers/MouseController";
+import { EVibrationPreset } from "../Models/EVibrationPreset";
 
 export namespace InputActionsInitializerTools {
 	export function InitAll() {
@@ -40,6 +42,9 @@ export namespace InputActionsInitializerTools {
 		InputContextController.Initialize?.();
 		InputEchoController.Initialize();
 		KeyCombinationController.Initialize();
+
+		// Initialize the input context system by getting it
+		InputMapController.getContextSystem();
 	}
 
 	export function InitConfigController() {
@@ -49,15 +54,15 @@ export namespace InputActionsInitializerTools {
 
 	/**
 	 * Trigger haptic feedback for a gamepad
-	 * @param preset Preset name or custom vibration parameters
+	 * @param preset Preset name or vibration parameters
 	 */
 	export function TriggerHapticFeedback(
-		preset: string | { largeMotor?: number; smallMotor?: number; duration?: number },
+		preset: EVibrationPreset | { largeMotor?: number; smallMotor?: number; duration?: number },
 	) {
-		if (typeof preset === "string") {
-			HapticFeedbackController.VibratePreset(preset);
-		} else {
+		if (typeof preset === "object") {
 			HapticFeedbackController.Vibrate(preset.largeMotor, preset.smallMotor, preset.duration);
+		} else {
+			HapticFeedbackController.VibratePreset(preset);
 		}
 	}
 }
