@@ -4,6 +4,7 @@ import { ContextActionService } from "@rbxts/services";
 import { EInputEventSubscriptionType } from "../../Models";
 import { ECustomKey } from "../../Models/ECustomKey";
 import { ActionResources } from "../../Resources/ActionResources";
+import { ContextActionResources } from "../../Resources/ContextActionResources";
 import { ThumbstickHelper } from "../../Utils/ThumbstickHelper";
 import { ActionsController } from "../ActionsController";
 import { InputConfigController } from "../InputConfigController";
@@ -211,7 +212,7 @@ export namespace InputManagerController {
 		if (initialized) return;
 		initialized = true;
 		ContextActionService.BindActionAtPriority(
-			"ActionsReader",
+			ContextActionResources.ACTIONS_READER_NAME,
 			OnInput,
 			false,
 			ActionResources.DEFAULT_INPUT_PRIORITY,

@@ -2,6 +2,7 @@
 //!optimize 2
 import { RunService } from "@rbxts/services";
 import { ArrayTools, TableTools } from "@rbxts/tool_pack";
+import { EInputBufferIndex } from "../Models/EInputBufferIndex";
 import { IActionData } from "../Models/IActionData";
 import { InputKeyCode } from "../Models/InputKeyCode";
 import { ActionResources } from "../Resources/ActionResources";
@@ -68,7 +69,7 @@ export namespace ActionsController {
 	 */
 	export function Press(action_name: string, strength: number = 1) {
 		ExecuteWithActionData(action_name, (action_table) => {
-			action_table.KeyBuffer[0] = strength;
+			action_table.KeyBuffer[EInputBufferIndex.Current] = strength;
 		});
 	}
 
@@ -79,13 +80,13 @@ export namespace ActionsController {
 	export function GetPressStrength(action_name: string): number {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return 0;
-		return action_data.KeyBuffer[1];
+		return action_data.KeyBuffer[EInputBufferIndex.Previous];
 	}
 
 	export function Release(action_name: string) {
 		ExecuteWithActionData(action_name, (action_table) => {
-			//sets the current status to release
-			action_table.KeyBuffer[0] = 0;
+			// Sets the current status to release
+			action_table.KeyBuffer[EInputBufferIndex.Current] = 0;
 		});
 	}
 
@@ -94,14 +95,14 @@ export namespace ActionsController {
 		if (action_data === undefined) return false;
 		// Use InputConfigController for activation threshold if available
 		const threshold = InputConfigController.GetActionActivationThreshold(action_name);
-		return action_data.KeyBuffer[1] >= threshold;
+		return action_data.KeyBuffer[EInputBufferIndex.Previous] >= threshold;
 	}
 
 	/**NOT RECOMMENDED TO USE (InternalOnly) Low level of checking if the action is pressed in this frame */
 	export function IsPressedThisFrame(action_name: string) {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
-		return action_data.KeyBuffer[0] >= action_data.ActivationStrength;
+		return action_data.KeyBuffer[EInputBufferIndex.Current] >= action_data.ActivationStrength;
 	}
 
 	/**NOT RECOMMENDED TO USE (InternalOnly) Low level of checking if the action is just pressed in this frame */
@@ -109,8 +110,8 @@ export namespace ActionsController {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
 		return (
-			action_data.KeyBuffer[0] >= action_data.ActivationStrength &&
-			action_data.KeyBuffer[1] < action_data.ActivationStrength
+			action_data.KeyBuffer[EInputBufferIndex.Current] >= action_data.ActivationStrength &&
+			action_data.KeyBuffer[EInputBufferIndex.Previous] < action_data.ActivationStrength
 		);
 	}
 
@@ -122,7 +123,7 @@ export namespace ActionsController {
 	export function IsReleasedThisFrame(action_name: string) {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
-		return action_data.KeyBuffer[0] < action_data.ActivationStrength;
+		return action_data.KeyBuffer[EInputBufferIndex.Current] < action_data.ActivationStrength;
 	}
 
 	/**Low level of checking if the action is just released in this frame */
@@ -130,8 +131,8 @@ export namespace ActionsController {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
 		return (
-			action_data.KeyBuffer[0] < action_data.ActivationStrength &&
-			action_data.KeyBuffer[1] >= action_data.ActivationStrength
+			action_data.KeyBuffer[EInputBufferIndex.Current] < action_data.ActivationStrength &&
+			action_data.KeyBuffer[EInputBufferIndex.Previous] >= action_data.ActivationStrength
 		);
 	}
 
@@ -141,8 +142,8 @@ export namespace ActionsController {
 
 		//was pressed in the previous frame, but was released in the pre-previos
 		return (
-			action_data.KeyBuffer[1] >= action_data.ActivationStrength &&
-			action_data.KeyBuffer[2] < action_data.ActivationStrength
+			action_data.KeyBuffer[EInputBufferIndex.Previous] >= action_data.ActivationStrength &&
+			action_data.KeyBuffer[EInputBufferIndex.PrePrevious] < action_data.ActivationStrength
 		);
 	}
 
@@ -151,8 +152,8 @@ export namespace ActionsController {
 		if (action_data === undefined) return false;
 		//was released in the previous frame, but was pressed in the pre-previos
 		return (
-			action_data.KeyBuffer[1] < action_data.ActivationStrength &&
-			action_data.KeyBuffer[2] >= action_data.ActivationStrength
+			action_data.KeyBuffer[EInputBufferIndex.Previous] < action_data.ActivationStrength &&
+			action_data.KeyBuffer[EInputBufferIndex.PrePrevious] >= action_data.ActivationStrength
 		);
 	}
 
@@ -166,9 +167,12 @@ export namespace ActionsController {
 			// 0 - current input
 			// 1 - previous input
 			// 2 - pre-previous input
-			[action_table.KeyBuffer[2], action_table.KeyBuffer[1]] = [
-				action_table.KeyBuffer[1],
-				action_table.KeyBuffer[0],
+			[
+				action_table.KeyBuffer[EInputBufferIndex.PrePrevious],
+				action_table.KeyBuffer[EInputBufferIndex.Previous],
+			] = [
+				action_table.KeyBuffer[EInputBufferIndex.Previous],
+				action_table.KeyBuffer[EInputBufferIndex.Current],
 			];
 		}
 	}

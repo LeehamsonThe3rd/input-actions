@@ -1,5 +1,6 @@
 import { UserInputService } from "@rbxts/services";
 import { InputKeyCode } from "../Models/InputKeyCode";
+import { InputPriorityResources } from "../Resources/InputPriorityResources";
 import { ActionsController } from "./ActionsController";
 import { InputManagerController } from "./InputManagerController/InputManagerController";
 
@@ -28,7 +29,7 @@ export namespace KeyCombinationController {
 
 		// Subscribe to input events with high priority
 		InputManagerController.Subscribe(HandleKeyInput, {
-			Priority: 1000, // High priority to catch combinations before other handlers
+			Priority: InputPriorityResources.KEY_COMBINATION_PRIORITY,
 		});
 	}
 
@@ -80,7 +81,7 @@ export namespace KeyCombinationController {
 					ActionsController.Press(combo.actionName);
 
 					// Release it after a brief delay to simulate a press
-					task.delay(0.1, () => {
+					task.delay(InputPriorityResources.KEY_COMBINATION_RELEASE_DELAY, () => {
 						ActionsController.Release(combo.actionName);
 					});
 

@@ -1,4 +1,5 @@
 import { HapticService, UserInputService } from "@rbxts/services";
+import { EVibrationPreset } from "../Models/EVibrationPreset";
 
 /**
  * Controller for managing haptic feedback (vibration)
@@ -17,11 +18,11 @@ export namespace HapticFeedbackController {
 	}
 
 	const presets = new Map<string, VibrationPreset>([
-		["light", { largeMotor: 0.2, smallMotor: 0.3, duration: 0.1 }],
-		["medium", { largeMotor: 0.5, smallMotor: 0.5, duration: 0.2 }],
-		["heavy", { largeMotor: 0.8, smallMotor: 0.7, duration: 0.3 }],
-		["failure", { largeMotor: 1.0, smallMotor: 0.3, duration: 0.5 }],
-		["success", { largeMotor: 0.4, smallMotor: 0.8, duration: 0.2 }],
+		[EVibrationPreset.Light, { largeMotor: 0.2, smallMotor: 0.3, duration: 0.1 }],
+		[EVibrationPreset.Medium, { largeMotor: 0.5, smallMotor: 0.5, duration: 0.2 }],
+		[EVibrationPreset.Heavy, { largeMotor: 0.8, smallMotor: 0.7, duration: 0.3 }],
+		[EVibrationPreset.Failure, { largeMotor: 1.0, smallMotor: 0.3, duration: 0.5 }],
+		[EVibrationPreset.Success, { largeMotor: 0.4, smallMotor: 0.8, duration: 0.2 }],
 	]);
 
 	/**
@@ -55,8 +56,8 @@ export namespace HapticFeedbackController {
 	/**
 	 * Triggers vibration using a named preset
 	 */
-	export function VibratePreset(presetName: string) {
-		const preset = presets.get(presetName.lower());
+	export function VibratePreset(presetName: EVibrationPreset | string) {
+		const preset = presets.get(typeof presetName === "string" ? presetName.lower() : presetName);
 		if (!preset) {
 			warn(`Vibration preset "${presetName}" not found`);
 			return;
