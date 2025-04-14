@@ -78,6 +78,67 @@ InputEchoController.ConfigureActionEcho("MenuDown", 0.4, 0.1);
 
 // Later, disable echo if needed
 InputEchoController.DisableActionEcho("MenuUp");
+
+// No special check needed - ActionsController.IsJustPressed handles it automatically
+RunService.Heartbeat.Connect(() => {
+	if (ActionsController.IsJustPressed("MenuDown")) {
+		// This will trigger repeatedly when MenuDown is held down
+		moveSelectionDown();
+	}
+});
+```
+
+## Advanced Context Usage
+
+You can organize your game's input handling into multiple contexts that are activated for different game states:
+
+```ts
+// Create contexts for different game states
+const globalContext = InputMapController.getGlobalContext();
+const combatContext = InputMapController.createContext("combat");
+const vehicleContext = InputMapController.createContext("vehicle");
+const menuContext = InputMapController.createContext("menu");
+
+// Global controls (always active)
+globalContext.add("Pause", {
+	KeyboardAndMouse: Enum.KeyCode.Escape,
+	Gamepad: Enum.KeyCode.ButtonStart,
+});
+
+// Combat controls
+combatContext.add("Attack", {
+	KeyboardAndMouse: Enum.KeyCode.MouseButton1,
+	Gamepad: Enum.KeyCode.ButtonR2,
+});
+combatContext.add("Block", {
+	KeyboardAndMouse: Enum.KeyCode.MouseButton2,
+	Gamepad: Enum.KeyCode.ButtonL2,
+});
+
+// Vehicle controls
+vehicleContext.add("Accelerate", {
+	KeyboardAndMouse: Enum.KeyCode.W,
+	Gamepad: Enum.KeyCode.ButtonR2,
+});
+vehicleContext.add("Brake", {
+	KeyboardAndMouse: Enum.KeyCode.S,
+	Gamepad: Enum.KeyCode.ButtonL2,
+});
+
+// Initialize the global context
+globalContext.assign();
+
+// Switch to combat mode
+function enterCombatMode() {
+	vehicleContext.unassign();
+	combatContext.assign();
+}
+
+// Switch to vehicle mode
+function enterVehicleMode() {
+	combatContext.unassign();
+	vehicleContext.assign();
+}
 ```
 
 ## Key Combinations

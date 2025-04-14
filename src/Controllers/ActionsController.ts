@@ -7,6 +7,7 @@ import { IActionData } from "../Models/IActionData";
 import { InputKeyCode } from "../Models/InputKeyCode";
 import { ActionResources } from "../Resources/ActionResources";
 import { InputConfigController } from "./InputConfigController";
+import { InputEchoController } from "./InputEchoController";
 
 /**
  * Controller for managing input actions
@@ -136,15 +137,17 @@ export namespace ActionsController {
 		);
 	}
 
-	export function IsJustPressed(action_name: string) {
+	export function IsJustPressed(action_name: string): boolean {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
 
-		//was pressed in the previous frame, but was released in the pre-previos
-		return (
+		// Check for regular just-pressed status
+		const justPressed =
 			action_data.KeyBuffer[EInputBufferIndex.Previous] >= action_data.ActivationStrength &&
-			action_data.KeyBuffer[EInputBufferIndex.PrePrevious] < action_data.ActivationStrength
-		);
+			action_data.KeyBuffer[EInputBufferIndex.PrePrevious] < action_data.ActivationStrength;
+
+		// Also return true if an echo was triggered for this action
+		return justPressed || InputEchoController.WasEchoTriggered(action_name);
 	}
 
 	export function IsJustReleased(action_name: string) {

@@ -148,6 +148,41 @@ InputMapController.add("Vibrate", {
 });
 ```
 
+## Working with Input Contexts
+
+Input contexts allow you to group related actions and switch between them easily:
+
+```ts
+import { InputMapController } from "@rbxts/input-actions";
+
+// Create two different input contexts
+const gameplayContext = InputMapController.createContext("gameplay");
+const menuContext = InputMapController.createContext("menu");
+
+// Add actions to the gameplay context
+gameplayContext.add("Jump", {
+	KeyboardAndMouse: Enum.KeyCode.Space,
+	Gamepad: Enum.KeyCode.ButtonA,
+});
+
+// Add actions to the menu context
+menuContext.add("Select", {
+	KeyboardAndMouse: Enum.KeyCode.Return,
+	Gamepad: Enum.KeyCode.ButtonA,
+});
+
+// Switch between contexts when the game state changes
+function openMenu() {
+	gameplayContext.unassign(); // Disable gameplay controls
+	menuContext.assign(); // Enable menu controls
+}
+
+function closeMenu() {
+	menuContext.unassign(); // Disable menu controls
+	gameplayContext.assign(); // Enable gameplay controls
+}
+```
+
 ## Advanced Usage
 
 For more complex scenarios, refer to the [advanced documentation](./AdvancedUsage.md).

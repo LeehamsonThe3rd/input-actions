@@ -18,7 +18,7 @@ InputActionsInitializerTools.InitAll();
 // Create the "gameplay" context
 const gameplayContext = InputContextController.createContext("gameplay");
 gameplayContext.add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
-gameplayContext.add("Fire", { KeyboardAndMouse: Enum.KeyCode.MouseButton1 });
+gameplayContext.add("Fire", { KeyboardAndMouse: Enum.UserInputType.MouseButton1 });
 gameplayContext.add("Reload", { KeyboardAndMouse: Enum.KeyCode.R });
 
 // Create the "menu" context

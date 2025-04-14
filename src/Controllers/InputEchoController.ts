@@ -7,7 +7,7 @@ import { ActionsController } from "./ActionsController";
  * Provides functionality to trigger repeated input events when keys are held down
  */
 export namespace InputEchoController {
-	interface EchoConfig {
+	interface IEchoConfig {
 		/** Delay before first repeat (seconds) */
 		initialDelay: number;
 		/** Interval between repeats (seconds) */
@@ -23,7 +23,11 @@ export namespace InputEchoController {
 	const DEFAULT_INITIAL_DELAY = 0.5;
 	const DEFAULT_REPEAT_INTERVAL = 0.1;
 
-	const actionEchoConfigs = new Map<string, EchoConfig>();
+	// Store echo configurations
+	const actionEchoConfigs = new Map<string, IEchoConfig>();
+	// Track which actions had echoes triggered this frame
+	const echoTriggeredActions = new Set<string>();
+
 	let initialized = false;
 
 	/**
@@ -58,6 +62,14 @@ export namespace InputEchoController {
 	 */
 	export function DisableActionEcho(actionName: string) {
 		actionEchoConfigs.delete(actionName);
+		echoTriggeredActions.delete(actionName);
+	}
+
+	/**
+	 * Checks if an echo was triggered for the action this frame
+	 */
+	export function WasEchoTriggered(actionName: string): boolean {
+		return echoTriggeredActions.has(actionName);
 	}
 
 	/**
@@ -65,6 +77,9 @@ export namespace InputEchoController {
 	 */
 	function Update(deltaTime: number) {
 		const now = os.clock();
+
+		// Clear the echo triggered set at the start of each frame
+		echoTriggeredActions.clear();
 
 		for (const [actionName, config] of actionEchoConfigs) {
 			const pressed = ActionsController.IsPressed(actionName);
@@ -83,11 +98,8 @@ export namespace InputEchoController {
 					if (config.heldTime >= config.initialDelay) {
 						const timeSinceLastEcho = now - config.lastEchoTime;
 						if (timeSinceLastEcho >= config.repeatInterval) {
-							// Trigger echo event by releasing and re-pressing
-							ActionsController.Release(actionName);
-							task.wait(0); // Wait a frame
-							ActionsController.Press(actionName);
-
+							// Mark this action as echo-triggered this frame
+							echoTriggeredActions.add(actionName);
 							config.lastEchoTime = now;
 						}
 					}

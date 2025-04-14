@@ -319,6 +319,10 @@ Configures echo behavior for an action.
 
 Disables echo for an action.
 
+#### `WasEchoTriggered(actionName: string): boolean`
+
+Checks if an echo was triggered for the action this frame. Used internally by `ActionsController.IsJustPressed`.
+
 ## KeyCombinationController
 
 Handles detection and processing of key combinations (keyboard shortcuts).
