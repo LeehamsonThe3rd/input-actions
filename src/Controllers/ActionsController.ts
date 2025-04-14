@@ -5,6 +5,7 @@ import { ArrayTools, TableTools } from "@rbxts/tool_pack";
 import { IActionData } from "../Models/IActionData";
 import { InputKeyCode } from "../Models/InputKeyCode";
 import { ActionResources } from "../Resources/ActionResources";
+import { InputConfigController } from "./InputConfigController";
 
 /**
  * Controller for managing input actions
@@ -91,7 +92,9 @@ export namespace ActionsController {
 	export function IsPressed(action_name: string) {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return false;
-		return action_data.KeyBuffer[1] >= action_data.ActivationStrength;
+		// Use InputConfigController for activation threshold if available
+		const threshold = InputConfigController.GetActionActivationThreshold(action_name);
+		return action_data.KeyBuffer[1] >= threshold;
 	}
 
 	/**NOT RECOMMENDED TO USE (InternalOnly) Low level of checking if the action is pressed in this frame */
@@ -176,7 +179,7 @@ export namespace ActionsController {
 		key_codes: readonly InputKeyCode[] = [],
 	) {
 		if (actions_map.has(action_name)) {
-			warn(`Action ${action_name} already exist`);
+			warn(`Action ${action_name} already exists`);
 			return;
 		}
 
@@ -187,6 +190,10 @@ export namespace ActionsController {
 		});
 
 		actions_map.set(action_name, action_data);
+
+		// Register with InputConfigController
+		InputConfigController.SetActionActivationThreshold(action_name, activation_strength);
+
 		for (const key_code of key_codes) {
 			AddKeyCode(action_name, key_code);
 		}

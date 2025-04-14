@@ -16,6 +16,7 @@ export namespace InputActionsInitializerTools {
 		InitActionsAndInputManager();
 		InitInputController();
 		InitAdvancedControllers();
+		InitConfigController();
 	}
 
 	export function InitMouseController() {
@@ -39,5 +40,24 @@ export namespace InputActionsInitializerTools {
 		InputContextController.Initialize?.();
 		InputEchoController.Initialize();
 		KeyCombinationController.Initialize();
+	}
+
+	export function InitConfigController() {
+		// Nothing to initialize, but this function is provided for consistency
+		// and future potential initialization needs
+	}
+
+	/**
+	 * Trigger haptic feedback for a gamepad
+	 * @param preset Preset name or custom vibration parameters
+	 */
+	export function TriggerHapticFeedback(
+		preset: string | { largeMotor?: number; smallMotor?: number; duration?: number },
+	) {
+		if (typeof preset === "string") {
+			HapticFeedbackController.VibratePreset(preset);
+		} else {
+			HapticFeedbackController.Vibrate(preset.largeMotor, preset.smallMotor, preset.duration);
+		}
 	}
 }

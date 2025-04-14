@@ -37,6 +37,105 @@ const cleanup = InputManagerController.Subscribe(
 );
 ```
 
+## Input Contexts
+
+You can create different input mappings for different game states (like gameplay, menu, vehicle control):
+
+```ts
+import { InputContextController } from "@rbxts/input-actions";
+
+// Create different contexts
+InputContextController.CreateContext("gameplay");
+InputContextController.AddActionToContext("gameplay", "Jump", Enum.KeyCode.Space);
+InputContextController.AddActionToContext("gameplay", "Shoot", Enum.KeyCode.MouseButton1);
+
+InputContextController.CreateContext("menu");
+InputContextController.AddActionToContext("menu", "Accept", Enum.KeyCode.Return);
+InputContextController.AddActionToContext("menu", "Back", Enum.KeyCode.Escape);
+
+// Switch between contexts based on game state
+function openMenu() {
+	InputContextController.SetActiveContext("menu");
+}
+
+function closeMenu() {
+	InputContextController.SetActiveContext("gameplay");
+}
+```
+
+## Input Echo (Key Repeat)
+
+For menus and text input, you may want to repeat an action when a key is held down:
+
+```ts
+import { InputEchoController } from "@rbxts/input-actions";
+
+// Configure menu navigation to repeat after 0.4s initial delay, then every 0.1s
+InputEchoController.ConfigureActionEcho("MenuUp", 0.4, 0.1);
+InputEchoController.ConfigureActionEcho("MenuDown", 0.4, 0.1);
+
+// Later, disable echo if needed
+InputEchoController.DisableActionEcho("MenuUp");
+```
+
+## Key Combinations
+
+Register key combinations like Ctrl+S or Shift+R:
+
+```ts
+import { KeyCombinationController } from "@rbxts/input-actions";
+
+// Register Ctrl+S for saving
+KeyCombinationController.RegisterCombination("Save", Enum.KeyCode.S, [Enum.KeyCode.LeftControl]);
+
+// Check for the action like any other action
+if (ActionsController.IsJustPressed("Save")) {
+	saveGame();
+}
+```
+
+## Haptic Feedback
+
+Trigger controller vibration for immersive feedback:
+
+```ts
+import { HapticFeedbackController } from "@rbxts/input-actions";
+
+// Use a preset vibration pattern
+HapticFeedbackController.VibratePreset("success");
+
+// Or create a custom vibration
+HapticFeedbackController.Vibrate(
+	0.8, // Large motor (left) strength (0-1)
+	0.4, // Small motor (right) strength (0-1)
+	0.3, // Duration in seconds
+);
+
+// Register your own presets
+HapticFeedbackController.RegisterPreset("pickupItem", 0.3, 0.6, 0.15);
+
+// Stop all vibration immediately
+HapticFeedbackController.StopAll();
+```
+
+## Input Configuration
+
+Fine-tune input sensitivity and deadzones:
+
+```ts
+import { InputConfigController, ECustomKey } from "@rbxts/input-actions";
+
+// Set thumbstick deadzone (eliminates drift)
+InputConfigController.SetInputDeadzone(Enum.KeyCode.Thumbstick1, 0.2);
+
+// Require a stronger press for an action (like aiming)
+InputConfigController.SetActionActivationThreshold("Aim", 0.7);
+
+// Different deadzones for different directions
+InputConfigController.SetInputDeadzone(ECustomKey.Thumbstick1Up, 0.15);
+InputConfigController.SetInputDeadzone(ECustomKey.Thumbstick1Down, 0.25);
+```
+
 ## Mouse Control
 
 The MouseController provides advanced mouse control:

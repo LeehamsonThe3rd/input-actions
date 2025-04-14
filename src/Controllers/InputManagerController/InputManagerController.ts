@@ -5,6 +5,7 @@ import { EInputEventSubscriptionType } from "../../Models";
 import { ECustomKey } from "../../Models/ECustomKey";
 import { ActionResources } from "../../Resources/ActionResources";
 import { ActionsController } from "../ActionsController";
+import { InputConfigController } from "../InputConfigController";
 import InputEvent from "./InputEvent";
 import InputEventData from "./InputEventData";
 import InputSignal, { InputCallback } from "./InputSignal";
@@ -95,10 +96,15 @@ export namespace InputManagerController {
 	/**
 	 * Extracts a normalized press strength with deadzone handling for thumbsticks
 	 */
-	function ExtractThumbstickPressStrength(value: number, min: number, max: number) {
-		return math.abs(value) < ActionResources.DEFAULT_THUMBSTICK_DEAD_ZONE
-			? 0
-			: math.abs(math.clamp(value, min, max));
+	function ExtractThumbstickPressStrength(
+		value: number,
+		min: number,
+		max: number,
+		keyCode: InputKeyCode,
+	) {
+		// Use InputConfigController for deadzone settings
+		const deadzone = InputConfigController.GetInputDeadzone(keyCode);
+		return math.abs(value) < deadzone ? 0 : math.abs(math.clamp(value, min, max));
 	}
 
 	// Tracks the current press strength of all custom keys
@@ -128,10 +134,11 @@ export namespace InputManagerController {
 	// Strategies for processing different types of custom input
 	const custom_key_strategies = {
 		[Enum.KeyCode.Thumbstick1 as never]: (input: InputObject) => {
-			const left_strength = ExtractThumbstickPressStrength(input.Position.X, -1, 0);
-			const right_strength = ExtractThumbstickPressStrength(input.Position.X, 0, 1);
-			const up_strength = ExtractThumbstickPressStrength(input.Position.Y, 0, 1);
-			const down_strength = ExtractThumbstickPressStrength(input.Position.Y, -1, 0);
+			const keyCode = Enum.KeyCode.Thumbstick1;
+			const left_strength = ExtractThumbstickPressStrength(input.Position.X, -1, 0, keyCode);
+			const right_strength = ExtractThumbstickPressStrength(input.Position.X, 0, 1, keyCode);
+			const up_strength = ExtractThumbstickPressStrength(input.Position.Y, 0, 1, keyCode);
+			const down_strength = ExtractThumbstickPressStrength(input.Position.Y, -1, 0, keyCode);
 
 			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Left, left_strength);
 			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Right, right_strength);
@@ -139,10 +146,11 @@ export namespace InputManagerController {
 			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Down, down_strength);
 		},
 		[Enum.KeyCode.Thumbstick2 as never]: (input: InputObject) => {
-			const left_strength = ExtractThumbstickPressStrength(input.Position.X, -1, 0);
-			const right_strength = ExtractThumbstickPressStrength(input.Position.X, 0, 1);
-			const up_strength = ExtractThumbstickPressStrength(input.Position.Y, 0, 1);
-			const down_strength = ExtractThumbstickPressStrength(input.Position.Y, -1, 0);
+			const keyCode = Enum.KeyCode.Thumbstick2;
+			const left_strength = ExtractThumbstickPressStrength(input.Position.X, -1, 0, keyCode);
+			const right_strength = ExtractThumbstickPressStrength(input.Position.X, 0, 1, keyCode);
+			const up_strength = ExtractThumbstickPressStrength(input.Position.Y, 0, 1, keyCode);
+			const down_strength = ExtractThumbstickPressStrength(input.Position.Y, -1, 0, keyCode);
 
 			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Left, left_strength);
 			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Right, right_strength);
