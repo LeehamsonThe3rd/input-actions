@@ -4,11 +4,11 @@ import { InputKeyCode } from "../../Models/InputKeyCode";
 import { ActionResources } from "../../Resources/ActionResources";
 
 export default class InputEventData {
-	static FromInputKeyCode(input_key_code: InputKeyCode, user_input_type?: Enum.UserInputType) {
-		return new this(input_key_code, undefined, user_input_type);
+	static FromInputKeyCode(inputKeyCode: InputKeyCode, userInputType?: Enum.UserInputType) {
+		return new this(inputKeyCode, undefined, userInputType);
 	}
-	static FromAction(action_name: string) {
-		return new this(undefined, action_name);
+	static FromAction(actionName: string) {
+		return new this(undefined, actionName);
 	}
 
 	readonly InputKeyCode: InputKeyCode = Enum.UserInputType.None;
@@ -22,13 +22,9 @@ export default class InputEventData {
 	Position: Vector3 = Vector3.zero;
 	Delta: Vector3 = Vector3.zero;
 
-	private constructor(
-		keycode?: InputKeyCode,
-		action?: string,
-		user_input_type?: Enum.UserInputType,
-	) {
+	private constructor(keycode?: InputKeyCode, action?: string, userInputType?: Enum.UserInputType) {
 		this.InputKeyCode = keycode ?? this.InputKeyCode;
 		this.Action = action ?? this.Action;
-		this.UserInputType = user_input_type ?? this.UserInputType;
+		this.UserInputType = userInputType ?? this.UserInputType;
 	}
 }

@@ -45,29 +45,29 @@ export namespace InputConfigController {
 	export function GetInputDeadzone(inputKey: InputKeyCode): number {
 		return (
 			inputDeadzones.get(inputKey) ??
-			(isThumbstickInput(inputKey) ? ActionResources.DEFAULT_THUMBSTICK_DEAD_ZONE : 0)
+			(IsThumbstickInput(inputKey) ? ActionResources.DEFAULT_THUMBSTICK_DEAD_ZONE : 0)
 		);
 	}
+
+	// Check custom thumbstick keys
+	const thumbstickCustomKeys = [
+		ECustomKey.Thumbstick1Up,
+		ECustomKey.Thumbstick1Down,
+		ECustomKey.Thumbstick1Left,
+		ECustomKey.Thumbstick1Right,
+		ECustomKey.Thumbstick2Up,
+		ECustomKey.Thumbstick2Down,
+		ECustomKey.Thumbstick2Left,
+		ECustomKey.Thumbstick2Right,
+	];
 
 	/**
 	 * Checks if an input is a thumbstick-related input
 	 */
-	function isThumbstickInput(inputKey: InputKeyCode): boolean {
+	function IsThumbstickInput(inputKey: InputKeyCode): boolean {
 		if (inputKey === Enum.KeyCode.Thumbstick1 || inputKey === Enum.KeyCode.Thumbstick2) {
 			return true;
 		}
-
-		// Check custom thumbstick keys
-		const thumbstickCustomKeys = [
-			ECustomKey.Thumbstick1Up,
-			ECustomKey.Thumbstick1Down,
-			ECustomKey.Thumbstick1Left,
-			ECustomKey.Thumbstick1Right,
-			ECustomKey.Thumbstick2Up,
-			ECustomKey.Thumbstick2Down,
-			ECustomKey.Thumbstick2Left,
-			ECustomKey.Thumbstick2Right,
-		];
 
 		return thumbstickCustomKeys.includes(inputKey as ECustomKey);
 	}

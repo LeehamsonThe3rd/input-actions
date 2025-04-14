@@ -7,15 +7,15 @@ export namespace InputTypeController {
 	const INITIAL_WAIT_TIME = 1; // seconds
 	const INPUT_POLL_INTERVAL = 0.1; // seconds
 
-	const input_type_changed_event: BindableEvent<(input_type: EInputType) => void> = new Instance(
+	const inputTypeChangedEvent: BindableEvent<(inputType: EInputType) => void> = new Instance(
 		"BindableEvent",
 	);
-	export const OnInputTypeChanged = input_type_changed_event.Event;
+	export const OnInputTypeChanged = inputTypeChangedEvent.Event;
 
-	const device_type_changed_event: BindableEvent<(device_type: EDeviceType) => void> = new Instance(
+	const deviceTypeChangedEvent: BindableEvent<(deviceType: EDeviceType) => void> = new Instance(
 		"BindableEvent",
 	);
-	export const OnDeviceTypeChanged = device_type_changed_event.Event;
+	export const OnDeviceTypeChanged = deviceTypeChangedEvent.Event;
 
 	//TODO switch to the latest input type?
 	export function GetMainInputType() {
@@ -29,15 +29,15 @@ export namespace InputTypeController {
 
 	export function GetMainDeviceType() {
 		//vr is prioritased
-		if (vr_enabled) return EDeviceType.Vr;
+		if (vrEnabled) return EDeviceType.Vr;
 		//phone and tables are 2nd
-		else if (touch_enabled) {
+		else if (touchEnabled) {
 			//checks whether the jump button has the tablet size(120x120);
 			//phone has button size(70x70);
-			return jump_button_has_tablet_size ? EDeviceType.Tablet : EDeviceType.Phone;
+			return jumpButtonHasTabletSize ? EDeviceType.Tablet : EDeviceType.Phone;
 		}
 		//console is 3rd
-		else if (gamepad_enabled) return EDeviceType.Console;
+		else if (gamepadEnabled) return EDeviceType.Console;
 		//pc is 4th
 		return EDeviceType.Pc;
 	}
@@ -46,48 +46,48 @@ export namespace InputTypeController {
 	function FireOnInputChangedEvent() {
 		//gets new values
 		AsignValues();
-		input_type_changed_event.Fire(GetMainInputType());
-		device_type_changed_event.Fire(GetMainDeviceType());
+		inputTypeChangedEvent.Fire(GetMainInputType());
+		deviceTypeChangedEvent.Fire(GetMainDeviceType());
 	}
 
-	function ExecuteOnChanged(new_value: boolean, previos_value: boolean, callback: () => void) {
+	function ExecuteOnChanged(newValue: boolean, previousValue: boolean, callback: () => void) {
 		//calls the function if different
-		if (new_value === previos_value) return;
+		if (newValue === previousValue) return;
 		callback();
 		//tells that value changed, so it will tell only once
 		return true;
 	}
 
 	//will try to get the jump button
-	let jump_button: ImageButton | undefined;
+	let jumpButton: ImageButton | undefined;
 
-	let mouse_enabled = false;
-	let keyboard_enabled = false;
-	let gamepad_enabled = false;
-	let touch_enabled = false;
+	let mouseEnabled = false;
+	let keyboardEnabled = false;
+	let gamepadEnabled = false;
+	let touchEnabled = false;
 
-	let vr_enabled = false;
+	let vrEnabled = false;
 	/** https://devforum.roblox.com/t/how-can-i-tell-the-difference-between-a-mobile-and-tablet-player/1455628/8
 	 *  will be true if the jump button is 120 x 120
 	 */
-	let jump_button_has_tablet_size = false;
+	let jumpButtonHasTabletSize = false;
 
 	async function TryGetJumpButtonSize() {
-		const local_player = Players.LocalPlayer;
-		const player_gui = local_player.WaitForChild("PlayerGui");
+		const localPlayer = Players.LocalPlayer;
+		const playerGui = localPlayer.WaitForChild("PlayerGui");
 		//waits for touch gui for 20 seconds
 		//gui exist even if the character didnt spawn
-		const touch_gui = player_gui.WaitForChild("TouchGui", TOUCH_GUI_WAIT_TIMEOUT);
-		if (touch_gui === undefined) return;
-		const touch_control_frame = touch_gui.WaitForChild("TouchControlFrame");
+		const touchGui = playerGui.WaitForChild("TouchGui", TOUCH_GUI_WAIT_TIMEOUT);
+		if (touchGui === undefined) return;
+		const touchControlFrame = touchGui.WaitForChild("TouchControlFrame");
 		//jump button will always exist;
-		jump_button = <ImageButton>touch_control_frame.WaitForChild("JumpButton");
+		jumpButton = <ImageButton>touchControlFrame.WaitForChild("JumpButton");
 	}
 
 	/**will return true if the jump button is 120x120;*/
 	function CheckJumpButtonHasTabletSize() {
-		if (jump_button === undefined) return false;
-		return jump_button.Size === UDim2.fromOffset(120, 120);
+		if (jumpButton === undefined) return false;
+		return jumpButton.Size === UDim2.fromOffset(120, 120);
 	}
 
 	//compares the old to the new ones
@@ -95,34 +95,34 @@ export namespace InputTypeController {
 		//if gets true means input type changed, will stop the function to execute only once
 		if (
 			ExecuteOnChanged(
-				jump_button_has_tablet_size,
+				jumpButtonHasTabletSize,
 				CheckJumpButtonHasTabletSize(),
 				FireOnInputChangedEvent,
 			)
 		)
 			return;
-		if (ExecuteOnChanged(vr_enabled, VRService.VREnabled, FireOnInputChangedEvent)) return;
+		if (ExecuteOnChanged(vrEnabled, VRService.VREnabled, FireOnInputChangedEvent)) return;
 
-		if (ExecuteOnChanged(mouse_enabled, UserInputService.MouseEnabled, FireOnInputChangedEvent))
+		if (ExecuteOnChanged(mouseEnabled, UserInputService.MouseEnabled, FireOnInputChangedEvent))
 			return;
 		if (
-			ExecuteOnChanged(keyboard_enabled, UserInputService.KeyboardEnabled, FireOnInputChangedEvent)
+			ExecuteOnChanged(keyboardEnabled, UserInputService.KeyboardEnabled, FireOnInputChangedEvent)
 		)
 			return;
-		if (ExecuteOnChanged(gamepad_enabled, UserInputService.GamepadEnabled, FireOnInputChangedEvent))
+		if (ExecuteOnChanged(gamepadEnabled, UserInputService.GamepadEnabled, FireOnInputChangedEvent))
 			return;
-		if (ExecuteOnChanged(touch_enabled, UserInputService.TouchEnabled, FireOnInputChangedEvent))
+		if (ExecuteOnChanged(touchEnabled, UserInputService.TouchEnabled, FireOnInputChangedEvent))
 			return;
 	}
 
 	function AsignValues() {
-		jump_button_has_tablet_size = CheckJumpButtonHasTabletSize();
-		vr_enabled = VRService.VREnabled;
+		jumpButtonHasTabletSize = CheckJumpButtonHasTabletSize();
+		vrEnabled = VRService.VREnabled;
 
-		mouse_enabled = UserInputService.MouseEnabled;
-		keyboard_enabled = UserInputService.KeyboardEnabled;
-		gamepad_enabled = UserInputService.GamepadEnabled;
-		touch_enabled = UserInputService.TouchEnabled;
+		mouseEnabled = UserInputService.MouseEnabled;
+		keyboardEnabled = UserInputService.KeyboardEnabled;
+		gamepadEnabled = UserInputService.GamepadEnabled;
+		touchEnabled = UserInputService.TouchEnabled;
 	}
 
 	let initialized = false;

@@ -2,14 +2,14 @@ import { Players, RunService, Workspace } from "@rbxts/services";
 import { ICameraInputModule } from "./CameraInput/ICameraInputModule";
 
 export namespace InputController {
-	let camera_input: ICameraInputModule | undefined;
+	let cameraInput: ICameraInputModule | undefined;
 	function GetCameraInput(): ICameraInputModule {
-		if (camera_input !== undefined) return camera_input;
-		camera_input = import("./CameraInput").expect();
-		return camera_input;
+		if (cameraInput !== undefined) return cameraInput;
+		cameraInput = import("./CameraInput").expect();
+		return cameraInput;
 	}
 
-	const local_player = Players.LocalPlayer;
+	const localPlayer = Players.LocalPlayer;
 	interface IControlModule {
 		GetMoveVector(): Vector3;
 		Enable(enabled?: boolean): void;
@@ -20,17 +20,17 @@ export namespace InputController {
 		GetControls(): IControlModule;
 	}
 
-	let player_module: IPlayerModule;
-	let control_module: IControlModule;
+	let playerModule: IPlayerModule;
+	let controlModule: IControlModule;
 
-	let last_zoom_delta = 0;
-	let last_rotation = Vector2.zero;
+	let lastZoomDelta = 0;
+	let lastRotation = Vector2.zero;
 	function GetRawInputVector() {
-		return control_module.GetMoveVector();
+		return controlModule.GetMoveVector();
 	}
 
 	export function ControlSetEnabled(value: boolean) {
-		player_module.GetControls().Enable(value);
+		playerModule.GetControls().Enable(value);
 	}
 
 	export function MouseInputSetEnabled(value: boolean) {
@@ -38,46 +38,46 @@ export namespace InputController {
 	}
 
 	export function GetRotation() {
-		return last_rotation;
+		return lastRotation;
 	}
 
 	export function GetZoomDelta() {
-		return last_zoom_delta;
+		return lastZoomDelta;
 	}
 
 	//normalized will return input.Unit
 	//follow_full_rotation will apply pitch and roll of the camera cframe
 	export function GetMoveVector(
-		relative_camera?: boolean,
+		relativeCamera?: boolean,
 		normalized?: boolean,
-		follow_full_rotation?: boolean,
+		followFullRotation?: boolean,
 	) {
-		let input_vector = GetRawInputVector();
+		let inputVector = GetRawInputVector();
 
 		//skips the calculation if input vector is Vector3.zero;
-		if (input_vector === Vector3.zero) return input_vector;
+		if (inputVector === Vector3.zero) return inputVector;
 
 		//normalized vector;
-		input_vector = normalized ? input_vector.Unit : input_vector;
+		inputVector = normalized ? inputVector.Unit : inputVector;
 
-		if (!relative_camera) return input_vector;
+		if (!relativeCamera) return inputVector;
 
-		const current_camera = Workspace.CurrentCamera!;
+		const currentCamera = Workspace.CurrentCamera!;
 
 		//follows the pitch and roll of the camera as well
-		if (follow_full_rotation) return current_camera.CFrame.Rotation.PointToWorldSpace(input_vector);
+		if (followFullRotation) return currentCamera.CFrame.Rotation.PointToWorldSpace(inputVector);
 
-		const [pitch, yaw, roll] = current_camera.CFrame.ToOrientation();
+		const [pitch, yaw, roll] = currentCamera.CFrame.ToOrientation();
 		//takes the yaw rotation of the camera;
-		const rotation_cframe = CFrame.fromAxisAngle(Vector3.yAxis, yaw);
+		const rotationCframe = CFrame.fromAxisAngle(Vector3.yAxis, yaw);
 		//rotates the vector around y axis;
-		return rotation_cframe.PointToWorldSpace(input_vector);
+		return rotationCframe.PointToWorldSpace(inputVector);
 	}
 
-	function UpdateInput(delta_time: number) {
+	function UpdateInput(deltaTime: number) {
 		//--fetching the delta from input
-		last_zoom_delta = GetCameraInput().getZoomDelta();
-		last_rotation = GetCameraInput().getRotation(delta_time);
+		lastZoomDelta = GetCameraInput().getZoomDelta();
+		lastRotation = GetCameraInput().getRotation(deltaTime);
 		GetCameraInput().resetInputForFrameEnd();
 	}
 
@@ -85,11 +85,11 @@ export namespace InputController {
 	export function Initialize() {
 		if (initialized) return;
 		initialized = true;
-		const player_scripts = local_player.WaitForChild("PlayerScripts") as Folder;
-		const player_module_script = player_scripts.WaitForChild("PlayerModule") as ModuleScript;
+		const playerScripts = localPlayer.WaitForChild("PlayerScripts") as Folder;
+		const playerModuleScript = playerScripts.WaitForChild("PlayerModule") as ModuleScript;
 
-		player_module = require(player_module_script) as IPlayerModule;
-		control_module = player_module.GetControls();
+		playerModule = require(playerModuleScript) as IPlayerModule;
+		controlModule = playerModule.GetControls();
 		GetCameraInput().setInputEnabled(true);
 		//starts update input cycle
 		RunService.BindToRenderStep("FetchInput", Enum.RenderPriority.Input.Value + 1, UpdateInput);

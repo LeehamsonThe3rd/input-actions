@@ -29,17 +29,17 @@ export default class InputEvent {
 	/** Timestamp when this event was created */
 	readonly Timestamp: number;
 
-	constructor(input_event_action: InputEventData) {
+	constructor(inputEventAction: InputEventData) {
 		//fetching data from the input event action
-		this.InputKeyCode = input_event_action.InputKeyCode;
-		this.Position = input_event_action.Position;
-		this.Delta = input_event_action.Delta;
-		this.PressStrength = input_event_action.PressStrength;
-		this.UserInputType = input_event_action.UserInputType;
-		this.Changed = input_event_action.Changed;
+		this.InputKeyCode = inputEventAction.InputKeyCode;
+		this.Position = inputEventAction.Position;
+		this.Delta = inputEventAction.Delta;
+		this.PressStrength = inputEventAction.PressStrength;
+		this.UserInputType = inputEventAction.UserInputType;
+		this.Changed = inputEventAction.Changed;
 		this.Timestamp = os.clock();
 
-		const action = input_event_action.Action;
+		const action = inputEventAction.Action;
 		if (action !== ActionResources.NONE_ACTION) {
 			this.Actions = [action];
 		} else this.Actions = table.clone(ActionsController.GetActionsFromKeyCode(this.InputKeyCode));
@@ -58,40 +58,40 @@ export default class InputEvent {
 	/**
 	 * Check if this event is associated with a specific action
 	 */
-	IsAction(action_name: string): boolean {
-		return this.Actions.includes(action_name);
+	IsAction(actionName: string): boolean {
+		return this.Actions.includes(actionName);
 	}
 
 	/**
 	 * Check if an action associated with this event is currently pressed
 	 */
-	IsActionPressed(action_name: string): boolean {
-		if (!this.Actions.includes(action_name)) return false;
-		return ActionsController.IsPressedThisFrame(action_name);
+	IsActionPressed(actionName: string): boolean {
+		if (!this.Actions.includes(actionName)) return false;
+		return ActionsController.IsPressedThisFrame(actionName);
 	}
 
 	/**
 	 * Check if an action associated with this event was just pressed this frame
 	 */
-	IsActionJustPressed(action_name: string): boolean {
-		if (!this.Actions.includes(action_name)) return false;
-		return ActionsController.IsJustPressedThisFrame(action_name);
+	IsActionJustPressed(actionName: string): boolean {
+		if (!this.Actions.includes(actionName)) return false;
+		return ActionsController.IsJustPressedThisFrame(actionName);
 	}
 
 	/**
 	 * Check if an action associated with this event is currently released
 	 */
-	IsActionReleased(action_name: string): boolean {
-		if (!this.Actions.includes(action_name)) return false;
-		return ActionsController.IsReleasedThisFrame(action_name);
+	IsActionReleased(actionName: string): boolean {
+		if (!this.Actions.includes(actionName)) return false;
+		return ActionsController.IsReleasedThisFrame(actionName);
 	}
 
 	/**
 	 * Check if an action associated with this event was just released this frame
 	 */
-	IsActionJustReleased(action_name: string): boolean {
-		if (!this.Actions.includes(action_name)) return false;
-		return ActionsController.IsJustReleasedThisFrame(action_name);
+	IsActionJustReleased(actionName: string): boolean {
+		if (!this.Actions.includes(actionName)) return false;
+		return ActionsController.IsJustReleasedThisFrame(actionName);
 	}
 
 	/**
@@ -104,15 +104,15 @@ export default class InputEvent {
 	/**
 	 * Check if this input is pressed (strength >= activation threshold)
 	 */
-	IsPressed(activation_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH): boolean {
-		return this.PressStrength >= activation_strength;
+	IsPressed(activationStrength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH): boolean {
+		return this.PressStrength >= activationStrength;
 	}
 
 	/**
 	 * Check if this input is released (strength < activation threshold)
 	 */
-	IsReleased(activation_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH) {
-		return this.PressStrength < activation_strength;
+	IsReleased(activationStrength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH) {
+		return this.PressStrength < activationStrength;
 	}
 
 	/**

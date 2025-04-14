@@ -14,64 +14,64 @@ export class InputContext {
 	/**
 	 * Add an input map to this context
 	 */
-	public add(actionName: string, map: IInputMap): this {
+	public Add(actionName: string, map: IInputMap): this {
 		this.maps.set(actionName, map);
 
 		if (this.assigned) {
-			this.assignSingleMap(actionName, map);
+			this.AssignSingleMap(actionName, map);
 		}
 
 		return this;
 	}
 
-	public remove(actionName: string): this {
+	public Remove(actionName: string): this {
 		if (this.assigned && this.maps.has(actionName)) {
-			this.unassignSingleMap(actionName);
+			this.UnassignSingleMap(actionName);
 		}
 
 		this.maps.delete(actionName);
 		return this;
 	}
 
-	public assign(): this {
+	public Assign(): this {
 		if (this.assigned) return this;
 
 		for (const [actionName, map] of this.maps) {
-			this.assignSingleMap(actionName, map);
+			this.AssignSingleMap(actionName, map);
 		}
 
 		this.assigned = true;
 		return this;
 	}
 
-	public unassign(): this {
+	public Unassign(): this {
 		if (!this.assigned) return this;
 
 		for (const [actionName] of this.maps) {
-			this.unassignSingleMap(actionName);
+			this.UnassignSingleMap(actionName);
 		}
 
 		this.assigned = false;
 		return this;
 	}
 
-	public isAssigned(): boolean {
+	public IsAssigned(): boolean {
 		return this.assigned;
 	}
 
-	public getMaps(): ReadonlyMap<string, IInputMap> {
+	public GetMaps(): ReadonlyMap<string, IInputMap> {
 		return this.maps;
 	}
 
-	public getMap(actionName: string): IInputMap | undefined {
+	public GetMap(actionName: string): IInputMap | undefined {
 		return this.maps.get(actionName);
 	}
 
-	public getName(): string | undefined {
+	public GetName(): string | undefined {
 		return this.name;
 	}
 
-	private assignSingleMap(actionName: string, map: IInputMap): void {
+	private AssignSingleMap(actionName: string, map: IInputMap): void {
 		if (!ActionsController.IsExisting(actionName)) {
 			ActionsController.Add(actionName);
 		}
@@ -85,7 +85,7 @@ export class InputContext {
 		}
 	}
 
-	private unassignSingleMap(actionName: string): void {
+	private UnassignSingleMap(actionName: string): void {
 		const map = this.maps.get(actionName);
 		if (!map) return;
 
@@ -106,7 +106,7 @@ export namespace InputContextController {
 	const contexts = new Map<string, InputContext>();
 	const globalContext = new InputContext("Global");
 
-	export function createContext(name: string): InputContext {
+	export function CreateContext(name: string): InputContext {
 		if (contexts.has(name)) {
 			warn(`Context '${name}' already exists, returning existing one.`);
 			return contexts.get(name)!;
@@ -117,37 +117,37 @@ export namespace InputContextController {
 		return context;
 	}
 
-	export function getContext(name: string): InputContext | undefined {
+	export function GetContext(name: string): InputContext | undefined {
 		return contexts.get(name);
 	}
 
-	export function getGlobalContext(): InputContext {
+	export function GetGlobalContext(): InputContext {
 		return globalContext;
 	}
 
-	export function getAllContexts(): ReadonlyMap<string, InputContext> {
+	export function GetAllContexts(): ReadonlyMap<string, InputContext> {
 		return contexts;
 	}
 
-	export function assignContext(name: string): boolean {
+	export function AssignContext(name: string): boolean {
 		const context = contexts.get(name);
 		if (!context) {
 			warn(`Context '${name}' does not exist.`);
 			return false;
 		}
 
-		context.assign();
+		context.Assign();
 		return true;
 	}
 
-	export function unassignContext(name: string): boolean {
+	export function UnassignContext(name: string): boolean {
 		const context = contexts.get(name);
 		if (!context) {
 			warn(`Context '${name}' does not exist.`);
 			return false;
 		}
 
-		context.unassign();
+		context.Unassign();
 		return true;
 	}
 }

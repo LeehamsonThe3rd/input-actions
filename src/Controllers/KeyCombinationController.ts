@@ -11,11 +11,11 @@ import { InputManagerController } from "./InputManagerController/InputManagerCon
 export namespace KeyCombinationController {
 	interface KeyCombination {
 		/** Main key in the combination */
-		mainKey: InputKeyCode;
+		MainKey: InputKeyCode;
 		/** Modifier keys required (AND relationship) */
-		modifiers: Enum.KeyCode[];
+		Modifiers: Enum.KeyCode[];
 		/** Action to trigger when combination is detected */
-		actionName: string;
+		ActionName: string;
 	}
 
 	const keyCombinations: KeyCombination[] = [];
@@ -49,9 +49,9 @@ export namespace KeyCombinationController {
 
 		// Register the combination
 		keyCombinations.push({
-			mainKey,
-			modifiers,
-			actionName,
+			MainKey: mainKey,
+			Modifiers: modifiers,
+			ActionName: actionName,
 		});
 	}
 
@@ -76,14 +76,14 @@ export namespace KeyCombinationController {
 
 		// Check each registered combination
 		for (const combo of keyCombinations) {
-			if (inputEvent.InputKeyCode === combo.mainKey) {
-				if (AreModifiersPressed(combo.modifiers)) {
+			if (inputEvent.InputKeyCode === combo.MainKey) {
+				if (AreModifiersPressed(combo.Modifiers)) {
 					// Combination detected, trigger the action
-					ActionsController.Press(combo.actionName);
+					ActionsController.Press(combo.ActionName);
 
 					// Release it after a brief delay to simulate a press
 					task.delay(InputPriorityResources.KEY_COMBINATION_RELEASE_DELAY, () => {
-						ActionsController.Release(combo.actionName);
+						ActionsController.Release(combo.ActionName);
 					});
 
 					// Sink the input to prevent the main key from triggering its normal action

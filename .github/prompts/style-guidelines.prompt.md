@@ -23,7 +23,7 @@ function Test(some_variable: number) {
 ```
 
 - Use **`PascalCase`** for public variables or variables that are getting exported (in classes, namespaces and global space)
-- Use **`_camelCaseWithUnderscore`** for private variables in classes
+- Use **`_camelCaseWithUnderscore`** for private variables in classes (NOT NAMESPACES)
 
 ### Classes
 

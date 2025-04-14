@@ -7,19 +7,20 @@ import { ActionsController } from "./ActionsController";
 
 export namespace MouseController {
 	//the stacks should be sorted by priority all the time
-	const locked_center_priorities_stack: number[] = [];
-	const unlocked_stack: number[] = [];
-	const locked_at_position_stack: number[] = [];
+	const lockedCenterPrioritiesStack: number[] = [];
+	const unlockedStack: number[] = [];
+	const lockedAtPositionStack: number[] = [];
 
-	const default_mouse_lock_action_priorities = {
+	const DEFAULT_MOUSE_LOCK_ACTION_PRIORITIES = {
 		[EMouseLockAction.UnlockMouse]: EMouseLockActionPriority.UnlockMouse,
 		[EMouseLockAction.LockMouseCenter]: EMouseLockActionPriority.LockMouseCenter,
 		[EMouseLockAction.LockMouseAtPosition]: EMouseLockActionPriority.LockMouseAtPosition,
 	};
-	const mouse_lock_action_stacks = {
-		[EMouseLockAction.UnlockMouse]: unlocked_stack,
-		[EMouseLockAction.LockMouseCenter]: locked_center_priorities_stack,
-		[EMouseLockAction.LockMouseAtPosition]: locked_at_position_stack,
+
+	const mouseLockActionStacks = {
+		[EMouseLockAction.UnlockMouse]: unlockedStack,
+		[EMouseLockAction.LockMouseCenter]: lockedCenterPrioritiesStack,
+		[EMouseLockAction.LockMouseAtPosition]: lockedAtPositionStack,
 	};
 
 	export class MouseLockAction {
@@ -27,16 +28,16 @@ export namespace MouseController {
 
 		constructor(
 			private readonly action_: EMouseLockAction,
-			private readonly priority_: number = default_mouse_lock_action_priorities[action_],
+			private readonly priority_: number = DEFAULT_MOUSE_LOCK_ACTION_PRIORITIES[action_],
 		) {}
 
 		SetActive(active: boolean) {
 			if (this.active_ === active) return;
 			this.active_ = active;
-			const stack = mouse_lock_action_stacks[this.action_];
+			const stack = mouseLockActionStacks[this.action_];
 			if (active) {
-				ArrayTools.SortedInsert(stack, this.priority_, (current_value, b) => {
-					return current_value >= b;
+				ArrayTools.SortedInsert(stack, this.priority_, (currentValue, b) => {
+					return currentValue >= b;
 				});
 				return;
 			}
@@ -48,14 +49,14 @@ export namespace MouseController {
 	/**during the strict mode the mouse e.g if mouse should be visible and unlocked, it will ensure that it will be unlocked all the time
 	 * without it, mouse behaviour and visibility can be changed during the process and action like unlock the mouse will be applied only at change
 	 */
-	const strict_mode = {
+	const StrictMode = {
 		[EMouseLockAction.LockMouseAtPosition]: false,
 		[EMouseLockAction.LockMouseCenter]: false,
 		[EMouseLockAction.UnlockMouse]: false,
 	};
 
 	export function SetMouseLockActionStrictMode(action: EMouseLockAction, value: boolean) {
-		strict_mode[action] = value;
+		StrictMode[action] = value;
 	}
 
 	function GetCurrentMouseLockAction() {
@@ -66,17 +67,17 @@ export namespace MouseController {
 			return EMouseLockAction.UnlockMouse;
 
 		//sets unlock mouse on top
-		const unlock_mouse_max_priority = unlocked_stack[0] ?? 0;
-		const locked_center_max_priority = locked_center_priorities_stack[0] ?? -1;
-		const locked_at_position_max_priority = locked_at_position_stack[0] ?? -1;
+		const unlockMouseMaxPriority = unlockedStack[0] ?? 0;
+		const lockedCenterMaxPriority = lockedCenterPrioritiesStack[0] ?? -1;
+		const lockedAtPositionMaxPriority = lockedAtPositionStack[0] ?? -1;
 
 		if (
-			unlock_mouse_max_priority >= locked_at_position_max_priority &&
-			unlock_mouse_max_priority >= locked_center_max_priority
+			unlockMouseMaxPriority >= lockedAtPositionMaxPriority &&
+			unlockMouseMaxPriority >= lockedCenterMaxPriority
 		)
 			return EMouseLockAction.UnlockMouse;
 
-		if (locked_center_max_priority >= locked_at_position_max_priority)
+		if (lockedCenterMaxPriority >= lockedAtPositionMaxPriority)
 			return EMouseLockAction.LockMouseCenter;
 
 		return EMouseLockAction.LockMouseAtPosition;
@@ -95,13 +96,13 @@ export namespace MouseController {
 		}
 	}
 
-	let current_action: EMouseLockAction;
-	function SetMouseLockAction(mouse_lock_action: EMouseLockAction) {
-		const is_strict_mode = strict_mode[mouse_lock_action];
+	let currentAction: EMouseLockAction;
+	function SetMouseLockAction(mouseLockAction: EMouseLockAction) {
+		const isStrictMode = StrictMode[mouseLockAction];
 		//dont apply changes if strict mode is not enabled
-		if (!is_strict_mode && current_action === mouse_lock_action) return;
-		current_action = mouse_lock_action;
-		ApplyAction(mouse_lock_action);
+		if (!isStrictMode && currentAction === mouseLockAction) return;
+		currentAction = mouseLockAction;
+		ApplyAction(mouseLockAction);
 	}
 
 	let enabled = true;

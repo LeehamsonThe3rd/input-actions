@@ -59,7 +59,7 @@ export namespace InputManagerController {
 
 	/**
 	 * Parse and process an input event
-	 * @param input_event_data The raw input event data
+	 * @param inputEventData The raw input event data
 	 * @returns The result of processing the event
 	 */
 	export function ParseInputEvent(inputEventData: InputEventData) {
@@ -77,8 +77,8 @@ export namespace InputManagerController {
 		strength: number,
 		force: boolean = false,
 	) {
-		if (!force && customKeyPressStrengths[customKey] === strength) return;
-		customKeyPressStrengths[customKey] = strength;
+		if (!force && CustomKeyPressStrengths[customKey] === strength) return;
+		CustomKeyPressStrengths[customKey] = strength;
 
 		const inputEventData = InputEventData.FromInputKeyCode(customKey, input.UserInputType);
 		inputEventData.Position = input.Position;
@@ -96,7 +96,7 @@ export namespace InputManagerController {
 	}
 
 	// Tracks the current press strength of all custom keys
-	const customKeyPressStrengths = identity<Record<ECustomKey, number>>({
+	const CustomKeyPressStrengths = identity<Record<ECustomKey, number>>({
 		[ECustomKey.Thumbstick1Left]: 0,
 		[ECustomKey.Thumbstick1Right]: 0,
 		[ECustomKey.Thumbstick1Up]: 0,
@@ -120,7 +120,7 @@ export namespace InputManagerController {
 	type CustomKeyStrategy = (input: InputObject) => void;
 
 	// Strategies for processing different types of custom input
-	const customKeyStrategies = {
+	const CustomKeyStrategies = {
 		[Enum.KeyCode.Thumbstick1 as never]: (input: InputObject) => {
 			const keyCode = Enum.KeyCode.Thumbstick1;
 			const position = new Vector2(input.Position.X, input.Position.Y);
@@ -128,10 +128,10 @@ export namespace InputManagerController {
 
 			const directions = ThumbstickHelper.ProcessThumbstick(position, deadzone);
 
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Left, directions.left);
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Right, directions.right);
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Up, directions.up);
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Down, directions.down);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Left, directions.Left);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Right, directions.Right);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Up, directions.Up);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick1Down, directions.Down);
 		},
 		[Enum.KeyCode.Thumbstick2 as never]: (input: InputObject) => {
 			const keyCode = Enum.KeyCode.Thumbstick2;
@@ -140,10 +140,10 @@ export namespace InputManagerController {
 
 			const directions = ThumbstickHelper.ProcessThumbstick(position, deadzone);
 
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Left, directions.left);
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Right, directions.right);
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Up, directions.up);
-			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Down, directions.down);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Left, directions.Left);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Right, directions.Right);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Up, directions.Up);
+			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Down, directions.Down);
 		},
 		[Enum.UserInputType.MouseWheel as never]: (input: InputObject) => {
 			const downStrength = ExtractPressStrength(input.Position.Z, -1, 0);
@@ -177,7 +177,7 @@ export namespace InputManagerController {
 	function CheckAndParseIfCustomInputKeyCode(input: InputObject) {
 		if (input.UserInputState !== Enum.UserInputState.Change) return;
 		const inputKeyCode = GetInputKeyCode(input);
-		const strategy = customKeyStrategies[inputKeyCode as never] as CustomKeyStrategy | undefined;
+		const strategy = CustomKeyStrategies[inputKeyCode as never] as CustomKeyStrategy | undefined;
 		strategy?.(input);
 	}
 

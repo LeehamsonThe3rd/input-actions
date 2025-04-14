@@ -18,11 +18,11 @@ export namespace InputMapController {
 
 	const registeredInputMaps = new Map<string, IInputMap>();
 
-	export function get(name: string) {
+	export function Get(name: string) {
 		return registeredInputMaps.get(name);
 	}
 
-	function getInputKeyCodeByCurrentInputType(inputMapName: string): InputKeyCode | undefined {
+	function GetInputKeyCodeByCurrentInputType(inputMapName: string): InputKeyCode | undefined {
 		const inputMap = registeredInputMaps.get(inputMapName);
 		if (inputMap === undefined) return undefined;
 		const currentInputType = InputTypeController.GetMainInputType();
@@ -30,17 +30,17 @@ export namespace InputMapController {
 		if (currentInputType === EInputType.KeyboardAndMouse) return inputMap.KeyboardAndMouse;
 	}
 
-	export function getVisualData(
+	export function GetVisualData(
 		inputMapName: string,
 		useCustomImages: boolean = true,
 	): IVisualInputKeyCodeData {
-		return getVisualInputKeyCodeData(
-			getInputKeyCodeByCurrentInputType(inputMapName),
+		return GetVisualInputKeyCodeData(
+			GetInputKeyCodeByCurrentInputType(inputMapName),
 			useCustomImages,
 		);
 	}
 
-	export function getVisualInputKeyCodeData(
+	export function GetVisualInputKeyCodeData(
 		inputKeyCode?: InputKeyCode,
 		useCustomImages: boolean = true,
 	): IVisualInputKeyCodeData {
@@ -65,7 +65,7 @@ export namespace InputMapController {
 		});
 	}
 
-	export function add(actionName: string, inputMap: IInputMap) {
+	export function Add(actionName: string, inputMap: IInputMap) {
 		if (registeredInputMaps.has(actionName)) {
 			warn(`${actionName} already exists`);
 			return;
@@ -81,7 +81,7 @@ export namespace InputMapController {
 			ActionsController.AddKeyCode(actionName, inputMap.KeyboardAndMouse);
 	}
 
-	export function remove(actionName: string, eraseAction: boolean = false) {
+	export function Remove(actionName: string, eraseAction: boolean = false) {
 		const inputMap = registeredInputMaps.get(actionName);
 		if (inputMap === undefined) {
 			warn(`${actionName} doesn't exist`);
@@ -99,23 +99,23 @@ export namespace InputMapController {
 		registeredInputMaps.delete(actionName);
 	}
 
-	export function getDefaultInputMaps() {
+	export function GetDefaultInputMaps() {
 		return DefaultInputMaps;
 	}
 
-	export function addDefaultInputMaps() {
-		DefaultInputMaps.applyDefaultMaps();
+	export function AddDefaultInputMaps() {
+		DefaultInputMaps.ApplyDefaultMaps();
 	}
 
-	export function getContextSystem() {
+	export function GetContextController() {
 		return InputContextController;
 	}
 
-	export function createContext(name: string) {
-		return InputContextController.createContext(name);
+	export function CreateContext(name: string) {
+		return InputContextController.CreateContext(name);
 	}
 
-	export function getGlobalContext() {
-		return InputContextController.getGlobalContext();
+	export function GetGlobalContext() {
+		return InputContextController.GetGlobalContext();
 	}
 }

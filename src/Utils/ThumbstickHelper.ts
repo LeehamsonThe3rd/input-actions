@@ -17,20 +17,22 @@ export namespace ThumbstickHelper {
 		return math.abs(math.clamp(value < 0 ? min : max, 0, 1)) * adjustedValue;
 	}
 
+	interface IThumbstickPressData {
+		Up: number;
+		Down: number;
+		Left: number;
+		Right: number;
+	}
+
 	export function ProcessThumbstick(
 		position: Vector2,
 		deadZone: number = DEFAULT_DEAD_ZONE,
-	): {
-		up: number;
-		down: number;
-		left: number;
-		right: number;
-	} {
+	): IThumbstickPressData {
 		return {
-			left: ExtractDirectionalStrength(position.X, -1, 0, deadZone),
-			right: ExtractDirectionalStrength(position.X, 0, 1, deadZone),
-			up: ExtractDirectionalStrength(position.Y, 0, 1, deadZone),
-			down: ExtractDirectionalStrength(position.Y, -1, 0, deadZone),
+			Left: ExtractDirectionalStrength(position.X, -1, 0, deadZone),
+			Right: ExtractDirectionalStrength(position.X, 0, 1, deadZone),
+			Up: ExtractDirectionalStrength(position.Y, 0, 1, deadZone),
+			Down: ExtractDirectionalStrength(position.Y, -1, 0, deadZone),
 		};
 	}
 }

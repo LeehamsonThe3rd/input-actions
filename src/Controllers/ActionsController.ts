@@ -17,9 +17,9 @@ import { InputEchoController } from "./InputEchoController";
  */
 export namespace ActionsController {
 	// Maps action names to their data
-	const actions_map = new Map<string, IActionData>();
+	const actionsMap = new Map<string, IActionData>();
 	// Maps input key codes to the actions they trigger
-	const key_code_to_actions_references = new Map<InputKeyCode, string[]>();
+	const keyCodeToActionsReferences = new Map<InputKeyCode, string[]>();
 
 	let initialized = false;
 	/**
@@ -40,37 +40,34 @@ export namespace ActionsController {
 	 * Executes a callback with the action data for a given action name
 	 * Warns if the action doesn't exist
 	 */
-	function ExecuteWithActionData(
-		action_name: string,
-		callback: (action_data: IActionData) => void,
-	) {
-		const action_data = GetActionData(action_name);
-		if (action_data !== undefined) {
-			callback(action_data);
+	function ExecuteWithActionData(actionName: string, callback: (actionData: IActionData) => void) {
+		const actionData = GetActionData(actionName);
+		if (actionData !== undefined) {
+			callback(actionData);
 			return;
 		}
-		warn(`Tries to execute with non-existent action: ${action_name}`);
+		warn(`Tries to execute with non-existent action: ${actionName}`);
 	}
 
 	/**
 	 * Gets the action data for a given action name
 	 * Warns if the action doesn't exist
 	 */
-	function GetActionData(action_name: string): IActionData | undefined {
-		const action_data = actions_map.get(action_name);
-		if (action_data === undefined) {
-			warn(`Action: ${action_name} doesn't exist`);
+	function GetActionData(actionName: string): IActionData | undefined {
+		const actionData = actionsMap.get(actionName);
+		if (actionData === undefined) {
+			warn(`Action: ${actionName} doesn't exist`);
 		}
 
-		return action_data;
+		return actionData;
 	}
 
 	/**
 	 * Sets an action as pressed with the given strength
 	 */
-	export function Press(action_name: string, strength: number = 1) {
-		ExecuteWithActionData(action_name, (action_table) => {
-			action_table.KeyBuffer[EInputBufferIndex.Current] = strength;
+	export function Press(actionName: string, strength: number = 1) {
+		ExecuteWithActionData(actionName, (actionTable) => {
+			actionTable.KeyBuffer[EInputBufferIndex.Current] = strength;
 		});
 	}
 
@@ -78,85 +75,85 @@ export namespace ActionsController {
 	 * Gets the current press strength of an action
 	 * @returns Press strength between 0 and 1, or 0 if action doesn't exist
 	 */
-	export function GetPressStrength(action_name: string): number {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return 0;
-		return action_data.KeyBuffer[EInputBufferIndex.Previous];
+	export function GetPressStrength(actionName: string): number {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return 0;
+		return actionData.KeyBuffer[EInputBufferIndex.Previous];
 	}
 
-	export function Release(action_name: string) {
-		ExecuteWithActionData(action_name, (action_table) => {
+	export function Release(actionName: string) {
+		ExecuteWithActionData(actionName, (action_table) => {
 			// Sets the current status to release
 			action_table.KeyBuffer[EInputBufferIndex.Current] = 0;
 		});
 	}
 
-	export function IsPressed(action_name: string) {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return false;
+	export function IsPressed(actionName: string) {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return false;
 		// Use InputConfigController for activation threshold if available
-		const threshold = InputConfigController.GetActionActivationThreshold(action_name);
-		return action_data.KeyBuffer[EInputBufferIndex.Previous] >= threshold;
+		const threshold = InputConfigController.GetActionActivationThreshold(actionName);
+		return actionData.KeyBuffer[EInputBufferIndex.Previous] >= threshold;
 	}
 
 	/**NOT RECOMMENDED TO USE (InternalOnly) Low level of checking if the action is pressed in this frame */
-	export function IsPressedThisFrame(action_name: string) {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return false;
-		return action_data.KeyBuffer[EInputBufferIndex.Current] >= action_data.ActivationStrength;
+	export function IsPressedThisFrame(actionName: string) {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return false;
+		return actionData.KeyBuffer[EInputBufferIndex.Current] >= actionData.ActivationStrength;
 	}
 
 	/**NOT RECOMMENDED TO USE (InternalOnly) Low level of checking if the action is just pressed in this frame */
-	export function IsJustPressedThisFrame(action_name: string) {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return false;
+	export function IsJustPressedThisFrame(actionName: string) {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return false;
 		return (
-			action_data.KeyBuffer[EInputBufferIndex.Current] >= action_data.ActivationStrength &&
-			action_data.KeyBuffer[EInputBufferIndex.Previous] < action_data.ActivationStrength
+			actionData.KeyBuffer[EInputBufferIndex.Current] >= actionData.ActivationStrength &&
+			actionData.KeyBuffer[EInputBufferIndex.Previous] < actionData.ActivationStrength
 		);
 	}
 
-	export function IsReleased(action_name: string) {
-		return !IsPressed(action_name);
+	export function IsReleased(actionName: string) {
+		return !IsPressed(actionName);
 	}
 
 	/**Low level of checking if the action is released in this frame */
-	export function IsReleasedThisFrame(action_name: string) {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return false;
-		return action_data.KeyBuffer[EInputBufferIndex.Current] < action_data.ActivationStrength;
+	export function IsReleasedThisFrame(actionName: string) {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return false;
+		return actionData.KeyBuffer[EInputBufferIndex.Current] < actionData.ActivationStrength;
 	}
 
 	/**Low level of checking if the action is just released in this frame */
-	export function IsJustReleasedThisFrame(action_name: string) {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return false;
+	export function IsJustReleasedThisFrame(actionName: string) {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return false;
 		return (
-			action_data.KeyBuffer[EInputBufferIndex.Current] < action_data.ActivationStrength &&
-			action_data.KeyBuffer[EInputBufferIndex.Previous] >= action_data.ActivationStrength
+			actionData.KeyBuffer[EInputBufferIndex.Current] < actionData.ActivationStrength &&
+			actionData.KeyBuffer[EInputBufferIndex.Previous] >= actionData.ActivationStrength
 		);
 	}
 
-	export function IsJustPressed(action_name: string): boolean {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return false;
+	export function IsJustPressed(actionName: string): boolean {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return false;
 
 		// Check for regular just-pressed status
 		const justPressed =
-			action_data.KeyBuffer[EInputBufferIndex.Previous] >= action_data.ActivationStrength &&
-			action_data.KeyBuffer[EInputBufferIndex.PrePrevious] < action_data.ActivationStrength;
+			actionData.KeyBuffer[EInputBufferIndex.Previous] >= actionData.ActivationStrength &&
+			actionData.KeyBuffer[EInputBufferIndex.PrePrevious] < actionData.ActivationStrength;
 
 		// Also return true if an echo was triggered for this action
-		return justPressed || InputEchoController.WasEchoTriggered(action_name);
+		return justPressed || InputEchoController.WasEchoTriggered(actionName);
 	}
 
-	export function IsJustReleased(action_name: string) {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return false;
+	export function IsJustReleased(actionName: string) {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return false;
 		//was released in the previous frame, but was pressed in the pre-previos
 		return (
-			action_data.KeyBuffer[EInputBufferIndex.Previous] < action_data.ActivationStrength &&
-			action_data.KeyBuffer[EInputBufferIndex.PrePrevious] >= action_data.ActivationStrength
+			actionData.KeyBuffer[EInputBufferIndex.Previous] < actionData.ActivationStrength &&
+			actionData.KeyBuffer[EInputBufferIndex.PrePrevious] >= actionData.ActivationStrength
 		);
 	}
 
@@ -165,7 +162,7 @@ export namespace ActionsController {
 	 * Called once per frame
 	 */
 	function Update() {
-		for (const [_, action_table] of actions_map) {
+		for (const [_, action_table] of actionsMap) {
 			// Shift values in the key buffer:
 			// 0 - current input
 			// 1 - previous input
@@ -181,101 +178,101 @@ export namespace ActionsController {
 	}
 
 	export function Add(
-		action_name: string,
-		activation_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH,
-		key_codes: readonly InputKeyCode[] = [],
+		actionName: string,
+		activationStrength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH,
+		keyCodes: readonly InputKeyCode[] = [],
 	) {
-		if (actions_map.has(action_name)) {
-			warn(`Action ${action_name} already exists`);
+		if (actionsMap.has(actionName)) {
+			warn(`Action ${actionName} already exists`);
 			return;
 		}
 
-		const action_data = identity<IActionData>({
+		const actionData = identity<IActionData>({
 			Keycodes: [],
 			KeyBuffer: [0, 0, 0],
-			ActivationStrength: activation_strength,
+			ActivationStrength: activationStrength,
 		});
 
-		actions_map.set(action_name, action_data);
+		actionsMap.set(actionName, actionData);
 
 		// Register with InputConfigController
-		InputConfigController.SetActionActivationThreshold(action_name, activation_strength);
+		InputConfigController.SetActionActivationThreshold(actionName, activationStrength);
 
-		for (const key_code of key_codes) {
-			AddKeyCode(action_name, key_code);
+		for (const keyCode of keyCodes) {
+			AddKeyCode(actionName, keyCode);
 		}
 	}
 
-	function AddKeyCodeToActionReference(key_code: InputKeyCode, action_name: string) {
-		TableTools.GetOrCreate(key_code_to_actions_references, key_code, () => []).push(action_name);
+	function AddKeyCodeToActionReference(keyCode: InputKeyCode, actionName: string) {
+		TableTools.GetOrCreate(keyCodeToActionsReferences, keyCode, () => []).push(actionName);
 	}
 
-	function EraseKeyCodeToActionReference(key_code: InputKeyCode, action_name: string) {
-		const key_code_to_actions_reference = key_code_to_actions_references.get(key_code);
-		if (key_code_to_actions_reference === undefined) return;
-		ArrayTools.RemoveElementFromArray(key_code_to_actions_reference, action_name);
-		if (!key_code_to_actions_reference.isEmpty()) return;
-		key_code_to_actions_references.delete(key_code);
+	function EraseKeyCodeToActionReference(keyCode: InputKeyCode, actionName: string) {
+		const keyCode_to_actions_reference = keyCodeToActionsReferences.get(keyCode);
+		if (keyCode_to_actions_reference === undefined) return;
+		ArrayTools.RemoveElementFromArray(keyCode_to_actions_reference, actionName);
+		if (!keyCode_to_actions_reference.isEmpty()) return;
+		keyCodeToActionsReferences.delete(keyCode);
 	}
 
-	export function AddKeyCode(action_name: string, key_code: InputKeyCode) {
-		ExecuteWithActionData(action_name, (action_data) => {
-			if (action_data.Keycodes.includes(key_code)) {
-				warn(`Action ${action_name} already includes keycode ${key_code}`);
+	export function AddKeyCode(actionName: string, keyCode: InputKeyCode) {
+		ExecuteWithActionData(actionName, (actionData) => {
+			if (actionData.Keycodes.includes(keyCode)) {
+				warn(`Action ${actionName} already includes keycode ${keyCode}`);
 				return;
 			}
 
-			action_data.Keycodes.push(key_code);
-			AddKeyCodeToActionReference(key_code, action_name);
+			actionData.Keycodes.push(keyCode);
+			AddKeyCodeToActionReference(keyCode, actionName);
 		});
 	}
 
-	export function EraseKeyCode(action_name: string, key_code: InputKeyCode) {
-		ExecuteWithActionData(action_name, (action_data) => {
-			if (!action_data.Keycodes.includes(key_code)) return;
-			ArrayTools.RemoveElementFromArray(action_data.Keycodes, key_code);
-			EraseKeyCodeToActionReference(key_code, action_name);
+	export function EraseKeyCode(actionName: string, keyCode: InputKeyCode) {
+		ExecuteWithActionData(actionName, (actionData) => {
+			if (!actionData.Keycodes.includes(keyCode)) return;
+			ArrayTools.RemoveElementFromArray(actionData.Keycodes, keyCode);
+			EraseKeyCodeToActionReference(keyCode, actionName);
 		});
 	}
 
-	export function EraseAllKeyCodes(action_name: string) {
-		ExecuteWithActionData(action_name, (action_data) => {
-			for (const key_code of action_data.Keycodes) {
-				EraseKeyCodeToActionReference(key_code, action_name);
+	export function EraseAllKeyCodes(actionName: string) {
+		ExecuteWithActionData(actionName, (actionData) => {
+			for (const keyCode of actionData.Keycodes) {
+				EraseKeyCodeToActionReference(keyCode, actionName);
 			}
 
-			action_data.Keycodes = [];
+			actionData.Keycodes = [];
 		});
 	}
 
-	export function GetKeyCodes(action_name: string): readonly InputKeyCode[] {
-		return GetActionData(action_name)?.Keycodes ?? [];
+	export function GetKeyCodes(actionName: string): readonly InputKeyCode[] {
+		return GetActionData(actionName)?.Keycodes ?? [];
 	}
 
-	export function HasKeyCode(action_name: string, key_code: InputKeyCode) {
-		return actions_map.get(action_name)?.Keycodes.includes(key_code);
+	export function HasKeyCode(actionName: string, keyCode: InputKeyCode) {
+		return actionsMap.get(actionName)?.Keycodes.includes(keyCode);
 	}
 
-	export function IsExisting(action_name: string) {
-		return actions_map.has(action_name);
+	export function IsExisting(actionName: string) {
+		return actionsMap.has(actionName);
 	}
 
-	export function GetActionsFromKeyCode(key_code: InputKeyCode): readonly string[] {
-		return key_code_to_actions_references.get(key_code) ?? [];
+	export function GetActionsFromKeyCode(keyCode: InputKeyCode): readonly string[] {
+		return keyCodeToActionsReferences.get(keyCode) ?? [];
 	}
 
-	export function SetActivationStrength(action_name: string, activation_strength: number) {
-		const action_data = GetActionData(action_name);
-		if (action_data === undefined) return;
-		action_data.ActivationStrength = activation_strength;
+	export function SetActivationStrength(actionName: string, activationStrength: number) {
+		const actionData = GetActionData(actionName);
+		if (actionData === undefined) return;
+		actionData.ActivationStrength = activationStrength;
 	}
 
-	export function Erase(action_name: string) {
-		EraseAllKeyCodes(action_name);
-		actions_map.delete(action_name);
+	export function Erase(actionName: string) {
+		EraseAllKeyCodes(actionName);
+		actionsMap.delete(actionName);
 	}
 
 	export function GetActions(): string[] {
-		return TableTools.GetKeys(actions_map);
+		return TableTools.GetKeys(actionsMap);
 	}
 }

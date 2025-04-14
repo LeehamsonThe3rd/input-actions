@@ -9,15 +9,15 @@ import { ActionsController } from "./ActionsController";
 export namespace InputEchoController {
 	interface IEchoConfig {
 		/** Delay before first repeat (seconds) */
-		initialDelay: number;
+		InitialDelay: number;
 		/** Interval between repeats (seconds) */
-		repeatInterval: number;
+		RepeatInterval: number;
 		/** Time the key has been held down */
-		heldTime: number;
+		HeldTime: number;
 		/** Whether the key is currently being held */
-		isHeld: boolean;
+		IsHeld: boolean;
 		/** Time of the last echo */
-		lastEchoTime: number;
+		LastEchoTime: number;
 	}
 
 	const DEFAULT_INITIAL_DELAY = 0.5;
@@ -49,11 +49,11 @@ export namespace InputEchoController {
 		repeatInterval: number = DEFAULT_REPEAT_INTERVAL,
 	) {
 		actionEchoConfigs.set(actionName, {
-			initialDelay,
-			repeatInterval,
-			heldTime: 0,
-			isHeld: false,
-			lastEchoTime: 0,
+			InitialDelay: initialDelay,
+			RepeatInterval: repeatInterval,
+			HeldTime: 0,
+			IsHeld: false,
+			LastEchoTime: 0,
 		});
 	}
 
@@ -85,29 +85,29 @@ export namespace InputEchoController {
 			const pressed = ActionsController.IsPressed(actionName);
 
 			if (pressed) {
-				if (!config.isHeld) {
+				if (!config.IsHeld) {
 					// Key just pressed, start tracking
-					config.isHeld = true;
-					config.heldTime = 0;
-					config.lastEchoTime = now;
+					config.IsHeld = true;
+					config.HeldTime = 0;
+					config.LastEchoTime = now;
 				} else {
 					// Key held down
-					config.heldTime += deltaTime;
+					config.HeldTime += deltaTime;
 
 					// Check if it's time to echo
-					if (config.heldTime >= config.initialDelay) {
-						const timeSinceLastEcho = now - config.lastEchoTime;
-						if (timeSinceLastEcho >= config.repeatInterval) {
+					if (config.HeldTime >= config.InitialDelay) {
+						const timeSinceLastEcho = now - config.LastEchoTime;
+						if (timeSinceLastEcho >= config.RepeatInterval) {
 							// Mark this action as echo-triggered this frame
 							echoTriggeredActions.add(actionName);
-							config.lastEchoTime = now;
+							config.LastEchoTime = now;
 						}
 					}
 				}
 			} else {
 				// Key released
-				config.isHeld = false;
-				config.heldTime = 0;
+				config.IsHeld = false;
+				config.HeldTime = 0;
 			}
 		}
 	}

@@ -40,7 +40,7 @@ export namespace InputActionsInitializerTools {
 	export function InitAdvancedControllers() {
 		InputEchoController.Initialize();
 		KeyCombinationController.Initialize();
-		InputMapController.getContextSystem();
+		InputMapController.GetContextController();
 	}
 
 	export function InitConfigController() {

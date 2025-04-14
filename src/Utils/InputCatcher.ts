@@ -6,24 +6,24 @@ function SinkKey() {
 }
 
 export default class InputCatcher {
-	private priority: number;
-	private uuid = HttpService.GenerateGUID();
+	private _priority: number;
+	private _uuid = HttpService.GenerateGUID();
 
 	constructor(priority: number) {
-		this.priority = priority;
+		this._priority = priority;
 	}
 
 	GrabInput() {
 		ContextActionService.BindActionAtPriority(
-			this.uuid,
+			this._uuid,
 			SinkKey,
 			false,
-			this.priority,
+			this._priority,
 			...ActionResources.ALL_KEYCODES,
 		);
 	}
 
 	ReleaseInput() {
-		ContextActionService.UnbindAction(this.uuid);
+		ContextActionService.UnbindAction(this._uuid);
 	}
 }

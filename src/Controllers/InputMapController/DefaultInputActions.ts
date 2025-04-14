@@ -14,94 +14,94 @@ export namespace DefaultInputMaps {
 	const debugContext = new InputContext("Debug");
 
 	// Set up navigation maps using direct object literals
-	navigationContext.add(EDefaultInputAction.UiGoUp, {
+	navigationContext.Add(EDefaultInputAction.UiGoUp, {
 		Gamepad: Enum.KeyCode.DPadUp,
 		KeyboardAndMouse: Enum.KeyCode.Up,
 	});
 
-	navigationContext.add(EDefaultInputAction.UiGoDown, {
+	navigationContext.Add(EDefaultInputAction.UiGoDown, {
 		Gamepad: Enum.KeyCode.DPadDown,
 		KeyboardAndMouse: Enum.KeyCode.Down,
 	});
 
-	navigationContext.add(EDefaultInputAction.UiGoLeft, {
+	navigationContext.Add(EDefaultInputAction.UiGoLeft, {
 		Gamepad: Enum.KeyCode.DPadLeft,
 		KeyboardAndMouse: Enum.KeyCode.Left,
 	});
 
-	navigationContext.add(EDefaultInputAction.UiGoRight, {
+	navigationContext.Add(EDefaultInputAction.UiGoRight, {
 		Gamepad: Enum.KeyCode.DPadRight,
 		KeyboardAndMouse: Enum.KeyCode.Right,
 	});
 
 	// Set up action maps
-	actionContext.add(EDefaultInputAction.UiAccept, {
+	actionContext.Add(EDefaultInputAction.UiAccept, {
 		Gamepad: Enum.KeyCode.ButtonA,
 		KeyboardAndMouse: Enum.KeyCode.Return,
 	});
 
-	actionContext.add(EDefaultInputAction.UiCancel, {
+	actionContext.Add(EDefaultInputAction.UiCancel, {
 		Gamepad: Enum.KeyCode.ButtonB,
 		KeyboardAndMouse: Enum.KeyCode.B,
 	});
 
 	// Set up scrolling maps
-	scrollingContext.add(EDefaultInputAction.UiScrollUp, {
+	scrollingContext.Add(EDefaultInputAction.UiScrollUp, {
 		Gamepad: ECustomKey.Thumbstick2Up,
 		KeyboardAndMouse: Enum.KeyCode.W,
 	});
 
-	scrollingContext.add(EDefaultInputAction.UiScrollDown, {
+	scrollingContext.Add(EDefaultInputAction.UiScrollDown, {
 		Gamepad: ECustomKey.Thumbstick2Down,
 		KeyboardAndMouse: Enum.KeyCode.S,
 	});
 
-	scrollingContext.add(EDefaultInputAction.UiNextPage, {
+	scrollingContext.Add(EDefaultInputAction.UiNextPage, {
 		Gamepad: Enum.KeyCode.ButtonR1,
 		KeyboardAndMouse: Enum.KeyCode.E,
 	});
 
-	scrollingContext.add(EDefaultInputAction.UiPreviousPage, {
+	scrollingContext.Add(EDefaultInputAction.UiPreviousPage, {
 		Gamepad: Enum.KeyCode.ButtonL1,
 		KeyboardAndMouse: Enum.KeyCode.Q,
 	});
 
 	// Set up debug maps
-	debugContext.add(EDefaultInputAction.MouseDebugMode, {
+	debugContext.Add(EDefaultInputAction.MouseDebugMode, {
 		KeyboardAndMouse: Enum.KeyCode.LeftAlt,
 	});
 
 	/**
 	 * Initialize default input maps in the global context
 	 */
-	export function initializeDefaultMaps(): void {
-		const globalContext = InputContextController.getGlobalContext();
+	export function InitializeDefaultMaps(): void {
+		const globalContext = InputContextController.GetGlobalContext();
 
 		for (const context of [navigationContext, actionContext, scrollingContext, debugContext]) {
-			for (const [actionName, map] of context.getMaps()) {
-				globalContext.add(actionName, map);
+			for (const [actionName, map] of context.GetMaps()) {
+				globalContext.Add(actionName, map);
 			}
 		}
 	}
 
-	export function applyDefaultMaps(): void {
-		initializeDefaultMaps();
-		InputContextController.getGlobalContext().assign();
+	export function ApplyDefaultMaps(): void {
+		InitializeDefaultMaps();
+		InputContextController.GetGlobalContext().Assign();
 	}
 
-	export function getNavigationMaps(): ReadonlyMap<string, IInputMap> {
-		return navigationContext.getMaps();
+	export function GetNavigationMaps(): ReadonlyMap<string, IInputMap> {
+		return navigationContext.GetMaps();
 	}
 
-	export function getActionMaps(): ReadonlyMap<string, IInputMap> {
-		return actionContext.getMaps();
+	export function GetActionMaps(): ReadonlyMap<string, IInputMap> {
+		return actionContext.GetMaps();
 	}
 
-	export function getScrollingMaps(): ReadonlyMap<string, IInputMap> {
-		return scrollingContext.getMaps();
+	export function GetScrollingMaps(): ReadonlyMap<string, IInputMap> {
+		return scrollingContext.GetMaps();
 	}
 
-	export function getDebugMaps(): ReadonlyMap<string, IInputMap> {
-		return debugContext.getMaps();
+	export function GetDebugMaps(): ReadonlyMap<string, IInputMap> {
+		return debugContext.GetMaps();
 	}
 }
