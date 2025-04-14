@@ -45,23 +45,23 @@ You can create different input mappings for different game states (like gameplay
 import { InputContextController } from "@rbxts/input-actions";
 
 // Create different contexts
-const gameplayContext = InputContextController.createContext("gameplay");
-gameplayContext.add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
-gameplayContext.add("Shoot", { KeyboardAndMouse: Enum.KeyCode.MouseButton1 });
+const gameplayContext = InputContextController.CreateContext("gameplay");
+gameplayContext.Add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
+gameplayContext.Add("Shoot", { KeyboardAndMouse: Enum.KeyCode.MouseButton1 });
 
-const menuContext = InputContextController.createContext("menu");
-menuContext.add("Accept", { KeyboardAndMouse: Enum.KeyCode.Return });
-menuContext.add("Back", { KeyboardAndMouse: Enum.KeyCode.Escape });
+const menuContext = InputContextController.CreateContext("menu");
+menuContext.Add("Accept", { KeyboardAndMouse: Enum.KeyCode.Return });
+menuContext.Add("Back", { KeyboardAndMouse: Enum.KeyCode.Escape });
 
 // Switch between contexts based on game state
-function openMenu() {
-	menuContext.assign();
-	gameplayContext.unassign();
+function OpenMenu() {
+	menuContext.Assign();
+	gameplayContext.Unassign();
 }
 
-function closeMenu() {
-	gameplayContext.assign();
-	menuContext.unassign();
+function CloseMenu() {
+	gameplayContext.Assign();
+	menuContext.Unassign();
 }
 ```
 
@@ -83,7 +83,7 @@ InputEchoController.DisableActionEcho("MenuUp");
 RunService.Heartbeat.Connect(() => {
 	if (ActionsController.IsJustPressed("MenuDown")) {
 		// This will trigger repeatedly when MenuDown is held down
-		moveSelectionDown();
+		MoveSelectionDown();
 	}
 });
 ```
@@ -94,50 +94,50 @@ You can organize your game's input handling into multiple contexts that are acti
 
 ```ts
 // Create contexts for different game states
-const globalContext = InputMapController.getGlobalContext();
-const combatContext = InputMapController.createContext("combat");
-const vehicleContext = InputMapController.createContext("vehicle");
-const menuContext = InputMapController.createContext("menu");
+const globalContext = InputMapController.GetGlobalContext();
+const combatContext = InputMapController.CreateContext("combat");
+const vehicleContext = InputMapController.CreateContext("vehicle");
+const menuContext = InputMapController.CreateContext("menu");
 
 // Global controls (always active)
-globalContext.add("Pause", {
+globalContext.Add("Pause", {
 	KeyboardAndMouse: Enum.KeyCode.Escape,
 	Gamepad: Enum.KeyCode.ButtonStart,
 });
 
 // Combat controls
-combatContext.add("Attack", {
+combatContext.Add("Attack", {
 	KeyboardAndMouse: Enum.KeyCode.MouseButton1,
 	Gamepad: Enum.KeyCode.ButtonR2,
 });
-combatContext.add("Block", {
+combatContext.Add("Block", {
 	KeyboardAndMouse: Enum.KeyCode.MouseButton2,
 	Gamepad: Enum.KeyCode.ButtonL2,
 });
 
 // Vehicle controls
-vehicleContext.add("Accelerate", {
+vehicleContext.Add("Accelerate", {
 	KeyboardAndMouse: Enum.KeyCode.W,
 	Gamepad: Enum.KeyCode.ButtonR2,
 });
-vehicleContext.add("Brake", {
+vehicleContext.Add("Brake", {
 	KeyboardAndMouse: Enum.KeyCode.S,
 	Gamepad: Enum.KeyCode.ButtonL2,
 });
 
 // Initialize the global context
-globalContext.assign();
+globalContext.Assign();
 
 // Switch to combat mode
-function enterCombatMode() {
-	vehicleContext.unassign();
-	combatContext.assign();
+function EnterCombatMode() {
+	vehicleContext.Unassign();
+	combatContext.Assign();
 }
 
 // Switch to vehicle mode
-function enterVehicleMode() {
-	combatContext.unassign();
-	vehicleContext.assign();
+function EnterVehicleMode() {
+	combatContext.Unassign();
+	vehicleContext.Assign();
 }
 ```
 
@@ -153,7 +153,7 @@ KeyCombinationController.RegisterCombination("Save", Enum.KeyCode.S, [Enum.KeyCo
 
 // Check for the action like any other action
 if (ActionsController.IsJustPressed("Save")) {
-	saveGame();
+	SaveGame();
 }
 ```
 
@@ -227,13 +227,13 @@ import { InputTypeController, EInputType, EDeviceType } from "@rbxts/input-actio
 InputTypeController.OnInputTypeChanged.Connect((inputType: EInputType) => {
 	switch (inputType) {
 		case EInputType.KeyboardAndMouse:
-			showKeyboardControls();
+			ShowKeyboardControls();
 			break;
 		case EInputType.Gamepad:
-			showGamepadControls();
+			ShowGamepadControls();
 			break;
 		case EInputType.Touch:
-			showTouchControls();
+			ShowTouchControls();
 			break;
 	}
 });
@@ -274,8 +274,8 @@ The package comes with default actions for UI navigation:
 import { InputMapController, EDefaultInputAction } from "@rbxts/input-actions";
 
 // Change the UI navigation actions
-InputMapController.remove(EDefaultInputAction.UiGoUp);
-InputMapController.add(EDefaultInputAction.UiGoUp, {
+InputMapController.Remove(EDefaultInputAction.UiGoUp);
+InputMapController.Add(EDefaultInputAction.UiGoUp, {
 	KeyboardAndMouse: Enum.KeyCode.W,
 	Gamepad: Enum.KeyCode.DPadUp,
 });

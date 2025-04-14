@@ -17,35 +17,35 @@ import { RunService } from "@rbxts/services";
 InputActionsInitializerTools.InitAll();
 
 // Set up contexts for different game states
-function setupInputContexts() {
+function SetupInputContexts() {
 	// Create gameplay context
-	const gameplayContext = InputContextController.createContext("gameplay");
-	gameplayContext.add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
-	gameplayContext.add("Attack", { KeyboardAndMouse: Enum.UserInputType.MouseButton1 });
-	gameplayContext.add("Run", { KeyboardAndMouse: Enum.KeyCode.LeftShift });
-	gameplayContext.add("Crouch", { KeyboardAndMouse: Enum.KeyCode.LeftControl });
-	gameplayContext.add("Reload", { KeyboardAndMouse: Enum.KeyCode.R });
-	gameplayContext.add("Interact", { KeyboardAndMouse: Enum.KeyCode.E });
+	const gameplayContext = InputContextController.CreateContext("gameplay");
+	gameplayContext.Add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
+	gameplayContext.Add("Attack", { KeyboardAndMouse: Enum.UserInputType.MouseButton1 });
+	gameplayContext.Add("Run", { KeyboardAndMouse: Enum.KeyCode.LeftShift });
+	gameplayContext.Add("Crouch", { KeyboardAndMouse: Enum.KeyCode.LeftControl });
+	gameplayContext.Add("Reload", { KeyboardAndMouse: Enum.KeyCode.R });
+	gameplayContext.Add("Interact", { KeyboardAndMouse: Enum.KeyCode.E });
 
 	// Create menu context
-	const menuContext = InputContextController.createContext("menu");
-	menuContext.add("MenuUp", { KeyboardAndMouse: Enum.KeyCode.Up });
-	menuContext.add("MenuDown", { KeyboardAndMouse: Enum.KeyCode.Down });
-	menuContext.add("MenuLeft", { KeyboardAndMouse: Enum.KeyCode.Left });
-	menuContext.add("MenuRight", { KeyboardAndMouse: Enum.KeyCode.Right });
-	menuContext.add("MenuAccept", { KeyboardAndMouse: Enum.KeyCode.Return });
-	menuContext.add("MenuBack", { KeyboardAndMouse: Enum.KeyCode.Escape });
+	const menuContext = InputContextController.CreateContext("menu");
+	menuContext.Add("MenuUp", { KeyboardAndMouse: Enum.KeyCode.Up });
+	menuContext.Add("MenuDown", { KeyboardAndMouse: Enum.KeyCode.Down });
+	menuContext.Add("MenuLeft", { KeyboardAndMouse: Enum.KeyCode.Left });
+	menuContext.Add("MenuRight", { KeyboardAndMouse: Enum.KeyCode.Right });
+	menuContext.Add("MenuAccept", { KeyboardAndMouse: Enum.KeyCode.Return });
+	menuContext.Add("MenuBack", { KeyboardAndMouse: Enum.KeyCode.Escape });
 
 	// Configure menu navigation to repeat when held
 	InputEchoController.ConfigureActionEcho("MenuUp", 0.4, 0.15);
 	InputEchoController.ConfigureActionEcho("MenuDown", 0.4, 0.15);
 
 	// Start with gameplay context
-	gameplayContext.assign();
+	gameplayContext.Assign();
 }
 
 // Set up key combinations
-function setupKeyCombinations() {
+function SetupKeyCombinations() {
 	// Add shortcut for opening inventory (I or Tab)
 	KeyCombinationController.RegisterCombination("OpenInventory", Enum.KeyCode.I);
 	KeyCombinationController.RegisterCombination("OpenInventory", Enum.KeyCode.Tab);
@@ -62,7 +62,7 @@ function setupKeyCombinations() {
 }
 
 // Configure input settings
-function configureInputSettings() {
+function ConfigureInputSettings() {
 	// Increase thumbstick deadzone to reduce drift
 	InputConfigController.SetInputDeadzone(Enum.KeyCode.Thumbstick1, 0.18);
 	InputConfigController.SetInputDeadzone(Enum.KeyCode.Thumbstick2, 0.2);
@@ -79,9 +79,9 @@ let isMenuOpen = false;
 RunService.Heartbeat.Connect(() => {
 	// Check for menu toggle
 	if (ActionsController.IsJustPressed("MenuBack") && !isMenuOpen) {
-		openMenu();
+		OpenMenu();
 	} else if (ActionsController.IsJustPressed("MenuBack") && isMenuOpen) {
-		closeMenu();
+		CloseMenu();
 	}
 
 	// Check for shortcuts
@@ -102,29 +102,29 @@ RunService.Heartbeat.Connect(() => {
 	}
 });
 
-function openMenu() {
+function OpenMenu() {
 	isMenuOpen = true;
-	const menuContext = InputContextController.getContext("menu")!;
-	const gameplayContext = InputContextController.getContext("gameplay")!;
+	const menuContext = InputContextController.GetContext("menu")!;
+	const gameplayContext = InputContextController.GetContext("gameplay")!;
 
-	gameplayContext.unassign();
-	menuContext.assign();
+	gameplayContext.Unassign();
+	menuContext.Assign();
 	print("Menu opened - context switched to menu controls");
 }
 
-function closeMenu() {
+function CloseMenu() {
 	isMenuOpen = false;
-	const menuContext = InputContextController.getContext("menu")!;
-	const gameplayContext = InputContextController.getContext("gameplay")!;
+	const menuContext = InputContextController.GetContext("menu")!;
+	const gameplayContext = InputContextController.GetContext("gameplay")!;
 
-	menuContext.unassign();
-	gameplayContext.assign();
+	menuContext.Unassign();
+	gameplayContext.Assign();
 	print("Menu closed - context switched to gameplay controls");
 }
 
 // Initialize everything
-setupInputContexts();
-setupKeyCombinations();
-configureInputSettings();
+SetupInputContexts();
+SetupKeyCombinations();
+ConfigureInputSettings();
 
 print("Control system initialized!");

@@ -8,96 +8,96 @@ import {
 InputActionsInitializerTools.InitActionsAndInputManager();
 
 // Example: Create a vehicle controls context
-const vehicleContext = InputMapController.createContext("Vehicle");
+const vehicleContext = InputMapController.CreateContext("Vehicle");
 
 // Add controls to the vehicle context using direct object literals
-vehicleContext.add("Accelerate", {
+vehicleContext.Add("Accelerate", {
 	Gamepad: Enum.KeyCode.ButtonR2,
 	KeyboardAndMouse: Enum.KeyCode.W,
 });
 
-vehicleContext.add("Brake", {
+vehicleContext.Add("Brake", {
 	Gamepad: Enum.KeyCode.ButtonL2,
 	KeyboardAndMouse: Enum.KeyCode.S,
 });
 
-vehicleContext.add("SteerLeft", {
+vehicleContext.Add("SteerLeft", {
 	Gamepad: Enum.KeyCode.Thumbstick1,
 	KeyboardAndMouse: Enum.KeyCode.A,
 });
 
-vehicleContext.add("SteerRight", {
+vehicleContext.Add("SteerRight", {
 	Gamepad: Enum.KeyCode.Thumbstick1,
 	KeyboardAndMouse: Enum.KeyCode.D,
 });
 
-vehicleContext.add("Horn", {
+vehicleContext.Add("Horn", {
 	Gamepad: Enum.KeyCode.ButtonX,
 	KeyboardAndMouse: Enum.KeyCode.H,
 });
 
 // Example: Create a weapon controls context
-const weaponContext = InputMapController.createContext("Weapon");
+const weaponContext = InputMapController.CreateContext("Weapon");
 
-weaponContext.add("Fire", {
+weaponContext.Add("Fire", {
 	Gamepad: Enum.KeyCode.ButtonR2,
 	KeyboardAndMouse: Enum.KeyCode.MouseButton1,
 });
 
-weaponContext.add("Aim", {
+weaponContext.Add("Aim", {
 	Gamepad: Enum.KeyCode.ButtonL2,
 	KeyboardAndMouse: Enum.KeyCode.MouseButton2,
 });
 
-weaponContext.add("Reload", {
+weaponContext.Add("Reload", {
 	Gamepad: Enum.KeyCode.ButtonX,
 	KeyboardAndMouse: Enum.KeyCode.R,
 });
 
 // Example: Get the global context and add a custom action
-const globalContext = InputMapController.getGlobalContext();
-globalContext.add("ToggleInventory", {
+const globalContext = InputMapController.GetGlobalContext();
+globalContext.Add("ToggleInventory", {
 	Gamepad: Enum.KeyCode.ButtonY,
 	KeyboardAndMouse: Enum.KeyCode.Tab,
 });
 
 // Example usage: Player enters a vehicle
-function enterVehicle() {
+function EnterVehicle() {
 	// Unassign weapon controls if they were active
-	weaponContext.unassign();
+	weaponContext.Unassign();
 
 	// Assign vehicle controls
-	vehicleContext.assign();
+	vehicleContext.Assign();
 
 	print("Vehicle controls activated");
 }
 
 // Example usage: Player exits a vehicle
-function exitVehicle() {
+function ExitVehicle() {
 	// Unassign vehicle controls
-	vehicleContext.unassign();
+	vehicleContext.Unassign();
 
 	print("Vehicle controls deactivated");
 }
 
 // Example usage: Player equips a weapon
-function equipWeapon() {
+function EquipWeapon() {
 	// Make sure vehicle controls are not active
-	if (vehicleContext.isAssigned()) {
+	if (vehicleContext.IsAssigned()) {
 		print("Cannot equip weapon while in vehicle");
 		return;
 	}
 
 	// Assign weapon controls
-	weaponContext.assign();
+	weaponContext.Assign();
 
 	print("Weapon controls activated");
 }
 
 // Example usage: Player holsters a weapon
-function holsterWeapon() {
+function HolsterWeapon() {
 	// Unassign weapon controls
-	weaponContext.unassign();
+	weaponContext.Unassign();
 
 	print("Weapon controls deactivated");
 }
@@ -126,8 +126,8 @@ game.GetService("RunService").Heartbeat.Connect(() => {
 });
 
 // For testing
-enterVehicle();
+EnterVehicle();
 task.wait(3);
-exitVehicle();
+ExitVehicle();
 task.wait(1);
-equipWeapon();
+EquipWeapon();

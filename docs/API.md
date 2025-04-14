@@ -96,7 +96,7 @@ Initializes the input manager. Must be called before using any functionality.
 
 Subscribes to input events with optional configuration.
 
-#### `ParseInputEvent(input_event_data: InputEventData): Enum.ContextActionResult`
+#### `ParseInputEvent(inputEventData: InputEventData): Enum.ContextActionResult`
 
 Parse and process an input event.
 
@@ -105,7 +105,7 @@ Parse and process an input event.
 #### `InputCallback`
 
 ```typescript
-type InputCallback = (input_event: InputEvent) => Enum.ContextActionResult | void | undefined;
+type InputCallback = (inputEvent: InputEvent) => Enum.ContextActionResult | void | undefined;
 ```
 
 #### `ISubscriptionConfig`
@@ -123,35 +123,35 @@ Manages input mappings for different devices.
 
 ### Methods
 
-#### `add(actionName: string, inputMap: IInputMap)`
+#### `Add(actionName: string, inputMap: IInputMap)`
 
 Adds an input map for an action.
 
-#### `remove(actionName: string, eraseAction: boolean = false)`
+#### `Remove(actionName: string, eraseAction: boolean = false)`
 
 Removes an input map for an action.
 
-#### `get(name: string): IInputMap | undefined`
+#### `Get(name: string): IInputMap | undefined`
 
 Gets the input map for an action.
 
-#### `getVisualData(inputMapName: string, useCustomImages: boolean = true): IVisualInputKeyCodeData`
+#### `GetVisualData(inputMapName: string, useCustomImages: boolean = true): IVisualInputKeyCodeData`
 
 Gets visual representation data for an input map.
 
-#### `addDefaultInputMaps()`
+#### `AddDefaultInputMaps()`
 
 Adds the default input maps for UI navigation.
 
-#### `getDefaultInputMaps()`
+#### `GetDefaultInputMaps()`
 
 Gets the default input maps module.
 
-#### `createContext(name: string): InputContext`
+#### `CreateContext(name: string): InputContext`
 
 Creates a new input context with the given name.
 
-#### `getGlobalContext(): InputContext`
+#### `GetGlobalContext(): InputContext`
 
 Gets the global context that's always available.
 
@@ -204,7 +204,7 @@ Provides access to processed movement input.
 
 Initializes the input controller.
 
-#### `GetMoveVector(relative_camera?: boolean, normalized?: boolean, follow_full_rotation?: boolean): Vector3`
+#### `GetMoveVector(relativeCamera?: boolean, normalized?: boolean, followFullRotation?: boolean): Vector3`
 
 Gets the current movement vector.
 
@@ -264,40 +264,40 @@ Controls different input contexts or action sets for different game states.
 ```typescript
 class InputContext {
 	constructor(name?: string);
-	add(actionName: string, map: IInputMap): this;
-	remove(actionName: string): this;
-	assign(): this;
-	unassign(): this;
-	isAssigned(): boolean;
-	getMaps(): ReadonlyMap<string, IInputMap>;
-	getMap(actionName: string): IInputMap | undefined;
-	getName(): string | undefined;
+	Add(actionName: string, map: IInputMap): this;
+	Remove(actionName: string): this;
+	Assign(): this;
+	Unassign(): this;
+	IsAssigned(): boolean;
+	GetMaps(): ReadonlyMap<string, IInputMap>;
+	GetMap(actionName: string): IInputMap | undefined;
+	GetName(): string | undefined;
 }
 ```
 
 ### Methods
 
-#### `createContext(name: string): InputContext`
+#### `CreateContext(name: string): InputContext`
 
 Creates a new input context with the given name.
 
-#### `getContext(name: string): InputContext | undefined`
+#### `GetContext(name: string): InputContext | undefined`
 
 Gets an existing context by name.
 
-#### `getGlobalContext(): InputContext`
+#### `GetGlobalContext(): InputContext`
 
 Gets the global context that's always available.
 
-#### `getAllContexts(): ReadonlyMap<string, InputContext>`
+#### `GetAllContexts(): ReadonlyMap<string, InputContext>`
 
 Gets all registered contexts.
 
-#### `assignContext(name: string): boolean`
+#### `AssignContext(name: string): boolean`
 
 Assigns a context by name.
 
-#### `unassignContext(name: string): boolean`
+#### `UnassignContext(name: string): boolean`
 
 Unassigns a context by name.
 

@@ -110,11 +110,9 @@ const cleanup = InputManagerController.Subscribe((inputEvent) => {
 	// Check if this event is for our action
 	if (inputEvent.IsAction("Shoot")) {
 		if (inputEvent.IsPressed()) {
-			// Player is shooting
-			startShooting();
+			StartShooting();
 		} else {
-			// Player stopped shooting
-			stopShooting();
+			StopShooting();
 		}
 	}
 
@@ -132,18 +130,18 @@ cleanup();
 import { InputMapController } from "@rbxts/input-actions";
 
 // Define an input map for an action with both keyboard and gamepad controls
-InputMapController.add("Jump", {
+InputMapController.Add("Jump", {
 	KeyboardAndMouse: Enum.KeyCode.Space,
 	Gamepad: Enum.KeyCode.ButtonA,
 });
 
 // Or with only keyboard controls
-InputMapController.add("Screenshot", {
+InputMapController.Add("Screenshot", {
 	KeyboardAndMouse: Enum.KeyCode.F12,
 });
 
 // Or with only gamepad controls
-InputMapController.add("Vibrate", {
+InputMapController.Add("Vibrate", {
 	Gamepad: Enum.KeyCode.ButtonY,
 });
 ```
@@ -156,30 +154,30 @@ Input contexts allow you to group related actions and switch between them easily
 import { InputMapController } from "@rbxts/input-actions";
 
 // Create two different input contexts
-const gameplayContext = InputMapController.createContext("gameplay");
-const menuContext = InputMapController.createContext("menu");
+const gameplayContext = InputMapController.CreateContext("gameplay");
+const menuContext = InputMapController.CreateContext("menu");
 
 // Add actions to the gameplay context
-gameplayContext.add("Jump", {
+gameplayContext.Add("Jump", {
 	KeyboardAndMouse: Enum.KeyCode.Space,
 	Gamepad: Enum.KeyCode.ButtonA,
 });
 
 // Add actions to the menu context
-menuContext.add("Select", {
+menuContext.Add("Select", {
 	KeyboardAndMouse: Enum.KeyCode.Return,
 	Gamepad: Enum.KeyCode.ButtonA,
 });
 
 // Switch between contexts when the game state changes
-function openMenu() {
-	gameplayContext.unassign(); // Disable gameplay controls
-	menuContext.assign(); // Enable menu controls
+function OpenMenu() {
+	gameplayContext.Unassign(); // Disable gameplay controls
+	menuContext.Assign(); // Enable menu controls
 }
 
-function closeMenu() {
-	menuContext.unassign(); // Disable menu controls
-	gameplayContext.assign(); // Enable gameplay controls
+function CloseMenu() {
+	menuContext.Unassign(); // Disable menu controls
+	gameplayContext.Assign(); // Enable gameplay controls
 }
 ```
 

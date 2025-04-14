@@ -21,25 +21,25 @@ class UINavigationSystem {
 
 	constructor() {
 		// Use default UI navigation actions
-		this.setupInputHandling();
+		this.SetupInputHandling();
 
 		// Listen for input type changes to show/hide selection indicator
 		InputTypeController.OnInputTypeChanged.Connect((inputType) => {
-			this.updateSelectionVisibility(inputType);
+			this.UpdateSelectionVisibility(inputType);
 		});
 	}
 
 	// Add UI elements that can be navigated
-	addNavigableElements(elements: GuiObject[]) {
+	AddNavigableElements(elements: GuiObject[]) {
 		this.elements.push(...elements);
 
 		// Select first element if none selected
 		if (!this.selectedElement && this.elements.size() > 0) {
-			this.selectElement(this.elements[0]);
+			this.SelectElement(this.elements[0]);
 		}
 	}
 
-	private setupInputHandling() {
+	private SetupInputHandling() {
 		// Clean up previous subscription if it exists
 		this.cleanupFunction?.();
 
@@ -47,27 +47,27 @@ class UINavigationSystem {
 		this.cleanupFunction = InputManagerController.Subscribe((inputEvent) => {
 			// Handle UI navigation
 			if (inputEvent.IsActionJustPressed(EDefaultInputAction.UiGoUp)) {
-				this.navigateUp();
+				this.NavigateUp();
 				return Enum.ContextActionResult.Sink;
 			}
 
 			if (inputEvent.IsActionJustPressed(EDefaultInputAction.UiGoDown)) {
-				this.navigateDown();
+				this.NavigateDown();
 				return Enum.ContextActionResult.Sink;
 			}
 
 			if (inputEvent.IsActionJustPressed(EDefaultInputAction.UiGoLeft)) {
-				this.navigateLeft();
+				this.NavigateLeft();
 				return Enum.ContextActionResult.Sink;
 			}
 
 			if (inputEvent.IsActionJustPressed(EDefaultInputAction.UiGoRight)) {
-				this.navigateRight();
+				this.NavigateRight();
 				return Enum.ContextActionResult.Sink;
 			}
 
 			if (inputEvent.IsActionJustPressed(EDefaultInputAction.UiAccept)) {
-				this.activateSelected();
+				this.ActivateSelected();
 				return Enum.ContextActionResult.Sink;
 			}
 
@@ -75,35 +75,35 @@ class UINavigationSystem {
 		});
 	}
 
-	private navigateUp() {
+	private NavigateUp() {
 		// Find the element above the current one
 		// Simple implementation - in a real system you would use spatial navigation
 		if (!this.selectedElement) return;
 		const currentIndex = this.elements.indexOf(this.selectedElement);
 		if (currentIndex > 0) {
-			this.selectElement(this.elements[currentIndex - 1]);
+			this.SelectElement(this.elements[currentIndex - 1]);
 		}
 	}
 
-	private navigateDown() {
+	private NavigateDown() {
 		// Find the element below the current one
 		if (!this.selectedElement) return;
 		const currentIndex = this.elements.indexOf(this.selectedElement);
 		if (currentIndex < this.elements.size() - 1) {
-			this.selectElement(this.elements[currentIndex + 1]);
+			this.SelectElement(this.elements[currentIndex + 1]);
 		}
 	}
 
-	private navigateLeft() {
+	private NavigateLeft() {
 		// This would use spatial navigation in a real implementation
 		// For this example, we'll keep it simple
 	}
 
-	private navigateRight() {
+	private NavigateRight() {
 		// This would use spatial navigation in a real implementation
 	}
 
-	private selectElement(element: GuiObject) {
+	private SelectElement(element: GuiObject) {
 		// Remove selection from previous element
 		if (this.selectedElement) {
 			// Remove selection visual
@@ -132,14 +132,14 @@ class UINavigationSystem {
 		selectionBox.Visible = InputTypeController.GetMainInputType() !== EInputType.KeyboardAndMouse;
 	}
 
-	private activateSelected() {
+	private ActivateSelected() {
 		// Simulate a click on the selected element
 		if (this.selectedElement) {
 			this.selectedElement.Activated.Fire();
 		}
 	}
 
-	private updateSelectionVisibility(inputType: EInputType) {
+	private UpdateSelectionVisibility(inputType: EInputType) {
 		if (!this.selectedElement) return;
 
 		const selectionBox = this.selectedElement.FindFirstChild("SelectionBox") as Frame;
@@ -149,7 +149,7 @@ class UINavigationSystem {
 		}
 	}
 
-	destroy() {
+	Destroy() {
 		this.cleanupFunction?.();
 	}
 }

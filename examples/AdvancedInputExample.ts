@@ -16,20 +16,20 @@ InputActionsInitializerTools.InitAll();
 
 // Step 1: Set up different input contexts for different game states
 // Create the "gameplay" context
-const gameplayContext = InputContextController.createContext("gameplay");
-gameplayContext.add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
-gameplayContext.add("Fire", { KeyboardAndMouse: Enum.UserInputType.MouseButton1 });
-gameplayContext.add("Reload", { KeyboardAndMouse: Enum.KeyCode.R });
+const gameplayContext = InputContextController.CreateContext("gameplay");
+gameplayContext.Add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
+gameplayContext.Add("Fire", { KeyboardAndMouse: Enum.UserInputType.MouseButton1 });
+gameplayContext.Add("Reload", { KeyboardAndMouse: Enum.KeyCode.R });
 
 // Create the "menu" context
-const menuContext = InputContextController.createContext("menu");
-menuContext.add("Accept", { KeyboardAndMouse: Enum.KeyCode.Return });
-menuContext.add("Cancel", { KeyboardAndMouse: Enum.KeyCode.Escape });
-menuContext.add("NavigateUp", { KeyboardAndMouse: Enum.KeyCode.Up });
-menuContext.add("NavigateDown", { KeyboardAndMouse: Enum.KeyCode.Down });
+const menuContext = InputContextController.CreateContext("menu");
+menuContext.Add("Accept", { KeyboardAndMouse: Enum.KeyCode.Return });
+menuContext.Add("Cancel", { KeyboardAndMouse: Enum.KeyCode.Escape });
+menuContext.Add("NavigateUp", { KeyboardAndMouse: Enum.KeyCode.Up });
+menuContext.Add("NavigateDown", { KeyboardAndMouse: Enum.KeyCode.Down });
 
 // Apply the gameplay context
-gameplayContext.assign();
+gameplayContext.Assign();
 
 // Step 2: Configure input echo for repeating input
 InputEchoController.ConfigureActionEcho("NavigateDown", 0.4, 0.1);
@@ -56,15 +56,15 @@ InputConfigController.SetActionActivationThreshold("Aim", 0.7);
 
 // Example of switching contexts when opening a menu
 let menuOpen = false;
-const toggleMenu = () => {
+const ToggleMenu = () => {
 	menuOpen = !menuOpen;
 	// Switch input context based on menu state
 	if (menuOpen) {
-		gameplayContext.unassign();
-		menuContext.assign();
+		gameplayContext.Unassign();
+		menuContext.Assign();
 	} else {
-		menuContext.unassign();
-		gameplayContext.assign();
+		menuContext.Unassign();
+		gameplayContext.Assign();
 	}
 
 	print(`Menu is now ${menuOpen ? "open" : "closed"}`);
@@ -89,6 +89,6 @@ RunService.Heartbeat.Connect(() => {
 	}
 
 	if (ActionsController.IsJustPressed("OpenMenu")) {
-		toggleMenu();
+		ToggleMenu();
 	}
 });
