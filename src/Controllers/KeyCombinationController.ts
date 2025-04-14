@@ -2,6 +2,7 @@ import { UserInputService } from "@rbxts/services";
 import { InputKeyCode } from "../Models/InputKeyCode";
 import { InputPriorityResources } from "../Resources/InputPriorityResources";
 import { ActionsController } from "./ActionsController";
+import { InputEvent } from "./InputManagerController";
 import { InputManagerController } from "./InputManagerController/InputManagerController";
 
 /**
@@ -69,7 +70,7 @@ export namespace KeyCombinationController {
 	/**
 	 * Handles input events to detect key combinations
 	 */
-	function HandleKeyInput(inputEvent: import("./InputManagerController/InputEvent").default) {
+	function HandleKeyInput(inputEvent: InputEvent) {
 		// Only process key presses, not releases
 		if (!inputEvent.IsPressed()) return;
 
