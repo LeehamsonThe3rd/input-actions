@@ -6,9 +6,9 @@ import GetInputKeyCodeName from "../../Utils/GetInputKeyCodeName";
 import { InputKeyCodeImages } from "../../Utils/InputKeyCodeImages";
 import IsCustomKey from "../../Utils/IsCustomKey";
 import { ActionsController } from "../ActionsController";
+import { InputContextController } from "../InputContextController";
 import { InputTypeController } from "../InputTypeController";
 import { DefaultInputMaps } from "./DefaultInputActions";
-import { InputContextController } from "../InputContextController";
 
 export namespace InputMapController {
 	export interface IVisualInputKeyCodeData {
