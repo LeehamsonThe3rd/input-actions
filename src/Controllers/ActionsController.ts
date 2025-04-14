@@ -5,20 +5,33 @@ import { ArrayTools, TableTools } from "@rbxts/tool_pack";
 import { IActionData } from "../Models/IActionData";
 import { InputKeyCode } from "../Models/InputKeyCode";
 
+/**
+ * Controller for managing input actions
+ *
+ * The ActionsController handles the registration, triggering, and state tracking
+ * of named actions that can be bound to input keys.
+ */
 export namespace ActionsController {
-	//TODO get input vector 2d and 1d
+	// Maps action names to their data
 	const actions_map = new Map<string, IActionData>();
+	// Maps input key codes to the actions they trigger
 	const key_code_to_actions_refferences = new Map<InputKeyCode, string[]>();
 
 	let initialized = false;
+	/**
+	 * Initialize the actions controller
+	 * Must be called before using any other functionality
+	 */
 	export function Initialize() {
 		if (initialized) return;
 		initialized = true;
-		//starts the update
-		//update at the start of the frame cause deferred events are resumed after post simulation
 		RunService.BindToRenderStep("_ActionsUpdate_", Enum.RenderPriority.First.Value - 1, Update);
 	}
 
+	/**
+	 * Executes a callback with the action data for a given action name
+	 * Warns if the action doesn't exist
+	 */
 	function ExecuteWithActionData(
 		action_name: string,
 		callback: (action_data: IActionData) => void,
@@ -28,25 +41,35 @@ export namespace ActionsController {
 			callback(action_data);
 			return;
 		}
-		warn(`Tries to execute with not existant action: ${action_name}`);
+		warn(`Tries to execute with non-existent action: ${action_name}`);
 	}
 
+	/**
+	 * Gets the action data for a given action name
+	 * Warns if the action doesn't exist
+	 */
 	function GetActionData(action_name: string): IActionData | undefined {
 		const action_data = actions_map.get(action_name);
 		if (action_data === undefined) {
-			warn(`Action: ${action_name} doesnt exist`);
+			warn(`Action: ${action_name} doesn't exist`);
 		}
 
 		return action_data;
 	}
 
+	/**
+	 * Sets an action as pressed with the given strength
+	 */
 	export function Press(action_name: string, strength: number = 1) {
 		ExecuteWithActionData(action_name, (action_table) => {
-			//sets the current status to down
 			action_table.KeyBuffer[0] = strength;
 		});
 	}
 
+	/**
+	 * Gets the current press strength of an action
+	 * @returns Press strength between 0 and 1, or 0 if action doesn't exist
+	 */
 	export function GetPressStrength(action_name: string): number {
 		const action_data = GetActionData(action_name);
 		if (action_data === undefined) return 0;
@@ -125,14 +148,16 @@ export namespace ActionsController {
 		);
 	}
 
-	/**updates the input */
+	/**
+	 * Updates the input buffer for all actions
+	 * Called once per frame
+	 */
 	function Update() {
 		for (const [_, action_table] of actions_map) {
-			//0 - current input
-			//1 - previous input
-			//2 - pre-previous input
-			//sets previous input to current
-			//save previous
+			// Shift values in the key buffer:
+			// 0 - current input
+			// 1 - previous input
+			// 2 - pre-previous input
 			[action_table.KeyBuffer[2], action_table.KeyBuffer[1]] = [
 				action_table.KeyBuffer[1],
 				action_table.KeyBuffer[0],

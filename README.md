@@ -1,93 +1,99 @@
-# WARNING!
+# Input Actions for Roblox-TS
 
-THE DOCUMENTATION IS STILL IN PROGRESS AND NOT ALL FEATURES HAVE BEEN DESCRIBED
-Missing:
+A comprehensive input handling system for Roblox-TS, inspired by Godot's input system. This package provides a flexible, action-based approach to handling player input across multiple devices.
 
-- InputController
-- MouseController
-- InputTypeController
-- InputMapController
+## Features
 
-# What is input-actions?
+- **Action-based input handling** - Focus on what the player is doing, not which button they pressed
+- **Multi-device support** - Seamlessly handle keyboard, mouse, touch, and gamepad input
+- **Input mapping** - Easily remap controls at runtime
+- **Analog input support** - Handle variable input strength (like gamepad triggers)
+- **Custom input events** - Create and process virtual inputs
+- **Device detection** - Automatically detect and adapt to the player's input device
+- **Advanced mouse controls** - Lock, hide, or control mouse behavior
 
-Input-actions is an input handling package based on Godot's actions system
-+aditional tools to handle the input
+## Installation
 
-## How it works?
-
-You handle all input via <b>Actions</b>
-That means to handle input you create an action and assign keys that activate it
-
-It gives some sort of flexibility since you have full control over them
-
-### Have you thought how you could handle input for Phone | Console | Pc at the same time?
-
-input-actions gives you the ability to manage that easily from 1 place
-You're able to assign keys to activate the action and even fake those inputs with <b>UI joystick</b> or scripts etc...
-
-### What are Actions?
-
-Actions are small values that hold the input state with the PressStrength
-`you're not able to detect the press strength of the KeyCode, it's either 0 or 1, for everyting else the value can be any number depending on the Input`
-
-# Quick start
-
-before you start remember
-<b>SOME CONTROLLERS REQUIRE INITIALIZATION</b>
-and you're able to activate only those parts of the package that you need
-
-e.g
-
-```ts
-//init_actions.client.ts
-InputActionsInitializerTools.InitActionsAndInputManager();
+```bash
+npm install @rbxts/input-actions
 ```
 
-or directly activate
+## Basic Usage
 
-```ts
-//that is not very recommended to use .Initialize directly since some of them come in couples and have activated to be at the same time (just not to forget to initialize the other one)
+```typescript
+import { ActionsController, InputActionsInitializerTools } from "@rbxts/input-actions";
 
-ActionsController.Initialize();
-```
-
-1. [InputKeyCode](docs/InputKeyCode.md)
-2. [ActionsController and InputManagerController](docs/ActionsAndInputManager.md)
-
-### Example usage
-
-#### Sprint
-
-```ts
-//init_actions_and_input_manager.client.ts
+// Initialize the system
 InputActionsInitializerTools.InitActionsAndInputManager();
 
-//sprint.ts
-const sprint_action = "Sprint";
-ActionsController.Add(sprint_action);
-ActionsController.AddKeyCode(Enum.KeyCode.LeftShift);
+// Create an action and bind keys to it
+ActionsController.Add("Jump");
+ActionsController.AddKeyCode("Jump", Enum.KeyCode.Space);
+ActionsController.AddKeyCode("Jump", Enum.KeyCode.ButtonA); // For gamepad
 
-const humanoid: Humanoid;
-const walk_speed = 16;
-const run_speed = 24;
+// Use the action in your game code
 RunService.RenderStepped.Connect(() => {
-	humanoid.WalkSpeed = ActionsController.IsPressed(sprint_action) ? run_speed : walk_speed;
+	if (ActionsController.IsJustPressed("Jump")) {
+		character.Jump();
+	}
 });
 ```
 
-#### Crouch
+## Advanced Example: Player Movement
 
-```ts
-//init_actions_and_input_manager.client.ts
-InputActionsInitializerTools.InitActionsAndInputManager();
+```typescript
+import {
+	ActionsController,
+	InputController,
+	InputActionsInitializerTools,
+} from "@rbxts/input-actions";
 
-//crouch.ts
-const crouch_action = "Crouch";
-ActionsController.Add(crouch_action);
-ActionsController.AddKeyCode(Enum.KeyCode.LeftControl);
+// Initialize needed controllers
+InputActionsInitializerTools.InitAll();
 
-const cleanup = InputManagerController.Subscribe((input) => {
-	if (input.IsActionPressed(crouch_action)) EnterCrouchState();
-	if (input.IsActionReleased(crouch_action)) LeaveCrouchState();
+// Create movement actions
+ActionsController.Add("MoveForward");
+ActionsController.Add("MoveBackward");
+ActionsController.Add("MoveLeft");
+ActionsController.Add("MoveRight");
+ActionsController.Add("Sprint");
+
+// Bind keys to actions
+ActionsController.AddKeyCode("MoveForward", Enum.KeyCode.W);
+ActionsController.AddKeyCode("MoveBackward", Enum.KeyCode.S);
+ActionsController.AddKeyCode("MoveLeft", Enum.KeyCode.A);
+ActionsController.AddKeyCode("MoveRight", Enum.KeyCode.D);
+ActionsController.AddKeyCode("Sprint", Enum.KeyCode.LeftShift);
+
+// Update character movement
+RunService.RenderStepped.Connect((deltaTime) => {
+	// Get movement vector relative to camera
+	const moveVector = InputController.GetMoveVector(true, true);
+
+	// Apply movement based on sprint state
+	const speed = ActionsController.IsPressed("Sprint") ? SPRINT_SPEED : WALK_SPEED;
+
+	character.ApplyMovement(moveVector.mul(speed * deltaTime));
 });
 ```
+
+## Documentation
+
+For detailed documentation, see:
+
+- [Getting Started](docs/GettingStarted.md)
+- [Advanced Usage](docs/AdvancedUsage.md)
+- [API Reference](docs/API.md)
+
+## Comparison to Godot
+
+This system is inspired by Godot's input handling, which uses actions as an abstraction layer between physical inputs and game logic. Key differences:
+
+1. Adapted for Roblox's input system and devices
+2. Added support for Roblox-specific input types
+3. Enhanced with device detection for cross-platform games
+4. Integrated with Roblox's camera system
+
+## License
+
+MIT License - see the [LICENSE](LICENSE) file for details.
