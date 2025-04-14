@@ -1,111 +1,153 @@
 import { ActionsController } from "./ActionsController";
+import IInputMap from "../Models/IInputMap";
 import { InputKeyCode } from "../Models/InputKeyCode";
-import { InputContextSystem } from "./InputContextController/InputContextSystem";
 
 /**
- * Controller for managing different input contexts/action sets
- *
- * @deprecated Use InputContextSystem from InputMapController.getContextSystem() instead
+ * A collection of input maps that can be assigned/unassigned as a group
+ */
+export class InputContext {
+	private maps = new Map<string, IInputMap>();
+	private assigned = false;
+
+	constructor(private readonly name?: string) {}
+
+	/**
+	 * Add an input map to this context
+	 */
+	public add(actionName: string, map: IInputMap): this {
+		this.maps.set(actionName, map);
+
+		if (this.assigned) {
+			this.assignSingleMap(actionName, map);
+		}
+
+		return this;
+	}
+
+	public remove(actionName: string): this {
+		if (this.assigned && this.maps.has(actionName)) {
+			this.unassignSingleMap(actionName);
+		}
+
+		this.maps.delete(actionName);
+		return this;
+	}
+
+	public assign(): this {
+		if (this.assigned) return this;
+
+		for (const [actionName, map] of this.maps) {
+			this.assignSingleMap(actionName, map);
+		}
+
+		this.assigned = true;
+		return this;
+	}
+
+	public unassign(): this {
+		if (!this.assigned) return this;
+
+		for (const [actionName] of this.maps) {
+			this.unassignSingleMap(actionName);
+		}
+
+		this.assigned = false;
+		return this;
+	}
+
+	public isAssigned(): boolean {
+		return this.assigned;
+	}
+
+	public getMaps(): ReadonlyMap<string, IInputMap> {
+		return this.maps;
+	}
+
+	public getMap(actionName: string): IInputMap | undefined {
+		return this.maps.get(actionName);
+	}
+
+	public getName(): string | undefined {
+		return this.name;
+	}
+
+	private assignSingleMap(actionName: string, map: IInputMap): void {
+		if (!ActionsController.IsExisting(actionName)) {
+			ActionsController.Add(actionName);
+		}
+
+		if (map.KeyboardAndMouse !== undefined) {
+			ActionsController.AddKeyCode(actionName, map.KeyboardAndMouse);
+		}
+
+		if (map.Gamepad !== undefined) {
+			ActionsController.AddKeyCode(actionName, map.Gamepad);
+		}
+	}
+
+	private unassignSingleMap(actionName: string): void {
+		const map = this.maps.get(actionName);
+		if (!map) return;
+
+		if (map.KeyboardAndMouse !== undefined) {
+			ActionsController.EraseKeyCode(actionName, map.KeyboardAndMouse);
+		}
+
+		if (map.Gamepad !== undefined) {
+			ActionsController.EraseKeyCode(actionName, map.Gamepad);
+		}
+	}
+}
+
+/**
+ * Manages multiple input contexts and provides a global context
  */
 export namespace InputContextController {
-	let initialized = false;
+	const contexts = new Map<string, InputContext>();
+	const globalContext = new InputContext("Global");
 
-	/**
-	 * Initialize the context controller
-	 */
-	export function Initialize() {
-		if (initialized) return;
-		initialized = true;
-	}
-
-	/**
-	 * Creates a new input context
-	 * @deprecated Use InputMapController.createContext() instead
-	 */
-	export function CreateContext(contextName: string) {
-		return InputContextSystem.createContext(contextName);
-	}
-
-	/**
-	 * Adds an action mapping to a specific context
-	 * @deprecated Use context.addMap() or InputContextSystem directly
-	 */
-	export function AddActionToContext(
-		contextName: string,
-		actionName: string,
-		keyCode: InputKeyCode,
-	) {
-		const context =
-			InputContextSystem.getContext(contextName) ?? InputContextSystem.createContext(contextName);
-
-		// Determine if it's a gamepad or keyboard key
-		const isGamepad =
-			keyCode.EnumType === Enum.KeyCode &&
-			[
-				Enum.KeyCode.ButtonA,
-				Enum.KeyCode.ButtonB,
-				Enum.KeyCode.ButtonX,
-				Enum.KeyCode.ButtonY,
-				Enum.KeyCode.ButtonR1,
-				Enum.KeyCode.ButtonL1,
-				Enum.KeyCode.ButtonR2,
-				Enum.KeyCode.ButtonL2,
-				Enum.KeyCode.ButtonR3,
-				Enum.KeyCode.ButtonL3,
-				Enum.KeyCode.DPadLeft,
-				Enum.KeyCode.DPadRight,
-				Enum.KeyCode.DPadUp,
-				Enum.KeyCode.DPadDown,
-				Enum.KeyCode.Thumbstick1,
-				Enum.KeyCode.Thumbstick2,
-			].includes(keyCode as Enum.KeyCode);
-
-		// Get existing map or create a new one
-		const currentMap = context.getMap(actionName) ?? {
-			Gamepad: undefined,
-			KeyboardAndMouse: undefined,
-		};
-
-		// Add the key to appropriate slot
-		if (isGamepad) {
-			context.add(actionName, {
-				...currentMap,
-				Gamepad: keyCode,
-			});
-		} else {
-			context.add(actionName, {
-				...currentMap,
-				KeyboardAndMouse: keyCode,
-			});
-		}
-	}
-
-	/**
-	 * Activates a specific input context, deactivating the previous one
-	 * @deprecated Use context.assign() and context.unassign() instead
-	 */
-	export function SetActiveContext(contextName: string) {
-		// Unassign all contexts first
-		for (const [name, context] of InputContextSystem.getAllContexts()) {
-			if (context.isAssigned()) {
-				context.unassign();
-			}
+	export function createContext(name: string): InputContext {
+		if (contexts.has(name)) {
+			warn(`Context '${name}' already exists, returning existing one.`);
+			return contexts.get(name)!;
 		}
 
-		// Assign the new context
-		InputContextSystem.assignContext(contextName);
+		const context = new InputContext(name);
+		contexts.set(name, context);
+		return context;
 	}
 
-	/**
-	 * Gets the currently active context name
-	 * @deprecated Use InputContextSystem directly
-	 */
-	export function GetActiveContext(): string {
-		for (const [name, context] of InputContextSystem.getAllContexts()) {
-			if (context.isAssigned()) {
-				return name;
-			}
+	export function getContext(name: string): InputContext | undefined {
+		return contexts.get(name);
+	}
+
+	export function getGlobalContext(): InputContext {
+		return globalContext;
+	}
+
+	export function getAllContexts(): ReadonlyMap<string, InputContext> {
+		return contexts;
+	}
+
+	export function assignContext(name: string): boolean {
+		const context = contexts.get(name);
+		if (!context) {
+			warn(`Context '${name}' does not exist.`);
+			return false;
 		}
-		return "";
+
+		context.assign();
+		return true;
+	}
+
+	export function unassignContext(name: string): boolean {
+		const context = contexts.get(name);
+		if (!context) {
+			warn(`Context '${name}' does not exist.`);
+			return false;
+		}
+
+		context.unassign();
+		return true;
 	}
 }

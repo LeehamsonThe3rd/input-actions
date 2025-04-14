@@ -8,8 +8,7 @@ import IsCustomKey from "../../Utils/IsCustomKey";
 import { ActionsController } from "../ActionsController";
 import { InputTypeController } from "../InputTypeController";
 import { DefaultInputMaps } from "./DefaultInputActions";
-import { InputMapBuilder } from "./InputMapBuilder";
-import { InputContextSystem } from "../InputContextController/InputContextSystem";
+import { InputContextController } from "../InputContextController";
 
 export namespace InputMapController {
 	export interface IVisualInputKeyCodeData {
@@ -71,10 +70,13 @@ export namespace InputMapController {
 			warn(`${actionName} already exists`);
 			return;
 		}
+
 		if (!ActionsController.IsExisting(actionName)) ActionsController.Add(actionName);
+
 		registeredInputMaps.set(actionName, inputMap);
 
 		if (inputMap.Gamepad !== undefined) ActionsController.AddKeyCode(actionName, inputMap.Gamepad);
+
 		if (inputMap.KeyboardAndMouse !== undefined)
 			ActionsController.AddKeyCode(actionName, inputMap.KeyboardAndMouse);
 	}
@@ -88,8 +90,10 @@ export namespace InputMapController {
 
 		if (inputMap.Gamepad !== undefined)
 			ActionsController.EraseKeyCode(actionName, inputMap.Gamepad);
+
 		if (inputMap.KeyboardAndMouse !== undefined)
 			ActionsController.EraseKeyCode(actionName, inputMap.KeyboardAndMouse);
+
 		if (eraseAction) ActionsController.Erase(actionName);
 
 		registeredInputMaps.delete(actionName);
@@ -103,19 +107,15 @@ export namespace InputMapController {
 		DefaultInputMaps.applyDefaultMaps();
 	}
 
-	export function createMap(): InputMapBuilder {
-		return InputMapBuilder.create();
-	}
-
 	export function getContextSystem() {
-		return InputContextSystem;
+		return InputContextController;
 	}
 
 	export function createContext(name: string) {
-		return InputContextSystem.createContext(name);
+		return InputContextController.createContext(name);
 	}
 
 	export function getGlobalContext() {
-		return InputContextSystem.getGlobalContext();
+		return InputContextController.getGlobalContext();
 	}
 }

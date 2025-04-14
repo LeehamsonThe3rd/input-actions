@@ -1,9 +1,11 @@
 import { ECustomKey } from "../../Models/ECustomKey";
 import { EDefaultInputAction } from "../../Models/EDefaultInputAction";
 import IInputMap from "../../Models/IInputMap";
-import { InputMapBuilder } from "./InputMapBuilder";
-import { InputContext, InputContextSystem } from "../InputContextController/InputContextSystem";
+import { InputContext, InputContextController } from "../InputContextController";
 
+/**
+ * Default input maps organized by category
+ */
 export namespace DefaultInputMaps {
 	// Create contexts for each category
 	const navigationContext = new InputContext("Navigation");
@@ -11,97 +13,69 @@ export namespace DefaultInputMaps {
 	const scrollingContext = new InputContext("Scrolling");
 	const debugContext = new InputContext("Debug");
 
-	// Set up navigation maps
-	navigationContext.add(
-		EDefaultInputAction.UiGoUp,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.DPadUp)
-			.withKeyboardAndMouse(Enum.KeyCode.Up)
-			.build(),
-	);
+	// Set up navigation maps using direct object literals
+	navigationContext.add(EDefaultInputAction.UiGoUp, {
+		Gamepad: Enum.KeyCode.DPadUp,
+		KeyboardAndMouse: Enum.KeyCode.Up,
+	});
 
-	navigationContext.add(
-		EDefaultInputAction.UiGoDown,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.DPadDown)
-			.withKeyboardAndMouse(Enum.KeyCode.Down)
-			.build(),
-	);
+	navigationContext.add(EDefaultInputAction.UiGoDown, {
+		Gamepad: Enum.KeyCode.DPadDown,
+		KeyboardAndMouse: Enum.KeyCode.Down,
+	});
 
-	navigationContext.add(
-		EDefaultInputAction.UiGoLeft,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.DPadLeft)
-			.withKeyboardAndMouse(Enum.KeyCode.Left)
-			.build(),
-	);
+	navigationContext.add(EDefaultInputAction.UiGoLeft, {
+		Gamepad: Enum.KeyCode.DPadLeft,
+		KeyboardAndMouse: Enum.KeyCode.Left,
+	});
 
-	navigationContext.add(
-		EDefaultInputAction.UiGoRight,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.DPadRight)
-			.withKeyboardAndMouse(Enum.KeyCode.Right)
-			.build(),
-	);
+	navigationContext.add(EDefaultInputAction.UiGoRight, {
+		Gamepad: Enum.KeyCode.DPadRight,
+		KeyboardAndMouse: Enum.KeyCode.Right,
+	});
 
 	// Set up action maps
-	actionContext.add(
-		EDefaultInputAction.UiAccept,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.ButtonA)
-			.withKeyboardAndMouse(Enum.KeyCode.Return)
-			.build(),
-	);
+	actionContext.add(EDefaultInputAction.UiAccept, {
+		Gamepad: Enum.KeyCode.ButtonA,
+		KeyboardAndMouse: Enum.KeyCode.Return,
+	});
 
-	actionContext.add(
-		EDefaultInputAction.UiCancel,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.ButtonB)
-			.withKeyboardAndMouse(Enum.KeyCode.B)
-			.build(),
-	);
+	actionContext.add(EDefaultInputAction.UiCancel, {
+		Gamepad: Enum.KeyCode.ButtonB,
+		KeyboardAndMouse: Enum.KeyCode.B,
+	});
 
 	// Set up scrolling maps
-	scrollingContext.add(
-		EDefaultInputAction.UiScrollUp,
-		InputMapBuilder.create()
-			.withGamepad(ECustomKey.Thumbstick2Up)
-			.withKeyboardAndMouse(Enum.KeyCode.W)
-			.build(),
-	);
+	scrollingContext.add(EDefaultInputAction.UiScrollUp, {
+		Gamepad: ECustomKey.Thumbstick2Up,
+		KeyboardAndMouse: Enum.KeyCode.W,
+	});
 
-	scrollingContext.add(
-		EDefaultInputAction.UiScrollDown,
-		InputMapBuilder.create()
-			.withGamepad(ECustomKey.Thumbstick2Down)
-			.withKeyboardAndMouse(Enum.KeyCode.S)
-			.build(),
-	);
+	scrollingContext.add(EDefaultInputAction.UiScrollDown, {
+		Gamepad: ECustomKey.Thumbstick2Down,
+		KeyboardAndMouse: Enum.KeyCode.S,
+	});
 
-	scrollingContext.add(
-		EDefaultInputAction.UiNextPage,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.ButtonR1)
-			.withKeyboardAndMouse(Enum.KeyCode.E)
-			.build(),
-	);
+	scrollingContext.add(EDefaultInputAction.UiNextPage, {
+		Gamepad: Enum.KeyCode.ButtonR1,
+		KeyboardAndMouse: Enum.KeyCode.E,
+	});
 
-	scrollingContext.add(
-		EDefaultInputAction.UiPreviousPage,
-		InputMapBuilder.create()
-			.withGamepad(Enum.KeyCode.ButtonL1)
-			.withKeyboardAndMouse(Enum.KeyCode.Q)
-			.build(),
-	);
+	scrollingContext.add(EDefaultInputAction.UiPreviousPage, {
+		Gamepad: Enum.KeyCode.ButtonL1,
+		KeyboardAndMouse: Enum.KeyCode.Q,
+	});
 
 	// Set up debug maps
-	debugContext.add(
-		EDefaultInputAction.MouseDebugMode,
-		InputMapBuilder.create().withKeyboardAndMouse(Enum.KeyCode.LeftAlt).build(),
-	);
+	debugContext.add(EDefaultInputAction.MouseDebugMode, {
+		KeyboardAndMouse: Enum.KeyCode.LeftAlt,
+	});
 
+	/**
+	 * Initialize default input maps in the global context
+	 */
 	export function initializeDefaultMaps(): void {
-		const globalContext = InputContextSystem.getGlobalContext();
+		const globalContext = InputContextController.getGlobalContext();
 
 		for (const context of [navigationContext, actionContext, scrollingContext, debugContext]) {
 			for (const [actionName, map] of context.getMaps()) {
@@ -112,7 +86,7 @@ export namespace DefaultInputMaps {
 
 	export function applyDefaultMaps(): void {
 		initializeDefaultMaps();
-		InputContextSystem.getGlobalContext().assign();
+		InputContextController.getGlobalContext().assign();
 	}
 
 	export function getNavigationMaps(): ReadonlyMap<string, IInputMap> {

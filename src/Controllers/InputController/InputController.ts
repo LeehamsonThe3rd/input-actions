@@ -1,5 +1,4 @@
 import { Players, RunService, Workspace } from "@rbxts/services";
-import { FunctionTools } from "@rbxts/tool_pack";
 import { ICameraInputModule } from "./CameraInput/ICameraInputModule";
 
 export namespace InputController {
