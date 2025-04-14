@@ -382,7 +382,7 @@ Defines custom input keys like thumbstick directions.
 - `LockMouseCenter`
 - `UnlockMouse`
 
-### `EInputEventSubscribtionType`
+### `EInputEventSubscriptionType`
 
 - `All`
 - `AllWithNoCustomKeys`
@@ -394,3 +394,47 @@ Defines custom input keys like thumbstick directions.
 ### `EDefaultInputAction`
 
 Defines default actions for UI navigation.
+
+### `EVibrationPreset`
+
+Predefined vibration patterns for haptic feedback.
+
+- `Light`
+- `Medium`
+- `Heavy`
+- `Failure`
+- `Success`
+
+### `EInputBufferIndex`
+
+Indices used in action key buffer arrays.
+
+- `Current` - Current frame input (set by input events)
+- `Previous` - Previous frame input (set during update)
+- `PrePrevious` - Pre-previous frame input (set during update)
+
+## Constants
+
+### ActionResources
+
+Constants related to action handling.
+
+- `DEFAULT_MIN_PRESS_STRENGTH` - Default activation threshold for actions
+- `DEFAULT_THUMBSTICK_DEAD_ZONE` - Default dead zone value for thumbsticks
+- `DEFAULT_INPUT_PRIORITY` - Default priority for input handling
+
+### InputPriorityResources
+
+Constants for input operation priorities.
+
+- `KEY_COMBINATION_PRIORITY` - Priority for key combination handlers
+- `DEFAULT_KEY_REPEAT_DELAY` - Default delay for auto-repeat in seconds
+- `KEY_COMBINATION_RELEASE_DELAY` - Default release delay for key combinations
+
+### ContextActionResources
+
+Constants for context action names.
+
+- `ACTIONS_READER_NAME` - Name for the main input actions reader
+- `INPUT_ECHO_HANDLER_NAME` - Name for the input echo handler
+- `MOUSE_CONTROLLER_UPDATE` - Name for the mouse controller update

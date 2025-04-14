@@ -99,10 +99,10 @@ if (ActionsController.IsJustPressed("Save")) {
 Trigger controller vibration for immersive feedback:
 
 ```ts
-import { HapticFeedbackController } from "@rbxts/input-actions";
+import { HapticFeedbackController, EVibrationPreset } from "@rbxts/input-actions";
 
-// Use a preset vibration pattern
-HapticFeedbackController.VibratePreset("success");
+// Use a preset vibration pattern with type safety
+HapticFeedbackController.VibratePreset(EVibrationPreset.Success);
 
 // Or create a custom vibration
 HapticFeedbackController.Vibrate(

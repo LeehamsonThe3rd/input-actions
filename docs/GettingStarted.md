@@ -29,11 +29,28 @@ Before using any functionality, you need to initialize the controllers:
 ```ts
 import { InputActionsInitializerTools } from "@rbxts/input-actions";
 
-// Initialize all controllers
+// Initialize all controllers (including advanced controllers)
 InputActionsInitializerTools.InitAll();
 
 // Or initialize specific controllers
 InputActionsInitializerTools.InitActionsAndInputManager();
+InputActionsInitializerTools.InitAdvancedControllers(); // For key combinations, contexts, etc.
+```
+
+## Type Safety
+
+The package is designed with TypeScript best practices in mind, providing enums and constants for improved type safety and code organization:
+
+```ts
+import { EVibrationPreset, EInputType, ECustomKey } from "@rbxts/input-actions";
+
+// Use enum values for type-safe code
+HapticFeedbackController.VibratePreset(EVibrationPreset.Success);
+
+// Check input type with proper enums
+if (InputTypeController.GetMainInputType() === EInputType.Gamepad) {
+	// Show gamepad controls
+}
 ```
 
 ## Creating and Using Actions
