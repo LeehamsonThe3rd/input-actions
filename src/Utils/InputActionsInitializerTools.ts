@@ -1,7 +1,6 @@
 import { ActionsController } from "../Controllers/ActionsController";
 import { HapticFeedbackController } from "../Controllers/HapticFeedbackController";
 import { InputConfigController } from "../Controllers/InputConfigController";
-import { InputContextController } from "../Controllers/InputContextController";
 import { InputController } from "../Controllers/InputController/InputController";
 import { InputEchoController } from "../Controllers/InputEchoController";
 import { InputMapController } from "../Controllers/InputMapController/InputMapController";
@@ -39,23 +38,15 @@ export namespace InputActionsInitializerTools {
 	}
 
 	export function InitAdvancedControllers() {
-		InputContextController.Initialize?.();
 		InputEchoController.Initialize();
 		KeyCombinationController.Initialize();
-
-		// Initialize the input context system by getting it
 		InputMapController.getContextSystem();
 	}
 
 	export function InitConfigController() {
 		// Nothing to initialize, but this function is provided for consistency
-		// and future potential initialization needs
 	}
 
-	/**
-	 * Trigger haptic feedback for a gamepad
-	 * @param preset Preset name or vibration parameters
-	 */
 	export function TriggerHapticFeedback(
 		preset: EVibrationPreset | { largeMotor?: number; smallMotor?: number; duration?: number },
 	) {

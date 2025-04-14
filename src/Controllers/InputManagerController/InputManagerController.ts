@@ -19,7 +19,7 @@ import InputSignal, { InputCallback } from "./InputSignal";
  * including custom key processing for thumbsticks and mouse movement.
  */
 export namespace InputManagerController {
-	const input_signal = new InputSignal();
+	const inputSignal = new InputSignal();
 
 	/**
 	 * Configuration options for input subscription
@@ -38,7 +38,7 @@ export namespace InputManagerController {
 	 * @returns Cleanup function to remove the subscription
 	 */
 	export function Subscribe(callback: InputCallback, config?: ISubscriptionConfig) {
-		return input_signal.Subscribe(callback, config?.Priority, config?.SubscriptionType);
+		return inputSignal.Subscribe(callback, config?.Priority, config?.SubscriptionType);
 	}
 
 	/**
@@ -51,9 +51,9 @@ export namespace InputManagerController {
 	/**
 	 * Updates action press states based on an input event
 	 */
-	function PressActionsFromInputEvent(input_event: InputEvent) {
-		for (const action_name of input_event.Actions) {
-			ActionsController.Press(action_name, input_event.PressStrength);
+	function PressActionsFromInputEvent(inputEvent: InputEvent) {
+		for (const actionName of inputEvent.Actions) {
+			ActionsController.Press(actionName, inputEvent.PressStrength);
 		}
 	}
 
@@ -62,10 +62,10 @@ export namespace InputManagerController {
 	 * @param input_event_data The raw input event data
 	 * @returns The result of processing the event
 	 */
-	export function ParseInputEvent(input_event_data: InputEventData) {
-		const input_event = new InputEvent(input_event_data);
-		PressActionsFromInputEvent(input_event);
-		return input_signal.Fire(input_event);
+	export function ParseInputEvent(inputEventData: InputEventData) {
+		const inputEvent = new InputEvent(inputEventData);
+		PressActionsFromInputEvent(inputEvent);
+		return inputSignal.Fire(inputEvent);
 	}
 
 	/**
@@ -73,19 +73,19 @@ export namespace InputManagerController {
 	 */
 	function SetCustomKeyStrength(
 		input: InputObject,
-		custom_key: ECustomKey,
+		customKey: ECustomKey,
 		strength: number,
 		force: boolean = false,
 	) {
-		if (!force && saved_custom_key_press_strengths[custom_key] === strength) return;
-		saved_custom_key_press_strengths[custom_key] = strength;
+		if (!force && customKeyPressStrengths[customKey] === strength) return;
+		customKeyPressStrengths[customKey] = strength;
 
-		const input_event_data = InputEventData.FromInputKeyCode(custom_key, input.UserInputType);
-		input_event_data.Position = input.Position;
-		input_event_data.Delta = input.Delta;
-		input_event_data.PressStrength = strength;
-		input_event_data.Changed = true;
-		ParseInputEvent(input_event_data);
+		const inputEventData = InputEventData.FromInputKeyCode(customKey, input.UserInputType);
+		inputEventData.Position = input.Position;
+		inputEventData.Delta = input.Delta;
+		inputEventData.PressStrength = strength;
+		inputEventData.Changed = true;
+		ParseInputEvent(inputEventData);
 	}
 
 	/**
@@ -96,7 +96,7 @@ export namespace InputManagerController {
 	}
 
 	// Tracks the current press strength of all custom keys
-	const saved_custom_key_press_strengths = identity<Record<ECustomKey, number>>({
+	const customKeyPressStrengths = identity<Record<ECustomKey, number>>({
 		[ECustomKey.Thumbstick1Left]: 0,
 		[ECustomKey.Thumbstick1Right]: 0,
 		[ECustomKey.Thumbstick1Up]: 0,
@@ -116,11 +116,11 @@ export namespace InputManagerController {
 		[ECustomKey.MouseUp]: 0,
 	});
 
-	let saved_mouse_position = Vector3.zero;
+	let savedMousePosition = Vector3.zero;
 	type CustomKeyStrategy = (input: InputObject) => void;
 
 	// Strategies for processing different types of custom input
-	const custom_key_strategies = {
+	const customKeyStrategies = {
 		[Enum.KeyCode.Thumbstick1 as never]: (input: InputObject) => {
 			const keyCode = Enum.KeyCode.Thumbstick1;
 			const position = new Vector2(input.Position.X, input.Position.Y);
@@ -146,29 +146,28 @@ export namespace InputManagerController {
 			SetCustomKeyStrength(input, ECustomKey.Thumbstick2Down, directions.down);
 		},
 		[Enum.UserInputType.MouseWheel as never]: (input: InputObject) => {
-			const down_strength = ExtractPressStrength(input.Position.Z, -1, 0);
-			const up_strength = ExtractPressStrength(input.Position.Z, 0, 1);
-			if (down_strength !== 0)
-				SetCustomKeyStrength(input, ECustomKey.MouseWheelDown, down_strength, true);
+			const downStrength = ExtractPressStrength(input.Position.Z, -1, 0);
+			const upStrength = ExtractPressStrength(input.Position.Z, 0, 1);
+			if (downStrength !== 0)
+				SetCustomKeyStrength(input, ECustomKey.MouseWheelDown, downStrength, true);
 
-			if (up_strength !== 0)
-				SetCustomKeyStrength(input, ECustomKey.MouseWheelUp, up_strength, true);
+			if (upStrength !== 0) SetCustomKeyStrength(input, ECustomKey.MouseWheelUp, upStrength, true);
 		},
 		[Enum.UserInputType.MouseMovement as never]: (input: InputObject) => {
-			const position_delta = input.Position.sub(saved_mouse_position);
-			saved_mouse_position = input.Position;
+			const positionDelta = input.Position.sub(savedMousePosition);
+			savedMousePosition = input.Position;
 
-			const total_delta = position_delta.add(input.Delta);
+			const totalDelta = positionDelta.add(input.Delta);
 
-			const left_strength = math.abs(math.min(total_delta.X, 0));
-			const right_strength = math.abs(math.max(total_delta.X, 0));
-			const up_strength = math.abs(math.min(total_delta.Y, 0));
-			const down_strength = math.abs(math.max(total_delta.Y, 0));
+			const leftStrength = math.abs(math.min(totalDelta.X, 0));
+			const rightStrength = math.abs(math.max(totalDelta.X, 0));
+			const upStrength = math.abs(math.min(totalDelta.Y, 0));
+			const downStrength = math.abs(math.max(totalDelta.Y, 0));
 
-			SetCustomKeyStrength(input, ECustomKey.MouseLeft, left_strength);
-			SetCustomKeyStrength(input, ECustomKey.MouseRight, right_strength);
-			SetCustomKeyStrength(input, ECustomKey.MouseDown, down_strength);
-			SetCustomKeyStrength(input, ECustomKey.MouseUp, up_strength);
+			SetCustomKeyStrength(input, ECustomKey.MouseLeft, leftStrength);
+			SetCustomKeyStrength(input, ECustomKey.MouseRight, rightStrength);
+			SetCustomKeyStrength(input, ECustomKey.MouseDown, downStrength);
+			SetCustomKeyStrength(input, ECustomKey.MouseUp, upStrength);
 		},
 	};
 
@@ -177,10 +176,8 @@ export namespace InputManagerController {
 	 */
 	function CheckAndParseIfCustomInputKeyCode(input: InputObject) {
 		if (input.UserInputState !== Enum.UserInputState.Change) return;
-		const input_key_code = GetInputKeyCode(input);
-		const strategy = custom_key_strategies[input_key_code as never] as
-			| CustomKeyStrategy
-			| undefined;
+		const inputKeyCode = GetInputKeyCode(input);
+		const strategy = customKeyStrategies[inputKeyCode as never] as CustomKeyStrategy | undefined;
 		strategy?.(input);
 	}
 
@@ -191,16 +188,16 @@ export namespace InputManagerController {
 		if (state === Enum.UserInputState.None) return;
 		if (state === Enum.UserInputState.Cancel) return;
 
-		const press_strength = state === Enum.UserInputState.Begin ? 1 : 0;
-		const input_key_code = GetInputKeyCode(input);
-		const input_event_action = InputEventData.FromInputKeyCode(input_key_code, input.UserInputType);
-		input_event_action.Position = input.Position;
-		input_event_action.Changed = state === Enum.UserInputState.Change;
-		input_event_action.Delta = input.Delta;
-		input_event_action.PressStrength = press_strength;
+		const pressStrength = state === Enum.UserInputState.Begin ? 1 : 0;
+		const inputKeyCode = GetInputKeyCode(input);
+		const inputEventAction = InputEventData.FromInputKeyCode(inputKeyCode, input.UserInputType);
+		inputEventAction.Position = input.Position;
+		inputEventAction.Changed = state === Enum.UserInputState.Change;
+		inputEventAction.Delta = input.Delta;
+		inputEventAction.PressStrength = pressStrength;
 
 		CheckAndParseIfCustomInputKeyCode(input);
-		return ParseInputEvent(input_event_action);
+		return ParseInputEvent(inputEventAction);
 	}
 
 	let initialized = false;

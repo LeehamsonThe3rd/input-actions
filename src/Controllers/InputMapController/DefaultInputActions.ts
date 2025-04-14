@@ -4,9 +4,6 @@ import IInputMap from "../../Models/IInputMap";
 import { InputMapBuilder } from "./InputMapBuilder";
 import { InputContext, InputContextSystem } from "../InputContextController/InputContextSystem";
 
-/**
- * Default input maps organized by category
- */
 export namespace DefaultInputMaps {
 	// Create contexts for each category
 	const navigationContext = new InputContext("Navigation");
@@ -103,13 +100,9 @@ export namespace DefaultInputMaps {
 		InputMapBuilder.create().withKeyboardAndMouse(Enum.KeyCode.LeftAlt).build(),
 	);
 
-	/**
-	 * Initialize default input maps in the global context
-	 */
 	export function initializeDefaultMaps(): void {
 		const globalContext = InputContextSystem.getGlobalContext();
 
-		// Add all maps to the global context
 		for (const context of [navigationContext, actionContext, scrollingContext, debugContext]) {
 			for (const [actionName, map] of context.getMaps()) {
 				globalContext.add(actionName, map);
@@ -117,38 +110,23 @@ export namespace DefaultInputMaps {
 		}
 	}
 
-	/**
-	 * Apply default input maps to the input system
-	 */
 	export function applyDefaultMaps(): void {
 		initializeDefaultMaps();
 		InputContextSystem.getGlobalContext().assign();
 	}
 
-	/**
-	 * Get navigation-related input maps
-	 */
 	export function getNavigationMaps(): ReadonlyMap<string, IInputMap> {
 		return navigationContext.getMaps();
 	}
 
-	/**
-	 * Get action-related input maps
-	 */
 	export function getActionMaps(): ReadonlyMap<string, IInputMap> {
 		return actionContext.getMaps();
 	}
 
-	/**
-	 * Get scrolling-related input maps
-	 */
 	export function getScrollingMaps(): ReadonlyMap<string, IInputMap> {
 		return scrollingContext.getMaps();
 	}
 
-	/**
-	 * Get debug-related input maps
-	 */
 	export function getDebugMaps(): ReadonlyMap<string, IInputMap> {
 		return debugContext.getMaps();
 	}

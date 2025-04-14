@@ -6,59 +6,52 @@ import { EInputEventSubscriptionType } from "../../Models/EInputEventSubscriptio
 import { CleanUp } from "../../UtilityTypes/CleanUp";
 import InputEvent from "./InputEvent";
 
-/**
- * Constants for InputSignal
- */
 const DEFAULT_SUBSCRIPTION_PRIORITY = 1;
 
-//at the end returns whether to sink the input or no
-export type InputCallback = (
-	input_event: InputEvent,
-) => Enum.ContextActionResult | void | undefined;
+export type InputCallback = (inputEvent: InputEvent) => Enum.ContextActionResult | void | undefined;
 
-const not_skip_strategies = identity<
-	Record<EInputEventSubscriptionType, (input_event: InputEvent) => boolean>
+const notSkipStrategies = identity<
+	Record<EInputEventSubscriptionType, (inputEvent: InputEvent) => boolean>
 >({
 	[EInputEventSubscriptionType.All]: () => true,
-	[EInputEventSubscriptionType.AllWithNoCustomKeys]: (input_event) =>
-		typeOf(input_event.InputKeyCode) !== "string",
-	[EInputEventSubscriptionType.KeysOnly]: (input_event) => !input_event.Changed,
-	[EInputEventSubscriptionType.ChangedOnly]: (input_event: InputEvent) => input_event.Changed,
-	[EInputEventSubscriptionType.CustomKeysOnly]: (input_event: InputEvent) =>
-		typeOf(input_event.InputKeyCode) === "string",
-	[EInputEventSubscriptionType.KeysWithCustomKeysOnly]: (input_event: InputEvent) =>
-		!input_event.Changed || typeOf(input_event.InputKeyCode) === "string",
+	[EInputEventSubscriptionType.AllWithNoCustomKeys]: (inputEvent) =>
+		typeOf(inputEvent.InputKeyCode) !== "string",
+	[EInputEventSubscriptionType.KeysOnly]: (inputEvent) => !inputEvent.Changed,
+	[EInputEventSubscriptionType.ChangedOnly]: (inputEvent: InputEvent) => inputEvent.Changed,
+	[EInputEventSubscriptionType.CustomKeysOnly]: (inputEvent: InputEvent) =>
+		typeOf(inputEvent.InputKeyCode) === "string",
+	[EInputEventSubscriptionType.KeysWithCustomKeysOnly]: (inputEvent: InputEvent) =>
+		!inputEvent.Changed || typeOf(inputEvent.InputKeyCode) === "string",
 });
 
 export default class InputSignal {
-	private subscriptions_: [
+	private subscriptions: [
 		callback: InputCallback,
-		subscription_type: EInputEventSubscriptionType,
+		subscriptionType: EInputEventSubscriptionType,
 		priority: number,
 	][] = [];
 
 	Subscribe(
 		callback: InputCallback,
 		priority: number = DEFAULT_SUBSCRIPTION_PRIORITY,
-		subscription_type: EInputEventSubscriptionType = EInputEventSubscriptionType.KeysOnly,
+		subscriptionType: EInputEventSubscriptionType = EInputEventSubscriptionType.KeysOnly,
 	): CleanUp {
 		const value: [
 			callback: InputCallback,
-			subscription_type: EInputEventSubscriptionType,
+			subscriptionType: EInputEventSubscriptionType,
 			priority: number,
-		] = [callback, subscription_type, priority];
-		ArrayTools.SortedInsert(this.subscriptions_, value, (current_value, b) => {
-			//current_priority > b_priority
-			return current_value[2] > b[2];
+		] = [callback, subscriptionType, priority];
+		ArrayTools.SortedInsert(this.subscriptions, value, (currentValue, b) => {
+			return currentValue[2] > b[2];
 		});
-		return () => ArrayTools.RemoveElementFromArray(this.subscriptions_, value);
+		return () => ArrayTools.RemoveElementFromArray(this.subscriptions, value);
 	}
 
-	Fire(input_event: InputEvent): Enum.ContextActionResult {
-		for (const [callback, subscription_type] of table.clone(this.subscriptions_)) {
-			const not_skip_strategy = not_skip_strategies[subscription_type];
-			if (!not_skip_strategy(input_event)) continue;
-			const [success, result] = pcall(callback, input_event);
+	Fire(inputEvent: InputEvent): Enum.ContextActionResult {
+		for (const [callback, subscriptionType] of table.clone(this.subscriptions)) {
+			const notSkipStrategy = notSkipStrategies[subscriptionType];
+			if (!notSkipStrategy(inputEvent)) continue;
+			const [success, result] = pcall(callback, inputEvent);
 			if (!success) {
 				warn(result);
 				continue;

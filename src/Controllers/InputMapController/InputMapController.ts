@@ -17,7 +17,6 @@ export namespace InputMapController {
 		readonly ImageId: string;
 	}
 
-	// Remove EmptyInputMap and use consistent camelCase naming
 	const registeredInputMaps = new Map<string, IInputMap>();
 
 	export function get(name: string) {
@@ -81,7 +80,7 @@ export namespace InputMapController {
 	}
 
 	export function remove(actionName: string, eraseAction: boolean = false) {
-		const inputMap = registeredInputMaps.get(actionName)!;
+		const inputMap = registeredInputMaps.get(actionName);
 		if (inputMap === undefined) {
 			warn(`${actionName} doesn't exist`);
 			return;
@@ -96,7 +95,6 @@ export namespace InputMapController {
 		registeredInputMaps.delete(actionName);
 	}
 
-	// Update to use new DefaultInputMaps
 	export function getDefaultInputMaps() {
 		return DefaultInputMaps;
 	}
@@ -105,30 +103,18 @@ export namespace InputMapController {
 		DefaultInputMaps.applyDefaultMaps();
 	}
 
-	/**
-	 * Create a new input map builder for easy map creation
-	 */
 	export function createMap(): InputMapBuilder {
 		return InputMapBuilder.create();
 	}
 
-	/**
-	 * Get the InputContextSystem for advanced input context management
-	 */
 	export function getContextSystem() {
 		return InputContextSystem;
 	}
 
-	/**
-	 * Create a new context for grouping related input maps
-	 */
 	export function createContext(name: string) {
 		return InputContextSystem.createContext(name);
 	}
 
-	/**
-	 * Get the global input context
-	 */
 	export function getGlobalContext() {
 		return InputContextSystem.getGlobalContext();
 	}

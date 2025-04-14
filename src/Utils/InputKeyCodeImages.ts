@@ -3,10 +3,10 @@ import { InputKeyCode } from "../Models/InputKeyCode";
 
 export namespace InputKeyCodeImages {
 	export function GetImageForKey(keycode: InputKeyCode) {
-		return key_codes.get(keycode) ?? "";
+		return keyCodesMap.get(keycode) ?? "";
 	}
 
-	const key_codes = new Map<InputKeyCode, string>([
+	const keyCodesMap = new Map<InputKeyCode, string>([
 		[Enum.KeyCode.U, "rbxassetid://17164171424"],
 		[Enum.KeyCode.Five, "rbxassetid://17164184242"],
 		[Enum.KeyCode.B, "rbxassetid://17164182862"],
@@ -77,7 +77,6 @@ export namespace InputKeyCodeImages {
 		[Enum.KeyCode.Tab, "rbxassetid://17164171761"],
 		[Enum.KeyCode.GreaterThan, "rbxassetid://17164177171"],
 		[Enum.KeyCode.LeftShift, "rbxassetid://17164172459"],
-		[Enum.KeyCode.Backspace, "rbxassetid://17164182687"],
 		[Enum.KeyCode.F4, "rbxassetid://17164179911"],
 		[Enum.KeyCode.D, "rbxassetid://17164181789"],
 		[Enum.KeyCode.F8, "rbxassetid://17164179350"],
@@ -97,88 +96,30 @@ export namespace InputKeyCodeImages {
 		[Enum.KeyCode.RightShift, "rbxassetid://17164172362"],
 		[Enum.UserInputType.MouseButton1, "rbxassetid://17164176481"],
 		[Enum.KeyCode.Delete, "rbxassetid://17164185786"],
-		//enter with arrow
-		// [Enum.KeyCode.Return , "rbxassetid://17164181077"],
-		//cursor
-		// [Enum.KeyCode. , "rbxassetid://17164181904"],
-		//wheel up
-		// [Enum.KeyCode. , "rbxassetid://17164175785"],
-		//wheel down
-		//[Enum.KeyCode. , "rbxassetid://17164176076"],
 
-		//mouse
-		//[Enum.KeyCode. , "rbxassetid://17164175714"],
-		//move right - left mouse
-		//[Enum.KeyCode. , "rbxassetid://17164175586"],
-		//move up - down mouse
-		//[Enum.KeyCode. , "rbxassetid://17164175365"],
-
-		//right stick
-		// [Enum.KeyCode.ButtonR , "rbxassetid://17164629391"],
-		//red
-		// [Enum.KeyCode.ButtonB , "rbxassetid://17164632645"],
-		//left stick right
+		// Gamepad keys
 		[ECustomKey.Thumbstick1Right, "rbxassetid://17164630825"],
 		[Enum.KeyCode.DPadUp, "rbxassetid://17164632019"],
-		//share
-		// [Enum.KeyCode. , "rbxassetid://17164626451"],
-		//right stick horizontal
-		// [Enum.KeyCode. , "rbxassetid://17164627794"],
 		[Enum.KeyCode.ButtonR2, "rbxassetid://17164626784"],
-		//left stick press black fill white outline
-		// [Enum.KeyCode.ButtonL3 , "rbxassetid://17164629628"],
-		//green
-		// [Enum.KeyCode.ButtonA , "rbxassetid://17164632916"],
 		[Enum.KeyCode.DPadDown, "rbxassetid://17164632333"],
 		[Enum.KeyCode.DPadRight, "rbxassetid://17164632118"],
-		//left stick up
 		[ECustomKey.Thumbstick1Up, "rbxassetid://17164630628"],
-		//right stick vertical
-		// [Enum.KeyCode. , "rbxassetid://17164627573"],
 		[Enum.KeyCode.ButtonY, "rbxassetid://17164625585"],
-		//left stick left
 		[ECustomKey.Thumbstick1Left, "rbxassetid://17164631028"],
-		//right stick press black fill white outline
-		// [Enum.KeyCode.ButtonR3 , "rbxassetid://17164626959"],
 		[Enum.KeyCode.Thumbstick2, "rbxassetid://17164629151"],
 		[Enum.KeyCode.Menu, "rbxassetid://17164626282"],
 		[Enum.KeyCode.ButtonL1, "rbxassetid://17164629964"],
-		//left stick horizontal
-		// [Enum.KeyCode. , "rbxassetid://17164630362"],
-		//dpad horizontal
-		// [Enum.KeyCode. , "rbxassetid://17164631912"],
 		[Enum.KeyCode.ButtonL2, "rbxassetid://17164633611"],
-		//left stick
-		// [Enum.KeyCode.ButtonL , "rbxassetid://17164631622"],
 		[Enum.KeyCode.ButtonR1, "rbxassetid://17164627364"],
 		[Enum.KeyCode.Thumbstick1, "rbxassetid://17164631447"],
-		//stick right right
 		[ECustomKey.Thumbstick2Right, "rbxassetid://17164628221"],
-		//stick right up
 		[ECustomKey.Thumbstick2Up, "rbxassetid://17164628019"],
 		[Enum.KeyCode.ButtonX, "rbxassetid://17164625869"],
-		//dpad
-		// [Enum.KeyCode. , "rbxassetid://17164632418"],
 		[Enum.KeyCode.ButtonR3, "rbxassetid://17164627156"],
 		[Enum.KeyCode.ButtonB, "rbxassetid://17164632497"],
-		//share 2
-		// [Enum.KeyCode. , "rbxassetid://17164626614"],
-		//right stick 2
-		// [Enum.KeyCode.ButtonR , "rbxassetid://17164628806"],
-		//color
-		// [Enum.KeyCode.ButtonX , "rbxassetid://17164626058"],
 		[Enum.KeyCode.ButtonA, "rbxassetid://17164632783"],
-		//left stick 2
-		// [Enum.KeyCode.ButtonL , "rbxassetid://17164631263"],
-		//left stick vertical
-		// [Enum.KeyCode. , "rbxassetid://17164630160"],
-		//dpad vertical
-		// [Enum.KeyCode. , "rbxassetid://17164631785"],
 		[Enum.KeyCode.DPadLeft, "rbxassetid://17164632209"],
-		//yellow
-		// [Enum.KeyCode.ButtonY , "rbxassetid://17164625762"],
 		[Enum.KeyCode.ButtonL3, "rbxassetid://17164629782"],
-		//right stick left
 		[ECustomKey.Thumbstick2Left, "rbxassetid://17164628428"],
 	]);
 }
