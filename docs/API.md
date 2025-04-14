@@ -347,7 +347,7 @@ Provides a simple API for triggering controller vibration.
 
 Triggers vibration with custom parameters.
 
-#### `VibratePreset(presetName: string)`
+#### `VibratePreset(presetName: EVibrationPreset | string)`
 
 Triggers vibration using a named preset.
 
@@ -358,6 +358,18 @@ Registers a custom vibration preset.
 #### `StopAll()`
 
 Stops all vibration immediately.
+
+### Types
+
+#### `IVibrationPreset`
+
+```typescript
+interface IVibrationPreset {
+	LargeMotor: number;
+	SmallMotor: number;
+	Duration: number;
+}
+```
 
 ## InputConfigController
 

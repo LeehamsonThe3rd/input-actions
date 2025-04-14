@@ -48,10 +48,10 @@ export namespace InputActionsInitializerTools {
 	}
 
 	export function TriggerHapticFeedback(
-		preset: EVibrationPreset | { largeMotor?: number; smallMotor?: number; duration?: number },
+		preset: EVibrationPreset | HapticFeedbackController.IVibrationPreset,
 	) {
-		if (typeof preset === "object") {
-			HapticFeedbackController.Vibrate(preset.largeMotor, preset.smallMotor, preset.duration);
+		if (typeIs(preset, "table")) {
+			HapticFeedbackController.Vibrate(preset.LargeMotor, preset.SmallMotor, preset.Duration);
 		} else {
 			HapticFeedbackController.VibratePreset(preset);
 		}

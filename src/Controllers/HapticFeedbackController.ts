@@ -11,18 +11,18 @@ export namespace HapticFeedbackController {
 	const DEFAULT_SMALL_MOTOR_STRENGTH = 0.5;
 	const DEFAULT_DURATION = 0.2;
 
-	interface VibrationPreset {
-		largeMotor: number;
-		smallMotor: number;
-		duration: number;
+	export interface IVibrationPreset {
+		LargeMotor: number;
+		SmallMotor: number;
+		Duration: number;
 	}
 
-	const presets = new Map<string, VibrationPreset>([
-		[EVibrationPreset.Light, { largeMotor: 0.2, smallMotor: 0.3, duration: 0.1 }],
-		[EVibrationPreset.Medium, { largeMotor: 0.5, smallMotor: 0.5, duration: 0.2 }],
-		[EVibrationPreset.Heavy, { largeMotor: 0.8, smallMotor: 0.7, duration: 0.3 }],
-		[EVibrationPreset.Failure, { largeMotor: 1.0, smallMotor: 0.3, duration: 0.5 }],
-		[EVibrationPreset.Success, { largeMotor: 0.4, smallMotor: 0.8, duration: 0.2 }],
+	const presets = new Map<string, IVibrationPreset>([
+		[EVibrationPreset.Light, { LargeMotor: 0.2, SmallMotor: 0.3, Duration: 0.1 }],
+		[EVibrationPreset.Medium, { LargeMotor: 0.5, SmallMotor: 0.5, Duration: 0.2 }],
+		[EVibrationPreset.Heavy, { LargeMotor: 0.8, SmallMotor: 0.7, Duration: 0.3 }],
+		[EVibrationPreset.Failure, { LargeMotor: 1.0, SmallMotor: 0.3, Duration: 0.5 }],
+		[EVibrationPreset.Success, { LargeMotor: 0.4, SmallMotor: 0.8, Duration: 0.2 }],
 	]);
 
 	/**
@@ -57,13 +57,13 @@ export namespace HapticFeedbackController {
 	 * Triggers vibration using a named preset
 	 */
 	export function VibratePreset(presetName: EVibrationPreset | string) {
-		const preset = presets.get(typeof presetName === "string" ? presetName.lower() : presetName);
+		const preset = presets.get(typeIs(presetName, "string") ? presetName.lower() : presetName);
 		if (!preset) {
 			warn(`Vibration preset "${presetName}" not found`);
 			return;
 		}
 
-		Vibrate(preset.largeMotor, preset.smallMotor, preset.duration);
+		Vibrate(preset.LargeMotor, preset.SmallMotor, preset.Duration);
 	}
 
 	/**
@@ -76,9 +76,9 @@ export namespace HapticFeedbackController {
 		duration: number,
 	) {
 		presets.set(name.lower(), {
-			largeMotor,
-			smallMotor,
-			duration,
+			LargeMotor: largeMotor,
+			SmallMotor: smallMotor,
+			Duration: duration,
 		});
 	}
 

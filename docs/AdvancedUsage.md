@@ -174,6 +174,19 @@ HapticFeedbackController.Vibrate(
 	0.3, // Duration in seconds
 );
 
+// Using the convenience helper from InputActionsInitializerTools
+import { InputActionsInitializerTools } from "@rbxts/input-actions";
+
+// Pass a preset enum
+InputActionsInitializerTools.TriggerHapticFeedback(EVibrationPreset.Medium);
+
+// Or pass a custom preset object
+InputActionsInitializerTools.TriggerHapticFeedback({
+	LargeMotor: 0.6,
+	SmallMotor: 0.3,
+	Duration: 0.25,
+});
+
 // Register your own presets
 HapticFeedbackController.RegisterPreset("pickupItem", 0.3, 0.6, 0.15);
 
