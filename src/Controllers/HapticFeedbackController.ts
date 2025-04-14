@@ -36,21 +36,26 @@ export namespace HapticFeedbackController {
 
 		// Get all connected gamepads
 		for (const gamepad of UserInputService.GetConnectedGamepads()) {
-			HapticService.SetMotor(gamepad, Enum.UserInputType.Gamepad1, {
-				LeftTrigger: 0,
-				RightTrigger: 0,
-				LeftHand: largeMotor,
-				RightHand: smallMotor,
-			});
+			// Create motor options
+			const motorOptions = {
+				[Enum.VibrationMotor.LeftHand]: largeMotor,
+				[Enum.VibrationMotor.RightHand]: smallMotor,
+				[Enum.VibrationMotor.LeftTrigger]: 0,
+				[Enum.VibrationMotor.RightTrigger]: 0,
+			};
+
+			// Apply vibration
+			HapticService.SetMotor(gamepad, motorOptions);
 
 			// Stop the vibration after duration
 			task.delay(duration, () => {
-				HapticService.SetMotor(gamepad, Enum.UserInputType.Gamepad1, {
-					LeftTrigger: 0,
-					RightTrigger: 0,
-					LeftHand: 0,
-					RightHand: 0,
-				});
+				const stopOptions = {
+					[Enum.VibrationMotor.LeftHand]: 0,
+					[Enum.VibrationMotor.RightHand]: 0,
+					[Enum.VibrationMotor.LeftTrigger]: 0,
+					[Enum.VibrationMotor.RightTrigger]: 0,
+				};
+				HapticService.SetMotor(gamepad, stopOptions);
 			});
 		}
 	}
@@ -91,12 +96,13 @@ export namespace HapticFeedbackController {
 		if (!UserInputService.GamepadEnabled) return;
 
 		for (const gamepad of UserInputService.GetConnectedGamepads()) {
-			HapticService.SetMotor(gamepad, Enum.UserInputType.Gamepad1, {
-				LeftTrigger: 0,
-				RightTrigger: 0,
-				LeftHand: 0,
-				RightHand: 0,
-			});
+			const stopOptions = {
+				[Enum.VibrationMotor.LeftHand]: 0,
+				[Enum.VibrationMotor.RightHand]: 0,
+				[Enum.VibrationMotor.LeftTrigger]: 0,
+				[Enum.VibrationMotor.RightTrigger]: 0,
+			};
+			HapticService.SetMotor(gamepad, stopOptions);
 		}
 	}
 }

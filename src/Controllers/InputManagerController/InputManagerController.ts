@@ -21,7 +21,7 @@ export namespace InputManagerController {
 	/**
 	 * Configuration options for input subscription
 	 */
-	export interface ISubscribtionConfig {
+	export interface ISubscriptionConfig {
 		/** Priority of the subscription (higher values are processed first) */
 		Priority?: number;
 		/** Type of events to subscribe to */
@@ -34,7 +34,7 @@ export namespace InputManagerController {
 	 * @param config Optional configuration for the subscription
 	 * @returns Cleanup function to remove the subscription
 	 */
-	export function Subscribe(callback: InputCallback, config?: ISubscribtionConfig) {
+	export function Subscribe(callback: InputCallback, config?: ISubscriptionConfig) {
 		return input_signal.Subscribe(callback, config?.Priority, config?.SubscriptionType);
 	}
 

@@ -33,20 +33,20 @@ const not_skip_strategies = identity<
 export default class InputSignal {
 	private subscriptions_: [
 		callback: InputCallback,
-		subscribtion_type: EInputEventSubscriptionType,
+		subscription_type: EInputEventSubscriptionType,
 		priority: number,
 	][] = [];
 
 	Subscribe(
 		callback: InputCallback,
 		priority: number = DEFAULT_SUBSCRIPTION_PRIORITY,
-		subscribtion_type: EInputEventSubscriptionType = EInputEventSubscriptionType.KeysOnly,
+		subscription_type: EInputEventSubscriptionType = EInputEventSubscriptionType.KeysOnly,
 	): CleanUp {
 		const value: [
 			callback: InputCallback,
-			subscribtion_type: EInputEventSubscriptionType,
+			subscription_type: EInputEventSubscriptionType,
 			priority: number,
-		] = [callback, subscribtion_type, priority];
+		] = [callback, subscription_type, priority];
 		ArrayTools.SortedInsert(this.subscriptions_, value, (current_value, b) => {
 			//current_priority > b_priority
 			return current_value[2] > b[2];
@@ -55,8 +55,8 @@ export default class InputSignal {
 	}
 
 	Fire(input_event: InputEvent): Enum.ContextActionResult {
-		for (const [callback, subscribtion_type] of table.clone(this.subscriptions_)) {
-			const not_skip_strategy = not_skip_strategies[subscribtion_type];
+		for (const [callback, subscription_type] of table.clone(this.subscriptions_)) {
+			const not_skip_strategy = not_skip_strategies[subscription_type];
 			if (!not_skip_strategy(input_event)) continue;
 			const [success, result] = pcall(callback, input_event);
 			if (!success) {

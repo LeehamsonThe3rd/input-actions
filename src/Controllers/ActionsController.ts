@@ -16,7 +16,7 @@ export namespace ActionsController {
 	// Maps action names to their data
 	const actions_map = new Map<string, IActionData>();
 	// Maps input key codes to the actions they trigger
-	const key_code_to_actions_refferences = new Map<InputKeyCode, string[]>();
+	const key_code_to_actions_references = new Map<InputKeyCode, string[]>();
 
 	let initialized = false;
 	/**
@@ -192,16 +192,16 @@ export namespace ActionsController {
 		}
 	}
 
-	function AddKeyCodeToActionRefference(key_code: InputKeyCode, action_name: string) {
-		TableTools.GetOrCreate(key_code_to_actions_refferences, key_code, () => []).push(action_name);
+	function AddKeyCodeToActionReference(key_code: InputKeyCode, action_name: string) {
+		TableTools.GetOrCreate(key_code_to_actions_references, key_code, () => []).push(action_name);
 	}
 
-	function EraseKeyCodeToActionRefference(key_code: InputKeyCode, action_name: string) {
-		const key_code_to_actions_refference = key_code_to_actions_refferences.get(key_code);
-		if (key_code_to_actions_refference === undefined) return;
-		ArrayTools.RemoveElementFromArray(key_code_to_actions_refference, action_name);
-		if (!key_code_to_actions_refference.isEmpty()) return;
-		key_code_to_actions_refferences.delete(key_code);
+	function EraseKeyCodeToActionReference(key_code: InputKeyCode, action_name: string) {
+		const key_code_to_actions_reference = key_code_to_actions_references.get(key_code);
+		if (key_code_to_actions_reference === undefined) return;
+		ArrayTools.RemoveElementFromArray(key_code_to_actions_reference, action_name);
+		if (!key_code_to_actions_reference.isEmpty()) return;
+		key_code_to_actions_references.delete(key_code);
 	}
 
 	export function AddKeyCode(action_name: string, key_code: InputKeyCode) {
@@ -212,7 +212,7 @@ export namespace ActionsController {
 			}
 
 			action_data.Keycodes.push(key_code);
-			AddKeyCodeToActionRefference(key_code, action_name);
+			AddKeyCodeToActionReference(key_code, action_name);
 		});
 	}
 
@@ -220,14 +220,14 @@ export namespace ActionsController {
 		ExecuteWithActionData(action_name, (action_data) => {
 			if (!action_data.Keycodes.includes(key_code)) return;
 			ArrayTools.RemoveElementFromArray(action_data.Keycodes, key_code);
-			EraseKeyCodeToActionRefference(key_code, action_name);
+			EraseKeyCodeToActionReference(key_code, action_name);
 		});
 	}
 
 	export function EraseAllKeyCodes(action_name: string) {
 		ExecuteWithActionData(action_name, (action_data) => {
 			for (const key_code of action_data.Keycodes) {
-				EraseKeyCodeToActionRefference(key_code, action_name);
+				EraseKeyCodeToActionReference(key_code, action_name);
 			}
 
 			action_data.Keycodes = [];
@@ -247,7 +247,7 @@ export namespace ActionsController {
 	}
 
 	export function GetActionsFromKeyCode(key_code: InputKeyCode): readonly string[] {
-		return key_code_to_actions_refferences.get(key_code) ?? [];
+		return key_code_to_actions_references.get(key_code) ?? [];
 	}
 
 	export function SetActivationStrength(action_name: string, activation_strength: number) {

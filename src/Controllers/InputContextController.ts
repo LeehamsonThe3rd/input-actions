@@ -10,6 +10,16 @@ import { InputKeyCode } from "../Models/InputKeyCode";
 export namespace InputContextController {
 	const contexts = new Map<string, Map<string, InputKeyCode[]>>();
 	let currentContext = "";
+	let initialized = false;
+
+	/**
+	 * Initialize the context controller
+	 * Currently just marks the controller as initialized
+	 */
+	export function Initialize() {
+		if (initialized) return;
+		initialized = true;
+	}
 
 	/**
 	 * Creates a new input context
