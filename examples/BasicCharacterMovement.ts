@@ -1,10 +1,10 @@
-import { RunService } from "@rbxts/services";
 import {
 	ActionsController,
+	ECustomKey,
 	InputActionsInitializerTools,
 	InputController,
-	ECustomKey,
 } from "@rbxts/input-actions";
+import { RunService } from "@rbxts/services";
 
 // Character movement example that shows how to use the input system
 // to create a character controller with WASD/Gamepad movement

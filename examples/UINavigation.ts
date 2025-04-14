@@ -1,10 +1,9 @@
 import {
-	ActionsController,
 	EDefaultInputAction,
+	EInputType,
 	InputActionsInitializerTools,
 	InputManagerController,
 	InputTypeController,
-	EInputType,
 } from "@rbxts/input-actions";
 
 // UI Navigation example that shows how to use the input system

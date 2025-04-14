@@ -1,34 +1,35 @@
-import { RunService } from "@rbxts/services";
 import {
 	ActionsController,
+	ECustomKey,
+	EVibrationPreset,
+	HapticFeedbackController,
 	InputActionsInitializerTools,
 	InputConfigController,
 	InputContextController,
 	InputEchoController,
 	KeyCombinationController,
-	HapticFeedbackController,
-	ECustomKey,
 } from "@rbxts/input-actions";
+import { RunService } from "@rbxts/services";
 
 // Initialize all controllers
 InputActionsInitializerTools.InitAll();
 
 // Step 1: Set up different input contexts for different game states
 // Create the "gameplay" context
-InputContextController.CreateContext("gameplay");
-InputContextController.AddActionToContext("gameplay", "Jump", Enum.KeyCode.Space);
-InputContextController.AddActionToContext("gameplay", "Fire", Enum.KeyCode.MouseButton1);
-InputContextController.AddActionToContext("gameplay", "Reload", Enum.KeyCode.R);
+const gameplayContext = InputContextController.createContext("gameplay");
+gameplayContext.add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
+gameplayContext.add("Fire", { KeyboardAndMouse: Enum.KeyCode.MouseButton1 });
+gameplayContext.add("Reload", { KeyboardAndMouse: Enum.KeyCode.R });
 
 // Create the "menu" context
-InputContextController.CreateContext("menu");
-InputContextController.AddActionToContext("menu", "Accept", Enum.KeyCode.Return);
-InputContextController.AddActionToContext("menu", "Cancel", Enum.KeyCode.Escape);
-InputContextController.AddActionToContext("menu", "NavigateUp", Enum.KeyCode.Up);
-InputContextController.AddActionToContext("menu", "NavigateDown", Enum.KeyCode.Down);
+const menuContext = InputContextController.createContext("menu");
+menuContext.add("Accept", { KeyboardAndMouse: Enum.KeyCode.Return });
+menuContext.add("Cancel", { KeyboardAndMouse: Enum.KeyCode.Escape });
+menuContext.add("NavigateUp", { KeyboardAndMouse: Enum.KeyCode.Up });
+menuContext.add("NavigateDown", { KeyboardAndMouse: Enum.KeyCode.Down });
 
 // Apply the gameplay context
-InputContextController.SetActiveContext("gameplay");
+gameplayContext.assign();
 
 // Step 2: Configure input echo for repeating input
 InputEchoController.ConfigureActionEcho("NavigateDown", 0.4, 0.1);
@@ -58,7 +59,13 @@ let menuOpen = false;
 const toggleMenu = () => {
 	menuOpen = !menuOpen;
 	// Switch input context based on menu state
-	InputContextController.SetActiveContext(menuOpen ? "menu" : "gameplay");
+	if (menuOpen) {
+		gameplayContext.unassign();
+		menuContext.assign();
+	} else {
+		menuContext.unassign();
+		gameplayContext.assign();
+	}
 
 	print(`Menu is now ${menuOpen ? "open" : "closed"}`);
 };
@@ -72,7 +79,7 @@ RunService.Heartbeat.Connect(() => {
 	if (ActionsController.IsJustPressed("QuickSave")) {
 		print("Quick saved game!");
 		// Trigger haptic feedback for save success
-		HapticFeedbackController.VibratePreset("success");
+		HapticFeedbackController.VibratePreset(EVibrationPreset.Success);
 	}
 
 	if (ActionsController.IsJustPressed("QuickLoad")) {

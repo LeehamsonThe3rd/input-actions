@@ -1,7 +1,7 @@
 import {
-	InputMapController,
-	EDefaultInputAction,
+	ActionsController,
 	InputActionsInitializerTools,
+	InputMapController,
 } from "@rbxts/input-actions";
 
 // Initialize the input system
@@ -10,65 +10,56 @@ InputActionsInitializerTools.InitActionsAndInputManager();
 // Example: Create a vehicle controls context
 const vehicleContext = InputMapController.createContext("Vehicle");
 
-// Add controls to the vehicle context using the fluent builder API
-vehicleContext
-	.addMap("Accelerate")
-	.withGamepad(Enum.KeyCode.ButtonR2)
-	.withKeyboardAndMouse(Enum.KeyCode.W)
-	.build();
+// Add controls to the vehicle context using direct object literals
+vehicleContext.add("Accelerate", {
+	Gamepad: Enum.KeyCode.ButtonR2,
+	KeyboardAndMouse: Enum.KeyCode.W,
+});
 
-vehicleContext
-	.addMap("Brake")
-	.withGamepad(Enum.KeyCode.ButtonL2)
-	.withKeyboardAndMouse(Enum.KeyCode.S)
-	.build();
+vehicleContext.add("Brake", {
+	Gamepad: Enum.KeyCode.ButtonL2,
+	KeyboardAndMouse: Enum.KeyCode.S,
+});
 
-vehicleContext
-	.addMap("SteerLeft")
-	.withGamepad(Enum.KeyCode.Thumbstick1)
-	.withKeyboardAndMouse(Enum.KeyCode.A)
-	.build();
+vehicleContext.add("SteerLeft", {
+	Gamepad: Enum.KeyCode.Thumbstick1,
+	KeyboardAndMouse: Enum.KeyCode.A,
+});
 
-vehicleContext
-	.addMap("SteerRight")
-	.withGamepad(Enum.KeyCode.Thumbstick1)
-	.withKeyboardAndMouse(Enum.KeyCode.D)
-	.build();
+vehicleContext.add("SteerRight", {
+	Gamepad: Enum.KeyCode.Thumbstick1,
+	KeyboardAndMouse: Enum.KeyCode.D,
+});
 
-vehicleContext
-	.addMap("Horn")
-	.withGamepad(Enum.KeyCode.ButtonX)
-	.withKeyboardAndMouse(Enum.KeyCode.H)
-	.build();
+vehicleContext.add("Horn", {
+	Gamepad: Enum.KeyCode.ButtonX,
+	KeyboardAndMouse: Enum.KeyCode.H,
+});
 
 // Example: Create a weapon controls context
 const weaponContext = InputMapController.createContext("Weapon");
 
-weaponContext
-	.addMap("Fire")
-	.withGamepad(Enum.KeyCode.ButtonR2)
-	.withKeyboardAndMouse(Enum.KeyCode.MouseButton1)
-	.build();
+weaponContext.add("Fire", {
+	Gamepad: Enum.KeyCode.ButtonR2,
+	KeyboardAndMouse: Enum.KeyCode.MouseButton1,
+});
 
-weaponContext
-	.addMap("Aim")
-	.withGamepad(Enum.KeyCode.ButtonL2)
-	.withKeyboardAndMouse(Enum.KeyCode.MouseButton2)
-	.build();
+weaponContext.add("Aim", {
+	Gamepad: Enum.KeyCode.ButtonL2,
+	KeyboardAndMouse: Enum.KeyCode.MouseButton2,
+});
 
-weaponContext
-	.addMap("Reload")
-	.withGamepad(Enum.KeyCode.ButtonX)
-	.withKeyboardAndMouse(Enum.KeyCode.R)
-	.build();
+weaponContext.add("Reload", {
+	Gamepad: Enum.KeyCode.ButtonX,
+	KeyboardAndMouse: Enum.KeyCode.R,
+});
 
 // Example: Get the global context and add a custom action
 const globalContext = InputMapController.getGlobalContext();
-globalContext
-	.addMap("ToggleInventory")
-	.withGamepad(Enum.KeyCode.ButtonY)
-	.withKeyboardAndMouse(Enum.KeyCode.Tab)
-	.build();
+globalContext.add("ToggleInventory", {
+	Gamepad: Enum.KeyCode.ButtonY,
+	KeyboardAndMouse: Enum.KeyCode.Tab,
+});
 
 // Example usage: Player enters a vehicle
 function enterVehicle() {

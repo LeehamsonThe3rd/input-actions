@@ -129,16 +129,23 @@ cleanup();
 ## Supporting Multiple Input Devices
 
 ```ts
-import { InputMapController, IInputMap } from "@rbxts/input-actions";
+import { InputMapController } from "@rbxts/input-actions";
 
-// Define an input map for an action
-const jumpMap: IInputMap = {
+// Define an input map for an action with both keyboard and gamepad controls
+InputMapController.add("Jump", {
 	KeyboardAndMouse: Enum.KeyCode.Space,
 	Gamepad: Enum.KeyCode.ButtonA,
-};
+});
 
-// Add the input map to the Jump action
-InputMapController.Add("Jump", jumpMap);
+// Or with only keyboard controls
+InputMapController.add("Screenshot", {
+	KeyboardAndMouse: Enum.KeyCode.F12,
+});
+
+// Or with only gamepad controls
+InputMapController.add("Vibrate", {
+	Gamepad: Enum.KeyCode.ButtonY,
+});
 ```
 
 ## Advanced Usage

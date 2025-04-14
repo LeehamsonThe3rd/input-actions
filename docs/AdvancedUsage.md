@@ -45,21 +45,23 @@ You can create different input mappings for different game states (like gameplay
 import { InputContextController } from "@rbxts/input-actions";
 
 // Create different contexts
-InputContextController.CreateContext("gameplay");
-InputContextController.AddActionToContext("gameplay", "Jump", Enum.KeyCode.Space);
-InputContextController.AddActionToContext("gameplay", "Shoot", Enum.KeyCode.MouseButton1);
+const gameplayContext = InputContextController.createContext("gameplay");
+gameplayContext.add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
+gameplayContext.add("Shoot", { KeyboardAndMouse: Enum.KeyCode.MouseButton1 });
 
-InputContextController.CreateContext("menu");
-InputContextController.AddActionToContext("menu", "Accept", Enum.KeyCode.Return);
-InputContextController.AddActionToContext("menu", "Back", Enum.KeyCode.Escape);
+const menuContext = InputContextController.createContext("menu");
+menuContext.add("Accept", { KeyboardAndMouse: Enum.KeyCode.Return });
+menuContext.add("Back", { KeyboardAndMouse: Enum.KeyCode.Escape });
 
 // Switch between contexts based on game state
 function openMenu() {
-	InputContextController.SetActiveContext("menu");
+	menuContext.assign();
+	gameplayContext.unassign();
 }
 
 function closeMenu() {
-	InputContextController.SetActiveContext("gameplay");
+	gameplayContext.assign();
+	menuContext.unassign();
 }
 ```
 
@@ -211,8 +213,8 @@ The package comes with default actions for UI navigation:
 import { InputMapController, EDefaultInputAction } from "@rbxts/input-actions";
 
 // Change the UI navigation actions
-InputMapController.Delete(EDefaultInputAction.UiGoUp);
-InputMapController.Add(EDefaultInputAction.UiGoUp, {
+InputMapController.remove(EDefaultInputAction.UiGoUp);
+InputMapController.add(EDefaultInputAction.UiGoUp, {
 	KeyboardAndMouse: Enum.KeyCode.W,
 	Gamepad: Enum.KeyCode.DPadUp,
 });

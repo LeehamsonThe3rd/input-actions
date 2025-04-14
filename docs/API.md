@@ -123,29 +123,37 @@ Manages input mappings for different devices.
 
 ### Methods
 
-#### `Add(action_name: string, input_map: IInputMap)`
+#### `add(actionName: string, inputMap: IInputMap)`
 
 Adds an input map for an action.
 
-#### `Delete(action_name: string, erase_action: boolean = false)`
+#### `remove(actionName: string, eraseAction: boolean = false)`
 
-Deletes an input map for an action.
+Removes an input map for an action.
 
-#### `Get(name: string): IInputMap | undefined`
+#### `get(name: string): IInputMap | undefined`
 
 Gets the input map for an action.
 
-#### `GetVisualData(input_map_name: string, use_custom_images: boolean = true): IVisualInputKeyCodeData`
+#### `getVisualData(inputMapName: string, useCustomImages: boolean = true): IVisualInputKeyCodeData`
 
 Gets visual representation data for an input map.
 
-#### `AddDefaultInputMaps()`
+#### `addDefaultInputMaps()`
 
 Adds the default input maps for UI navigation.
 
-#### `GetDefaultInputMaps(): { [name: string]: IInputMap }`
+#### `getDefaultInputMaps()`
 
-Gets the default input maps.
+Gets the default input maps module.
+
+#### `createContext(name: string): InputContext`
+
+Creates a new input context with the given name.
+
+#### `getGlobalContext(): InputContext`
+
+Gets the global context that's always available.
 
 ### Types
 
@@ -155,15 +163,6 @@ Gets the default input maps.
 interface IInputMap {
 	readonly Gamepad?: InputKeyCode;
 	readonly KeyboardAndMouse?: InputKeyCode;
-}
-```
-
-#### `IVisualInputKeyCodeData`
-
-```typescript
-interface IVisualInputKeyCodeData {
-	readonly Name: string;
-	readonly ImageId: string;
 }
 ```
 
@@ -258,27 +257,49 @@ Enables or disables the mouse controller.
 
 Controls different input contexts or action sets for different game states.
 
+### Classes
+
+#### InputContext
+
+```typescript
+class InputContext {
+	constructor(name?: string);
+	add(actionName: string, map: IInputMap): this;
+	remove(actionName: string): this;
+	assign(): this;
+	unassign(): this;
+	isAssigned(): boolean;
+	getMaps(): ReadonlyMap<string, IInputMap>;
+	getMap(actionName: string): IInputMap | undefined;
+	getName(): string | undefined;
+}
+```
+
 ### Methods
 
-#### `Initialize()`
-
-Initializes the context controller.
-
-#### `CreateContext(contextName: string)`
+#### `createContext(name: string): InputContext`
 
 Creates a new input context with the given name.
 
-#### `AddActionToContext(contextName: string, actionName: string, keyCode: InputKeyCode)`
+#### `getContext(name: string): InputContext | undefined`
 
-Adds an action mapping to a specific context.
+Gets an existing context by name.
 
-#### `SetActiveContext(contextName: string)`
+#### `getGlobalContext(): InputContext`
 
-Activates a specific input context, deactivating the previous one.
+Gets the global context that's always available.
 
-#### `GetActiveContext(): string`
+#### `getAllContexts(): ReadonlyMap<string, InputContext>`
 
-Gets the currently active context name.
+Gets all registered contexts.
+
+#### `assignContext(name: string): boolean`
+
+Assigns a context by name.
+
+#### `unassignContext(name: string): boolean`
+
+Unassigns a context by name.
 
 ## InputEchoController
 

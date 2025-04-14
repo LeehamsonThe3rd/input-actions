@@ -1,17 +1,17 @@
 /**
  * Comprehensive example showing how to use all the controllers together
  */
-import { Players, RunService, UserInputService } from "@rbxts/services";
 import {
 	ActionsController,
-	ECustomKey,
+	EVibrationPreset,
+	HapticFeedbackController,
 	InputActionsInitializerTools,
 	InputConfigController,
 	InputContextController,
 	InputEchoController,
 	KeyCombinationController,
-	HapticFeedbackController,
 } from "@rbxts/input-actions";
+import { RunService } from "@rbxts/services";
 
 // Initialize all controllers
 InputActionsInitializerTools.InitAll();
@@ -19,29 +19,29 @@ InputActionsInitializerTools.InitAll();
 // Set up contexts for different game states
 function setupInputContexts() {
 	// Create gameplay context
-	InputContextController.CreateContext("gameplay");
-	InputContextController.AddActionToContext("gameplay", "Jump", Enum.KeyCode.Space);
-	InputContextController.AddActionToContext("gameplay", "Attack", Enum.KeyCode.MouseButton1);
-	InputContextController.AddActionToContext("gameplay", "Run", Enum.KeyCode.LeftShift);
-	InputContextController.AddActionToContext("gameplay", "Crouch", Enum.KeyCode.LeftControl);
-	InputContextController.AddActionToContext("gameplay", "Reload", Enum.KeyCode.R);
-	InputContextController.AddActionToContext("gameplay", "Interact", Enum.KeyCode.E);
+	const gameplayContext = InputContextController.createContext("gameplay");
+	gameplayContext.add("Jump", { KeyboardAndMouse: Enum.KeyCode.Space });
+	gameplayContext.add("Attack", { KeyboardAndMouse: Enum.UserInputType.MouseButton1 });
+	gameplayContext.add("Run", { KeyboardAndMouse: Enum.KeyCode.LeftShift });
+	gameplayContext.add("Crouch", { KeyboardAndMouse: Enum.KeyCode.LeftControl });
+	gameplayContext.add("Reload", { KeyboardAndMouse: Enum.KeyCode.R });
+	gameplayContext.add("Interact", { KeyboardAndMouse: Enum.KeyCode.E });
 
 	// Create menu context
-	InputContextController.CreateContext("menu");
-	InputContextController.AddActionToContext("menu", "MenuUp", Enum.KeyCode.Up);
-	InputContextController.AddActionToContext("menu", "MenuDown", Enum.KeyCode.Down);
-	InputContextController.AddActionToContext("menu", "MenuLeft", Enum.KeyCode.Left);
-	InputContextController.AddActionToContext("menu", "MenuRight", Enum.KeyCode.Right);
-	InputContextController.AddActionToContext("menu", "MenuAccept", Enum.KeyCode.Return);
-	InputContextController.AddActionToContext("menu", "MenuBack", Enum.KeyCode.Escape);
+	const menuContext = InputContextController.createContext("menu");
+	menuContext.add("MenuUp", { KeyboardAndMouse: Enum.KeyCode.Up });
+	menuContext.add("MenuDown", { KeyboardAndMouse: Enum.KeyCode.Down });
+	menuContext.add("MenuLeft", { KeyboardAndMouse: Enum.KeyCode.Left });
+	menuContext.add("MenuRight", { KeyboardAndMouse: Enum.KeyCode.Right });
+	menuContext.add("MenuAccept", { KeyboardAndMouse: Enum.KeyCode.Return });
+	menuContext.add("MenuBack", { KeyboardAndMouse: Enum.KeyCode.Escape });
 
 	// Configure menu navigation to repeat when held
 	InputEchoController.ConfigureActionEcho("MenuUp", 0.4, 0.15);
 	InputEchoController.ConfigureActionEcho("MenuDown", 0.4, 0.15);
 
 	// Start with gameplay context
-	InputContextController.SetActiveContext("gameplay");
+	gameplayContext.assign();
 }
 
 // Set up key combinations
@@ -88,13 +88,13 @@ RunService.Heartbeat.Connect(() => {
 	if (ActionsController.IsJustPressed("QuickSave")) {
 		print("Game saved!");
 		// Provide feedback through controller vibration
-		HapticFeedbackController.VibratePreset("success");
+		HapticFeedbackController.VibratePreset(EVibrationPreset.Success);
 	}
 
 	if (ActionsController.IsJustPressed("QuickLoad")) {
 		print("Game loaded!");
 		// Provide feedback through controller vibration
-		HapticFeedbackController.VibratePreset("medium");
+		HapticFeedbackController.VibratePreset(EVibrationPreset.Medium);
 	}
 
 	if (ActionsController.IsJustPressed("OpenInventory")) {
@@ -104,13 +104,21 @@ RunService.Heartbeat.Connect(() => {
 
 function openMenu() {
 	isMenuOpen = true;
-	InputContextController.SetActiveContext("menu");
+	const menuContext = InputContextController.getContext("menu")!;
+	const gameplayContext = InputContextController.getContext("gameplay")!;
+
+	gameplayContext.unassign();
+	menuContext.assign();
 	print("Menu opened - context switched to menu controls");
 }
 
 function closeMenu() {
 	isMenuOpen = false;
-	InputContextController.SetActiveContext("gameplay");
+	const menuContext = InputContextController.getContext("menu")!;
+	const gameplayContext = InputContextController.getContext("gameplay")!;
+
+	menuContext.unassign();
+	gameplayContext.assign();
 	print("Menu closed - context switched to gameplay controls");
 }
 
