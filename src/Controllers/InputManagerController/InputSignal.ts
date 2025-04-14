@@ -2,7 +2,7 @@
 //!optimize 2
 
 import { ArrayTools } from "@rbxts/tool_pack";
-import { EInputEventSubscriptionType } from "../../Models/EInputEventSubscribtionType";
+import { EInputEventSubscriptionType } from "../../Models/EInputEventSubscriptionType";
 import { CleanUp } from "../../UtilityTypes/CleanUp";
 import InputEvent from "./InputEvent";
 
