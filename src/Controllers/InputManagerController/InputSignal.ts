@@ -6,6 +6,11 @@ import { EInputEventSubscribtionType } from "../../Models/EInputEventSubscribtio
 import { CleanUp } from "../../UtilityTypes/CleanUp";
 import InputEvent from "./InputEvent";
 
+/**
+ * Constants for InputSignal
+ */
+const DEFAULT_SUBSCRIPTION_PRIORITY = 1;
+
 //at the end returns whether to sink the input or no
 export type InputCallback = (
 	input_event: InputEvent,
@@ -34,7 +39,7 @@ export default class InputSignal {
 
 	Subscribe(
 		callback: InputCallback,
-		priority: number = 1,
+		priority: number = DEFAULT_SUBSCRIPTION_PRIORITY,
 		subscribtion_type: EInputEventSubscribtionType = EInputEventSubscribtionType.KeysOnly,
 	): CleanUp {
 		const value: [

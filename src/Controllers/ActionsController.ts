@@ -4,6 +4,7 @@ import { RunService } from "@rbxts/services";
 import { ArrayTools, TableTools } from "@rbxts/tool_pack";
 import { IActionData } from "../Models/IActionData";
 import { InputKeyCode } from "../Models/InputKeyCode";
+import { ActionResources } from "../Resources/ActionResources";
 
 /**
  * Controller for managing input actions
@@ -25,7 +26,11 @@ export namespace ActionsController {
 	export function Initialize() {
 		if (initialized) return;
 		initialized = true;
-		RunService.BindToRenderStep("_ActionsUpdate_", Enum.RenderPriority.First.Value - 1, Update);
+		RunService.BindToRenderStep(
+			"_ActionsUpdate_",
+			ActionResources.DEFAULT_ACTION_UPDATE_PRIORITY,
+			Update,
+		);
 	}
 
 	/**
@@ -167,7 +172,7 @@ export namespace ActionsController {
 
 	export function Add(
 		action_name: string,
-		activation_strength: number = 0.5,
+		activation_strength: number = ActionResources.DEFAULT_MIN_PRESS_STRENGTH,
 		key_codes: readonly InputKeyCode[] = [],
 	) {
 		if (actions_map.has(action_name)) {

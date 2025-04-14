@@ -3,6 +3,10 @@ import { EDeviceType } from "../Models/EDeviceType";
 import { EInputType } from "../Models/EInputType";
 
 export namespace InputTypeController {
+	const TOUCH_GUI_WAIT_TIMEOUT = 20; // seconds
+	const INITIAL_WAIT_TIME = 1; // seconds
+	const INPUT_POLL_INTERVAL = 0.1; // seconds
+
 	const input_type_changed_event: BindableEvent<(input_type: EInputType) => void> = new Instance(
 		"BindableEvent",
 	);
@@ -73,7 +77,7 @@ export namespace InputTypeController {
 		const player_gui = local_player.WaitForChild("PlayerGui");
 		//waits for touch gui for 20 seconds
 		//gui exist even if the character didnt spawn
-		const touch_gui = player_gui.WaitForChild("TouchGui", 20);
+		const touch_gui = player_gui.WaitForChild("TouchGui", TOUCH_GUI_WAIT_TIMEOUT);
 		if (touch_gui === undefined) return;
 		const touch_control_frame = touch_gui.WaitForChild("TouchControlFrame");
 		//jump button will always exist;
@@ -126,10 +130,10 @@ export namespace InputTypeController {
 		if (initialized) return;
 		initialized = true;
 		//to set the value
-		task.wait(1);
+		task.wait(INITIAL_WAIT_TIME);
 		TryGetJumpButtonSize();
 		//makes in the slow loop
-		while (task.wait(0.1)) {
+		while (task.wait(INPUT_POLL_INTERVAL)) {
 			CheckValues();
 			AsignValues();
 		}

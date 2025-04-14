@@ -1,3 +1,5 @@
+import { ActionResources } from "../Resources/ActionResources";
+
 /**
  * Helper functions for processing thumbstick input
  */
@@ -5,7 +7,7 @@ export namespace ThumbstickHelper {
 	/**
 	 * Default thumbstick dead zone value
 	 */
-	export const DEFAULT_DEAD_ZONE = 0.2;
+	export const DEFAULT_DEAD_ZONE = ActionResources.DEFAULT_THUMBSTICK_DEAD_ZONE;
 
 	/**
 	 * Extracts directional press strength from thumbstick input

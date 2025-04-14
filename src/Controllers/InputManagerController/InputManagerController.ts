@@ -219,7 +219,7 @@ export namespace InputManagerController {
 			"ActionsReader",
 			OnInput,
 			false,
-			99999,
+			ActionResources.DEFAULT_INPUT_PRIORITY,
 			...ActionResources.ALL_KEYCODES,
 		);
 	}
