@@ -12,7 +12,7 @@ import { RawInputHandler } from "./RawInputHandler";
 export namespace InputActionsInitializationHelper {
 	export function InitAll() {
 		InitMouseController();
-		InitInputTypeController();
+		InitDeviceTypeHandler();
 		InitActionsAndInputManager();
 		InitRawInputHandler();
 		InitAdvancedControllers();
@@ -23,7 +23,7 @@ export namespace InputActionsInitializationHelper {
 		MouseController.Initialize();
 	}
 
-	export function InitInputTypeController() {
+	export function InitDeviceTypeHandler() {
 		DeviceTypeHandler.Initialize();
 	}
 

@@ -166,34 +166,6 @@ interface IInputMap {
 }
 ```
 
-## InputTypeController
-
-Detects and manages input device types.
-
-### Methods
-
-#### `Initialize()`
-
-Initializes the input type controller.
-
-#### `GetMainInputType(): EInputType`
-
-Gets the main input type being used.
-
-#### `GetMainDeviceType(): EDeviceType`
-
-Gets the main device type being used.
-
-### Events
-
-#### `OnInputTypeChanged: RBXScriptSignal<(input_type: EInputType) => void>`
-
-Fires when the input type changes.
-
-#### `OnDeviceTypeChanged: RBXScriptSignal<(device_type: EDeviceType) => void>`
-
-Fires when the device type changes.
-
 ## InputController
 
 Provides access to processed movement input.
