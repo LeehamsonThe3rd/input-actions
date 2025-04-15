@@ -285,16 +285,6 @@ Unassigns a context by name.
 
 Applies the default UI control mappings.
 
-### Properties
-
-#### `UIControlContext: InputContext`
-
-A pre-defined context for UI controls with standard actions mapped.
-
-#### `GlobalContext: InputContext`
-
-The global context that is always available.
-
 ## InputEchoController
 
 Provides functionality to trigger repeated input events when keys are held down.
