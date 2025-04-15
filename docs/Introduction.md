@@ -33,22 +33,23 @@ The Input Actions package consists of several components working together:
 
 1. **Low-Level Input Handling**
 
-   - InputManagerController: Captures raw input events
-   - DeviceTypeHandler: Detects input devices being used
-   - RawInputHandler: Provides access to raw input data
+   - [InputManagerController](./Components/InputManagerController.md): Captures raw input events
+   - [DeviceTypeHandler](./Components/DeviceTypeHandler.md): Detects input devices being used
+   - [RawInputHandler](./Components/RawInputHandler.md): Provides access to raw input data
 
 2. **Action Management**
 
-   - ActionsController: Core component for defining and checking actions
-   - InputConfigController: Configure input sensitivity and thresholds
-   - MouseController: Advanced mouse behavior control
+   - [ActionsController](./Components/ActionsController.md): Core component for defining and checking actions
+   - [InputConfigController](./Components/InputConfigController.md): Configure input sensitivity and thresholds
+   - [MouseController](./Components/MouseController.md): Advanced mouse behavior control
 
 3. **Advanced Features**
-   - InputContextController: High-level context management
-   - KeyCombinationController: Multi-key combination detection
-   - InputEchoController: Input repetition handling
-   - HapticFeedbackController: Vibration feedback management
-   - InputCatcher: Utility for blocking input
+   - [InputContextController](./Components/InputContextController.md): High-level context management
+   - [KeyCombinationController](./Components/KeyCombinationController.md): Multi-key combination detection
+   - [InputEchoController](./Components/InputEchoController.md): Input repetition handling
+   - [HapticFeedbackController](./Components/HapticFeedbackController.md): Vibration feedback management
+   - [InputCatcher](./Components/InputCatcher.md): Utility for blocking input
+   - [InputKeyCodeHelper](./Components/InputKeyCodeHelper.md): Utilities for input visualization
 
 ## When to Use Input Actions
 
