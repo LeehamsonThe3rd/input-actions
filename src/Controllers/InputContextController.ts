@@ -254,67 +254,67 @@ export class InputContext {
 export namespace InputContextController {
 	const contexts = new Map<string, InputContext>();
 
-	const globalContext = new InputContext("Global");
-	globalContext.Assign();
+	export const GlobalContext = new InputContext("Global");
+	GlobalContext.Assign();
 
 	// Combined UI context instead of separate contexts
-	const uiControlContext = new InputContext("UIControls");
+	export const UiControlContext = new InputContext("UIControls");
 
 	// Setup navigation controls
-	uiControlContext.Add(EDefaultInputAction.UiGoUp, {
+	UiControlContext.Add(EDefaultInputAction.UiGoUp, {
 		Gamepad: Enum.KeyCode.DPadUp,
 		KeyboardAndMouse: Enum.KeyCode.Up,
 	});
 
-	uiControlContext.Add(EDefaultInputAction.UiGoDown, {
+	UiControlContext.Add(EDefaultInputAction.UiGoDown, {
 		Gamepad: Enum.KeyCode.DPadDown,
 		KeyboardAndMouse: Enum.KeyCode.Down,
 	});
 
-	uiControlContext.Add(EDefaultInputAction.UiGoLeft, {
+	UiControlContext.Add(EDefaultInputAction.UiGoLeft, {
 		Gamepad: Enum.KeyCode.DPadLeft,
 		KeyboardAndMouse: Enum.KeyCode.Left,
 	});
 
-	uiControlContext.Add(EDefaultInputAction.UiGoRight, {
+	UiControlContext.Add(EDefaultInputAction.UiGoRight, {
 		Gamepad: Enum.KeyCode.DPadRight,
 		KeyboardAndMouse: Enum.KeyCode.Right,
 	});
 
 	// Setup action controls
-	uiControlContext.Add(EDefaultInputAction.UiAccept, {
+	UiControlContext.Add(EDefaultInputAction.UiAccept, {
 		Gamepad: Enum.KeyCode.ButtonA,
 		KeyboardAndMouse: Enum.KeyCode.Return,
 	});
 
-	uiControlContext.Add(EDefaultInputAction.UiCancel, {
+	UiControlContext.Add(EDefaultInputAction.UiCancel, {
 		Gamepad: Enum.KeyCode.ButtonB,
 		KeyboardAndMouse: Enum.KeyCode.B,
 	});
 
 	// Setup scrolling controls
-	uiControlContext.Add(EDefaultInputAction.UiScrollUp, {
+	UiControlContext.Add(EDefaultInputAction.UiScrollUp, {
 		Gamepad: ECustomKey.Thumbstick2Up,
 		KeyboardAndMouse: Enum.KeyCode.W,
 	});
 
-	uiControlContext.Add(EDefaultInputAction.UiScrollDown, {
+	UiControlContext.Add(EDefaultInputAction.UiScrollDown, {
 		Gamepad: ECustomKey.Thumbstick2Down,
 		KeyboardAndMouse: Enum.KeyCode.S,
 	});
 
-	uiControlContext.Add(EDefaultInputAction.UiNextPage, {
+	UiControlContext.Add(EDefaultInputAction.UiNextPage, {
 		Gamepad: Enum.KeyCode.ButtonR1,
 		KeyboardAndMouse: Enum.KeyCode.E,
 	});
 
-	uiControlContext.Add(EDefaultInputAction.UiPreviousPage, {
+	UiControlContext.Add(EDefaultInputAction.UiPreviousPage, {
 		Gamepad: Enum.KeyCode.ButtonL1,
 		KeyboardAndMouse: Enum.KeyCode.Q,
 	});
 
 	// Setup debug controls
-	uiControlContext.Add(EDefaultInputAction.MouseDebugMode, {
+	UiControlContext.Add(EDefaultInputAction.MouseDebugMode, {
 		KeyboardAndMouse: Enum.KeyCode.LeftAlt,
 	});
 
@@ -322,7 +322,7 @@ export namespace InputContextController {
 	 * Apply the default UI control mappings
 	 */
 	export function ApplyDefaultInputMaps(): void {
-		uiControlContext.Assign();
+		UiControlContext.Assign();
 	}
 
 	/**
@@ -350,7 +350,7 @@ export namespace InputContextController {
 	 * Get the global input context
 	 */
 	export function GetGlobalContext(): InputContext {
-		return globalContext;
+		return GlobalContext;
 	}
 
 	/**
