@@ -34,7 +34,6 @@ export namespace ActionsController {
 			ActionResources.DEFAULT_ACTION_UPDATE_PRIORITY,
 			Update,
 		);
-		InputEchoController.SetActionsController(ActionsController);
 	}
 
 	/**

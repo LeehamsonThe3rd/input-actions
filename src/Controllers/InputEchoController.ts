@@ -31,21 +31,13 @@ export namespace InputEchoController {
 	let initialized = false;
 	let actionsController!: typeof ActionsController;
 
-	/**@hidden */
-	export function SetActionsController(actionsController: typeof ActionsController) {
-		actionsController = actionsController;
-	}
-
 	/**
 	 * Initializes the echo controller
 	 */
 	export function Initialize() {
 		if (initialized) return;
 		initialized = true;
-		assert(
-			actionsController,
-			"ActionsController must be Initialized before initializing InputEchoController",
-		);
+		actionsController = import("./ActionsController").timeout(10).expect().ActionsController;
 		RunService.Heartbeat.Connect(Update);
 	}
 
