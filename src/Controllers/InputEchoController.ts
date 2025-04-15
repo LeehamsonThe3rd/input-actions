@@ -1,5 +1,5 @@
 import { RunService } from "@rbxts/services";
-import { ActionsController } from "./ActionsController";
+import type { ActionsController } from "./ActionsController";
 
 /**
  * Controller for handling input echo/repeat
@@ -29,6 +29,7 @@ export namespace InputEchoController {
 	const echoTriggeredActions = new Set<string>();
 
 	let initialized = false;
+	let actionsController!: typeof ActionsController;
 
 	/**
 	 * Initializes the echo controller
@@ -36,7 +37,7 @@ export namespace InputEchoController {
 	export function Initialize() {
 		if (initialized) return;
 		initialized = true;
-
+		actionsController = import("./ActionsController").expect().ActionsController;
 		RunService.Heartbeat.Connect(Update);
 	}
 
@@ -82,7 +83,7 @@ export namespace InputEchoController {
 		echoTriggeredActions.clear();
 
 		for (const [actionName, config] of actionEchoConfigs) {
-			const pressed = ActionsController.IsPressed(actionName);
+			const pressed = actionsController.IsPressed(actionName);
 
 			if (pressed) {
 				if (!config.IsHeld) {
