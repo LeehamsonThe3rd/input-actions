@@ -120,3 +120,8 @@ This system is inspired by Godot's input handling, which uses actions as an abst
 ## License
 
 MIT License - see the [LICENSE](LICENSE) file for details.
+
+## TODO
+
+- Fix InputEchoController doesnt trigger ActionsController.IsJustPressed
+- Add ability for KeyCombinationController to prevent sinking the input
