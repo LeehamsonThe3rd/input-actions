@@ -10,7 +10,7 @@ import {
 // to navigate a UI with gamepad/keyboard
 
 // Step 1: Initialize required controllers
-InputActionsInitializationHelper.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitBasicInputControllers();
 InputActionsInitializationHelper.InitDeviceTypeHandler();
 
 // Step 2: Define our UI navigation system

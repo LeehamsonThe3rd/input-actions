@@ -5,7 +5,7 @@ import {
 } from "@rbxts/input-actions";
 
 // Initialize the input system
-InputActionsInitializationHelper.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitBasicInputControllers();
 
 // Example: Create a vehicle controls context
 const vehicleContext = InputContextController.CreateContext("Vehicle");

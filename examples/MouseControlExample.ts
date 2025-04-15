@@ -11,7 +11,7 @@ import { RunService, Workspace } from "@rbxts/services";
 
 // Initialize required controllers
 InputActionsInitializationHelper.InitMouseController();
-InputActionsInitializationHelper.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitBasicInputControllers();
 
 // Define our states that affect mouse behavior
 ActionsController.Add("Aim");

@@ -5,7 +5,7 @@ import { RunService } from "@rbxts/services";
 // Useful for cutscenes, loading screens, or modal dialogs
 
 // Initialize required controllers
-InputActionsInitializationHelper.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitBasicInputControllers();
 
 // Create an input catcher with a high priority
 // Higher priority ensures it catches input before other handlers

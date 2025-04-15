@@ -23,6 +23,11 @@ import { InputActionsInitializationHelper } from "@rbxts/input-actions";
 
 // Initialize all controllers
 InputActionsInitializationHelper.InitAll();
+
+// Or initialize specific components as needed
+InputActionsInitializationHelper.InitBasicInputControllers();
+InputActionsInitializationHelper.InitDeviceTypeHandler();
+InputActionsInitializationHelper.InitAdvancedInputControllers();
 ```
 
 ## Creating Actions and Binding Keys

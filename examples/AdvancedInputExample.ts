@@ -72,7 +72,7 @@ const ToggleMenu = () => {
 };
 
 // Subscribe to input for quicksave/quickload
-InputActionsInitializationHelper.InitActionsAndInputManager();
+InputActionsInitializationHelper.InitBasicInputControllers();
 ActionsController.Add("OpenMenu", 0.5, [Enum.KeyCode.Tab]);
 
 // ADVANCED FEATURE 3: Multi-key combinations with modifiers

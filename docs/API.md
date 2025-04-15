@@ -415,6 +415,32 @@ Fires when the input type changes.
 
 Fires when the device type changes.
 
+## InputActionsInitializationHelper
+
+Helper utility to initialize various controllers in the Input Actions system.
+
+### Methods
+
+#### `InitAll()`
+
+Initializes all controllers in the Input Actions system.
+
+#### `InitBasicInputControllers()`
+
+Initializes ActionsController and InputManagerController (basic input handling).
+
+#### `InitAdvancedInputControllers()`
+
+Initializes advanced controllers like MouseController, InputEchoController, KeyCombinationController, etc.
+
+#### `InitDeviceTypeHandler()`
+
+Initializes the DeviceTypeHandler to detect input device types.
+
+#### `InitMouseController()`
+
+Initializes just the MouseController for mouse behavior control.
+
 ## Enums
 
 ### `EInputType`

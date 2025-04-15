@@ -191,6 +191,10 @@ import {
 // Initialize the system
 InputActionsInitializationHelper.InitAll();
 
+// Alternatively, you can initialize specific parts:
+// InputActionsInitializationHelper.InitBasicInputControllers();
+// InputActionsInitializationHelper.InitAdvancedInputControllers();
+
 // Create contexts
 const menuContext = InputContextController.CreateContext("menu");
 const editorContext = InputContextController.CreateContext("editor");
