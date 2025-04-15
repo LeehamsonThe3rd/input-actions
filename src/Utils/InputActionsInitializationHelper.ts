@@ -1,22 +1,19 @@
 import { ActionsController } from "../Controllers/ActionsController";
-import { HapticFeedbackController } from "../Controllers/HapticFeedbackController";
 import { InputContextController } from "../Controllers/InputContextController";
 import { InputEchoController } from "../Controllers/InputEchoController";
 import { InputManagerController } from "../Controllers/InputManagerController/InputManagerController";
-import { DeviceTypeHandler } from "./DeviceTypeHandler";
 import { KeyCombinationController } from "../Controllers/KeyCombinationController";
 import { MouseController } from "../Controllers/MouseController";
-import { EVibrationPreset } from "../Models/EVibrationPreset";
+import { DeviceTypeHandler } from "./DeviceTypeHandler";
 import { RawInputHandler } from "./RawInputHandler";
 
 export namespace InputActionsInitializationHelper {
 	export function InitAll() {
 		InitMouseController();
 		InitDeviceTypeHandler();
-		InitActionsAndInputManager();
+		InitBasicInputControllers();
 		InitRawInputHandler();
-		InitAdvancedControllers();
-		InitConfigController();
+		InitAdvancedInputControllers();
 	}
 
 	export function InitMouseController() {
@@ -27,16 +24,25 @@ export namespace InputActionsInitializationHelper {
 		DeviceTypeHandler.Initialize();
 	}
 
-	export function InitActionsAndInputManager() {
-		InputManagerController.Initialize();
-		ActionsController.Initialize();
-	}
-
 	export function InitRawInputHandler() {
 		RawInputHandler.Initialize();
 	}
 
-	export function InitAdvancedControllers() {
+	/**
+	 * InputManagerController
+	 * ActionsController
+	 */
+	export function InitBasicInputControllers() {
+		InputManagerController.Initialize();
+		ActionsController.Initialize();
+	}
+
+	/**
+	 * InputEchoController
+	 * KeyCombinationController
+	 * InputContextController
+	 */
+	export function InitAdvancedInputControllers() {
 		InputEchoController.Initialize();
 		KeyCombinationController.Initialize();
 		InputContextController.Initialize();
@@ -47,19 +53,5 @@ export namespace InputActionsInitializationHelper {
 	 */
 	export function ApplyDefaultInputMaps() {
 		InputContextController.ApplyDefaultInputMaps();
-	}
-
-	export function InitConfigController() {
-		// Nothing to initialize, but this function is provided for consistency
-	}
-
-	export function TriggerHapticFeedback(
-		preset: EVibrationPreset | HapticFeedbackController.IVibrationPreset,
-	) {
-		if (typeIs(preset, "table")) {
-			HapticFeedbackController.Vibrate(preset.LargeMotor, preset.SmallMotor, preset.Duration);
-		} else {
-			HapticFeedbackController.VibratePreset(preset);
-		}
 	}
 }
