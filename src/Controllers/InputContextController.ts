@@ -39,7 +39,11 @@ export class InputContext {
 	 * @param inputType The input type (KeyboardAndMouse or Gamepad)
 	 * @param keyCode The new key code to bind
 	 */
-	public UpdateKey(actionName: string, inputType: EInputDeviceType, keyCode: InputKeyCode): this {
+	public UpdateKeys(
+		actionName: string,
+		inputType: EInputDeviceType,
+		keyCodes: InputKeyCode[],
+	): this {
 		const map = this._maps.get(actionName);
 		if (!map) {
 			warn(`Cannot update key for non-existent map: ${actionName}`);
@@ -50,21 +54,25 @@ export class InputContext {
 		if (this._assigned) {
 			const oldKey = map[inputType];
 			if (oldKey !== undefined) {
-				ActionsController.EraseKeyCode(actionName, oldKey);
+				oldKey.forEach((key) => {
+					ActionsController.EraseKeyCode(actionName, key);
+				});
 			}
 		}
 
 		// Create a new map with the updated key
 		const newMap = {
 			...map,
-			[inputType]: keyCode,
+			[inputType]: keyCodes,
 		};
 
 		this._maps.set(actionName, newMap);
 
 		// If assigned, bind the new key
-		if (this._assigned && keyCode !== undefined) {
-			ActionsController.AddKeyCode(actionName, keyCode);
+		if (this._assigned && keyCodes !== undefined) {
+			keyCodes.forEach((keyCode) => {
+				ActionsController.AddKeyCode(actionName, keyCode);
+			});
 		}
 
 		return this;
@@ -75,7 +83,7 @@ export class InputContext {
 	 * @param actionName The action to get the key for
 	 * @returns The key code for the current input type, or undefined if not mapped
 	 */
-	public GetInputKeyForCurrentDevice(actionName: string): InputKeyCode | undefined {
+	public GetInputKeysForCurrentDevice(actionName: string): InputKeyCode[] | undefined {
 		const map = this.GetMap(actionName);
 		if (map === undefined) return undefined;
 
@@ -94,10 +102,9 @@ export class InputContext {
 	public GetVisualData(
 		actionName: string,
 		useCustomImages: boolean = true,
-	): InputKeyCodeHelper.IVisualInputKeyCodeData {
-		return InputKeyCodeHelper.GetVisualInputKeyCodeData(
-			this.GetInputKeyForCurrentDevice(actionName),
-			useCustomImages,
+	): InputKeyCodeHelper.IVisualInputKeyCodeData[] | undefined {
+		return this.GetInputKeysForCurrentDevice(actionName)?.map((key) =>
+			InputKeyCodeHelper.GetVisualInputKeyCodeData(key, useCustomImages),
 		);
 	}
 
@@ -135,11 +142,14 @@ export class InputContext {
 	}
 
 	/**
-	 * Get current key for a specific device type
+	 * Get the current keys for a specific device type
 	 * @param actionName The action to get the key for
 	 * @param deviceType The device type (KeyboardAndMouse or Gamepad)
 	 */
-	public GetDeviceKey(actionName: string, deviceType: EInputDeviceType): InputKeyCode | undefined {
+	public GetDeviceKey(
+		actionName: string,
+		deviceType: EInputDeviceType,
+	): InputKeyCode[] | undefined {
 		const map = this.GetMap(actionName);
 		if (!map) return undefined;
 		return map[deviceType];
@@ -226,11 +236,15 @@ export class InputContext {
 		}
 
 		if (map.KeyboardAndMouse !== undefined) {
-			ActionsController.AddKeyCode(actionName, map.KeyboardAndMouse);
+			(map.KeyboardAndMouse as InputKeyCode[]).forEach((keyCode) => {
+				ActionsController.AddKeyCode(actionName, keyCode);
+			});
 		}
 
 		if (map.Gamepad !== undefined) {
-			ActionsController.AddKeyCode(actionName, map.Gamepad);
+			(map.Gamepad as InputKeyCode[]).forEach((keyCode) => {
+				ActionsController.AddKeyCode(actionName, keyCode);
+			});
 		}
 	}
 
@@ -239,11 +253,23 @@ export class InputContext {
 		if (!map) return;
 
 		if (map.KeyboardAndMouse !== undefined) {
-			ActionsController.EraseKeyCode(actionName, map.KeyboardAndMouse);
+			if (typeIs(map.KeyboardAndMouse, "table")) {
+				(map.KeyboardAndMouse as InputKeyCode[]).forEach((keyCode) => {
+					ActionsController.EraseKeyCode(actionName, keyCode);
+				});
+			} else {
+				ActionsController.EraseKeyCode(actionName, map.KeyboardAndMouse);
+			}
 		}
 
 		if (map.Gamepad !== undefined) {
-			ActionsController.EraseKeyCode(actionName, map.Gamepad);
+			if (typeIs(map.Gamepad, "table")) {
+				(map.Gamepad as InputKeyCode[]).forEach((keyCode) => {
+					ActionsController.EraseKeyCode(actionName, keyCode);
+				});
+			} else {
+				ActionsController.EraseKeyCode(actionName, map.Gamepad);
+			}
 		}
 	}
 }
@@ -262,60 +288,60 @@ export namespace InputContextController {
 
 	// Setup navigation controls
 	UiControlContext.Add(EDefaultInputAction.UiGoUp, {
-		Gamepad: Enum.KeyCode.DPadUp,
-		KeyboardAndMouse: Enum.KeyCode.Up,
+		Gamepad: [Enum.KeyCode.DPadUp],
+		KeyboardAndMouse: [Enum.KeyCode.Up],
 	});
 
 	UiControlContext.Add(EDefaultInputAction.UiGoDown, {
-		Gamepad: Enum.KeyCode.DPadDown,
-		KeyboardAndMouse: Enum.KeyCode.Down,
+		Gamepad: [Enum.KeyCode.DPadDown],
+		KeyboardAndMouse: [Enum.KeyCode.Down],
 	});
 
 	UiControlContext.Add(EDefaultInputAction.UiGoLeft, {
-		Gamepad: Enum.KeyCode.DPadLeft,
-		KeyboardAndMouse: Enum.KeyCode.Left,
+		Gamepad: [Enum.KeyCode.DPadLeft],
+		KeyboardAndMouse: [Enum.KeyCode.Left],
 	});
 
 	UiControlContext.Add(EDefaultInputAction.UiGoRight, {
-		Gamepad: Enum.KeyCode.DPadRight,
-		KeyboardAndMouse: Enum.KeyCode.Right,
+		Gamepad: [Enum.KeyCode.DPadRight],
+		KeyboardAndMouse: [Enum.KeyCode.Right],
 	});
 
 	// Setup action controls
 	UiControlContext.Add(EDefaultInputAction.UiAccept, {
-		Gamepad: Enum.KeyCode.ButtonA,
-		KeyboardAndMouse: Enum.KeyCode.Return,
+		Gamepad: [Enum.KeyCode.ButtonA],
+		KeyboardAndMouse: [Enum.KeyCode.Return],
 	});
 
 	UiControlContext.Add(EDefaultInputAction.UiCancel, {
-		Gamepad: Enum.KeyCode.ButtonB,
-		KeyboardAndMouse: Enum.KeyCode.B,
+		Gamepad: [Enum.KeyCode.ButtonB],
+		KeyboardAndMouse: [Enum.KeyCode.B],
 	});
 
 	// Setup scrolling controls
 	UiControlContext.Add(EDefaultInputAction.UiScrollUp, {
-		Gamepad: ECustomKey.Thumbstick2Up,
-		KeyboardAndMouse: Enum.KeyCode.W,
+		Gamepad: [ECustomKey.Thumbstick2Up],
+		KeyboardAndMouse: [Enum.KeyCode.W],
 	});
 
 	UiControlContext.Add(EDefaultInputAction.UiScrollDown, {
-		Gamepad: ECustomKey.Thumbstick2Down,
-		KeyboardAndMouse: Enum.KeyCode.S,
+		Gamepad: [ECustomKey.Thumbstick2Down],
+		KeyboardAndMouse: [Enum.KeyCode.S],
 	});
 
 	UiControlContext.Add(EDefaultInputAction.UiNextPage, {
-		Gamepad: Enum.KeyCode.ButtonR1,
-		KeyboardAndMouse: Enum.KeyCode.E,
+		Gamepad: [Enum.KeyCode.ButtonR1],
+		KeyboardAndMouse: [Enum.KeyCode.E],
 	});
 
 	UiControlContext.Add(EDefaultInputAction.UiPreviousPage, {
-		Gamepad: Enum.KeyCode.ButtonL1,
-		KeyboardAndMouse: Enum.KeyCode.Q,
+		Gamepad: [Enum.KeyCode.ButtonL1],
+		KeyboardAndMouse: [Enum.KeyCode.Q],
 	});
 
 	// Setup debug controls
 	UiControlContext.Add(EDefaultInputAction.MouseDebugMode, {
-		KeyboardAndMouse: Enum.KeyCode.LeftAlt,
+		KeyboardAndMouse: [Enum.KeyCode.LeftAlt],
 	});
 
 	/**
