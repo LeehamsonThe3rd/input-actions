@@ -236,13 +236,13 @@ export class InputContext {
 		}
 
 		if (map.KeyboardAndMouse !== undefined) {
-			(map.KeyboardAndMouse as InputKeyCode[]).forEach((keyCode) => {
+			map.KeyboardAndMouse.forEach((keyCode) => {
 				ActionsController.AddKeyCode(actionName, keyCode);
 			});
 		}
 
 		if (map.Gamepad !== undefined) {
-			(map.Gamepad as InputKeyCode[]).forEach((keyCode) => {
+			map.Gamepad.forEach((keyCode) => {
 				ActionsController.AddKeyCode(actionName, keyCode);
 			});
 		}
@@ -253,23 +253,15 @@ export class InputContext {
 		if (!map) return;
 
 		if (map.KeyboardAndMouse !== undefined) {
-			if (typeIs(map.KeyboardAndMouse, "table")) {
-				(map.KeyboardAndMouse as InputKeyCode[]).forEach((keyCode) => {
-					ActionsController.EraseKeyCode(actionName, keyCode);
-				});
-			} else {
-				ActionsController.EraseKeyCode(actionName, map.KeyboardAndMouse);
-			}
+			map.KeyboardAndMouse.forEach((keyCode) => {
+				ActionsController.EraseKeyCode(actionName, keyCode);
+			});
 		}
 
 		if (map.Gamepad !== undefined) {
-			if (typeIs(map.Gamepad, "table")) {
-				(map.Gamepad as InputKeyCode[]).forEach((keyCode) => {
-					ActionsController.EraseKeyCode(actionName, keyCode);
-				});
-			} else {
-				ActionsController.EraseKeyCode(actionName, map.Gamepad);
-			}
+			map.Gamepad.forEach((keyCode) => {
+				ActionsController.EraseKeyCode(actionName, keyCode);
+			});
 		}
 	}
 }
